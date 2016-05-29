@@ -1,0 +1,13 @@
+Bemerkungen zu DozentInnen des Seminars -- mit Wiedervorlagedatum
+
+Hauptsächlich mit dem Hintergedanken des Vertragsmanagements 
+(Wiedervorlage für Verlängerungstermine u.ä.) können Bemerkungen 
+verfasst werden.
+
+Es gibt die üblichen Lifecycle-Events, SQL-Injection safe.
+
+.get liefert die Bemerkungen zu _allen_ Dozenten, falls kein 
+Filter gesetzt ist. Filter sind möglich nach 
+wv-Datum oder (durch Setzen von wv=true: dann werden alle zukünftigen Wv geliefert)
+dozent_id
+

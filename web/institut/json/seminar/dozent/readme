@@ -1,0 +1,21 @@
+DozentInnen des Seminars
+
+Pro Seminar können DozentInnen definiert werden -- eigentlich 
+sind es eher MitarbeiterInnen, also inklusive Sekretariaten 
+und ggf. auch TutorInnen.
+
+DozentInnen können
+- sich am System als Dozent anmelden (je nach Access Level:
+                            Access Level=0: keine Anmeldung möglich
+                            Access Level=1: Anmeldung möglich, eingeschränkte Rechte
+                            Access Level>=500: Anmeldung möglich, volle Rechte
+
+- als Lehrende von Kursen fungieren,
+- als Aussteller von Leistungen fungieren,
+- Meldungen auf 'Aktuelles' posten
+- eine eigene Visitenkarte-Homepage pflegen (Beta)
+
+DozentInnen sind unterschieden insbesondere von Studierenden.
+
+Während GET.jsp derzeit nur name, vorname, email und id liefert,
+liefert UPDATE als Antwort eine vollen Datensatz (siehe dort).

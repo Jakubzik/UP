@@ -1,0 +1,34 @@
+Leistung eines/r Studierenden
+
+@TODO:
+Teste Anmeldung zu einem Kurs als PS und EPG, dann 
+einzelne Benotung
+
+Hier wird die benotete Leistung eines (angemeldeten) 
+Studierenden verhandelt. Die Leistung kann zuvor schon 
+als Anmeldung vorliegen oder auch nicht.
+
+Eine Leistung wird i.d.R. zu einem Kurs (aus "tblBdKurs" 
+oder "tblBdKvvArchiv") ausgestellt. Viele Informationen 
+aus dem Kurs werden dann in den Leistungs-Datensatz 
+übernommen (most notably aber der Kurstitel auf Deutsch 
+und Englisch, so dass dieser auf dem Transkript 
+angegeben werden kann).
+
+Für Anerkennungen und andere Ausnahmefälle besteht aber 
+auch die Möglichkeit, einen 'generischen Schein' aus-
+zustellen. ./add.jsp erkennt den generischen Schein 
+am Fehlen des Parameters 'kurs_id' und verweist dann 
+auf ./addGeneric.jsp.
+
+Wird ein Schein zu einem Kurs ausgestellt, zu dem keine 
+Anmeldung vorliegt, wird diese per ../anmeldung/add.jsp 
+vorher ausgestellt.
+
+AUSNAHME: ./add-bulk.jsp geht einen eigenen Weg fürs 
+Hochladen von Leistungen aus einem Excel-Sheet. Das 
+Excel-Sheet wird vom Client analysiert, dann die einzelnen 
+Leistungen hochgeladen. ./add-bulk.jsp erzeugt ggf. zuerst 
+Anmeldungen (sowohl aus aktuellen Kursen wie auch aus 
+solchen aus dem Archiv). Dazu wird die StoredProc 
+"forceCommitment" verwendet.

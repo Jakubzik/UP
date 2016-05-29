@@ -1,0 +1,11 @@
+Noten des Seminars
+
+Pro Seminar kann ein Satz von Noten definiert werden, 
+mit denen Leistungen benotet werden können.
+
+(tblSdNote 1----n tblBdStudentXLeistung)
+
+Die Benotung von Modulen und Vor- oder Abschlussprüfungen
+ist eine andere Sache: diese Noten sind berechnet 
+und werden am ehesten über die Java-Klasse Fachnote 
+abgebildet. S.a. json/student/fachnote.jsp.

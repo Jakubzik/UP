@@ -1,0 +1,14 @@
+Nutzer
+
+Nutzer sind 'externe' Nutzer, die sich über 
+ein anderes System (in HD: per UniID) anmelden 
+können, aber nicht selbst in SignUp 
+berechtigt sind.
+
+Sie werden für Sprechstundenbuchungen benötigt.
+
+Nicht WRC-spezifisch.
+
+add:    fügt Nutzer der SignUp Tabelle hinzu (Name, Titel, Institution etc.)
+logout: session invalidate
+update: ändert Nutzerdaten.

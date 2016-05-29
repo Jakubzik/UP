@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.bar {
+  fill: steelblue;
+}
+
+.x.axis path {
+  display: none;
+}
+.select-style {
+    border: 1px solid #ccc;
+    width: 120px;
+    border-radius: 3px;
+    overflow: hidden;
+    background: #fafafa url("img/icon-select.png") no-repeat 90% 50%;
+}
+
+.select-style select {
+    padding: 5px 8px;
+    width: 130%;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+    background-image: none;
+    -webkit-appearance: none;
+}
+
+div.tooltip {
+  position: absolute;	
+  text-align: center;	
+  width: 60px;	
+  height: 28px;		
+  padding: 2px;	
+  font: 12px sans-serif;	
+  background: lightsteelblue;	
+  border: 0px;					
+  border-radius: 8px;
+ /*  pointer-events: none;	This line needs to be removed */
+	
+}
+
+</style>
+<body>
+    <h1>&raquo;Big Data&laquo; in <i>SignUp</i>: Benotungsvergleich</h1>
+    <p>Es werden jeweils 35 Noten miteinander verglichen, die den gleichen Studierenden vergeben wurden.</p>
+    
+    <div style="background-color: #e1e1e1; border: 1px">Leistungen <select class="select-style" id="cboLeistung1" onchange="sDrawPlot()">
+                    <option value="">select</option>
+<option  value="10140">Advanced English in Use</option>
+<option  value="10120">Advanced Writing/Academic Essay Writing</option>
+<option  value="6110">BA: Mündliche Prüfung</option>
+<option  value="5110">Bachelorarbeit</option>
+<option  value="20000">Description and Narration</option>
+<option  value="22">EPG II</option>
+<option  value="1">Einführung Literaturwissenschaft</option>
+<option  value="0">Einführung Sprachwissenschaft</option>
+<option  value="10130">English in Use</option>
+<option  value="20005">Exposition and Argumentation</option>
+<option  value="50">Fachdidaktik</option>
+<option  value="20220">Fachdidaktik I</option>
+<option  value="20230">Fachdidaktik II</option>
+<option  value="5">Grammar/Tense and Aspect</option>
+<option  value="30200">HCA-Proseminar</option>
+<option  value="16">Hauptseminar Literaturwissenschaft</option>
+<option  value="21">Hauptseminar Sprachwissenschaft</option>
+<option  value="30110">Independent Studies</option>
+<option  value="30050">MA Abschlussarbeit</option>
+<option  value="30040">Mündliche Abschlussprüfung MA</option>
+<option  value="4">Phonetik</option>
+<option  value="3">Pronunciation Practice/Aussprachetest</option>
+<option  value="10075">Proseminar I Kulturwissenschaft</option>
+<option  value="10080">Proseminar I Kulturwissenschaft (anwendungsorientiert)</option>
+<option  value="10070">Proseminar I Kulturwissenschaft (theoretisch)</option>
+<option  value="10">Proseminar I Literaturwissenschaft</option>
+<option  value="11">Proseminar I Sprachwissenschaft</option>
+<option  value="10090">Proseminar II Kulturwissenschaft/Landeskunde</option>
+<option  value="15">Proseminar II Literaturwissenschaft</option>
+<option  value="17">Proseminar II Sprachwissenschaft</option>
+<option  value="10010">Proseminar II historische Sprachwissenschaft (Periode)</option>
+<option  value="10020">Proseminar II historische Sprachwissenschaft (Überblick)</option>
+<option  value="10030">Proseminar II moderne Sprachwissenschaft</option>
+<option  value="30220">Proseminar III Literaturwissenschaft</option>
+<option  value="30210">Proseminar III Sprachwissenschaft</option>
+<option  value="10110">Stylistics/Grammar and Style II</option>
+<option  value="18">Translation II (E-G)</option>
+<option  value="13">Translation into English/Structure and Idiom</option>
+<option  value="12">Writing/Essential Skills for Writing</option>
+        </select>; 
+        <select class="select-style" id="cboLeistung2" onchange="sDrawPlot()">
+                     <option value="">select</option>
+<option  value="10140">Advanced English in Use</option>
+<option  value="10120">Advanced Writing/Academic Essay Writing</option>
+<option  value="6110">BA: Mündliche Prüfung</option>
+<option  value="5110">Bachelorarbeit</option>
+<option  value="20000">Description and Narration</option>
+<option  value="22">EPG II</option>
+<option  value="1">Einführung Literaturwissenschaft</option>
+<option  value="0">Einführung Sprachwissenschaft</option>
+<option  value="10130">English in Use</option>
+<option  value="20005">Exposition and Argumentation</option>
+<option  value="50">Fachdidaktik</option>
+<option  value="20220">Fachdidaktik I</option>
+<option  value="20230">Fachdidaktik II</option>
+<option  value="5">Grammar/Tense and Aspect</option>
+<option  value="30200">HCA-Proseminar</option>
+<option  value="16">Hauptseminar Literaturwissenschaft</option>
+<option  value="21">Hauptseminar Sprachwissenschaft</option>
+<option  value="30110">Independent Studies</option>
+<option  value="30050">MA Abschlussarbeit</option>
+<option  value="30040">Mündliche Abschlussprüfung MA</option>
+<option  value="4">Phonetik</option>
+<option  value="3">Pronunciation Practice/Aussprachetest</option>
+<option  value="10075">Proseminar I Kulturwissenschaft</option>
+<option  value="10080">Proseminar I Kulturwissenschaft (anwendungsorientiert)</option>
+<option  value="10070">Proseminar I Kulturwissenschaft (theoretisch)</option>
+<option  value="10">Proseminar I Literaturwissenschaft</option>
+<option  value="11">Proseminar I Sprachwissenschaft</option>
+<option  value="10090">Proseminar II Kulturwissenschaft/Landeskunde</option>
+<option  value="15">Proseminar II Literaturwissenschaft</option>
+<option  value="17">Proseminar II Sprachwissenschaft</option>
+<option  value="10010">Proseminar II historische Sprachwissenschaft (Periode)</option>
+<option  value="10020">Proseminar II historische Sprachwissenschaft (Überblick)</option>
+<option  value="10030">Proseminar II moderne Sprachwissenschaft</option>
+<option  value="30220">Proseminar III Literaturwissenschaft</option>
+<option  value="30210">Proseminar III Sprachwissenschaft</option>
+<option  value="10110">Stylistics/Grammar and Style II</option>
+<option  value="18">Translation II (E-G)</option>
+<option  value="13">Translation into English/Structure and Idiom</option>
+<option  value="12">Writing/Essential Skills for Writing</option>
+        </select>;
+<script src="../../../js/jquery.min.js"></script>
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script>
+    
+
+
+
+function sDrawPlot(){
+    var margin = {top: 20, right: 20, bottom: 30, left: 40},
+        width = 960 - margin.left - margin.right,
+        height = 500 - margin.top - margin.bottom;
+
+    var x0 = d3.scale.ordinal()
+        .rangeRoundBands([0, width], .1);
+
+    var x1 = d3.scale.ordinal();
+
+    var y = d3.scale.linear()
+        .range([height, 9]);
+
+    var color = d3.scale.ordinal()
+        .range(["#98abc5", "#d0743c"]);
+
+    var xAxis = d3.svg.axis()
+        .scale(x0)
+        .orient("bottom");
+
+    var yAxis = d3.svg.axis()
+        .scale(y)
+        .orient("left")
+        .tickValues([1.0,1.3,1.7,2.0,2.3,2.7,3.0,3.3,3.7,4.0,5.0,6.0]);
+        //.tickFormat(d3.format(".2s"));
+
+// Define 'div' for tooltips
+    var div = d3.select("body")
+	.append("div")  // declare the tooltip div 
+	.attr("class", "tooltip")              // apply the 'tooltip' class
+	.style("opacity", 0);                  // set the opacity to nil
+
+        d3.select("svg").remove();
+
+        var svg = d3.select("body").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    
+    var sParm = 'signup_expected_backend_version=1-0-0-2&' +
+            'leistung_id_1=' + $('#cboLeistung1').val() + '&' +
+            'leistung_id_2=' + $('#cboLeistung2').val() + '&' +
+            'leistung_name_1=' + $('#cboLeistung1 option:selected').text() + '&' +
+            'leistung_name_2=' + $('#cboLeistung2 option:selected').text() + '';
+    d3.csv("data_leistungen.csv?" + sParm, function(error, data) {
+      if (error) throw error;
+
+      var ageNames = d3.keys(data[0]).filter(function(key) { return (key !== "State" && key !== "Matrikelnummer"); });
+
+      data.forEach(function(d) {
+        d.ages = ageNames.map(function(name) { return {name: name, value: +d[name]}; });
+      });
+
+      x0.domain(data.map(function(d) { return d.State; }));
+      x1.domain(ageNames).rangeRoundBands([0, x0.rangeBand()]);
+      y.domain([0, d3.max(data, function(d) { return d3.max(d.ages, function(d) { return d.value; }); })]);
+
+      svg.append("g")
+          .attr("class", "x axis")
+          .attr("transform", "translate(0," + height + ")")
+          .call(xAxis);
+
+      svg.append("g")
+          .attr("class", "y axis")
+          .call(yAxis)
+        .append("text")
+          .attr("transform", "rotate(-90)")
+          .attr("y", 6)
+          .attr("dy", ".71em")
+          .style("text-anchor", "end")
+          .text("Note");
+
+      var state = svg.selectAll(".state")
+          .data(data)
+        .enter().append("g")
+.on("mouseover", function(d) {		
+            div.transition()
+				.duration(500)	
+				.style("opacity", 0);
+			div.transition()
+				.duration(200)	
+				.style("opacity", .9);	
+			div	.html(
+				'<a href= "../../../l-index.jsp?matrikelnummer=' + d.Matrikelnummer + '" target="_blank">' + // The first <a> tag
+				d.Matrikelnummer +
+				"</a>" +                          // closing </a> tag
+				"<br/>")	 
+				.style("left", (d3.event.pageX) + "px")			 
+				.style("top", (d3.event.pageY - 28) + "px");
+			})
+          .attr("class", "state")
+          .attr("transform", function(d) { return "translate(" + x0(d.State) + ",0)"; });
+
+      state.selectAll("rect")
+          .data(function(d) { return d.ages; })
+        .enter().append("rect")
+          .attr("width", x1.rangeBand())
+          .attr("x", function(d) { return x1(d.name); })
+          .attr("y", function(d) { return y(d.value); })
+          .attr("height", function(d) { return height - y(d.value); })
+          .style("fill", function(d) { return color(d.name); });
+
+      var legend = svg.selectAll(".legend")
+          .data(ageNames.slice().reverse())
+        .enter().append("g")
+          .attr("class", "legend")
+          .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+      legend.append("rect")
+          .attr("x", width - 18)
+          .attr("width", 18)
+          .attr("height", 18)
+          .style("fill", color);
+
+      legend.append("text")
+          .attr("x", width - 24)
+          .attr("y", 9)
+          .attr("dy", ".35em")
+          .style("text-anchor", "end")
+          .text(function(d) { return d; });
+    
+
+});
+}
+</script>
+

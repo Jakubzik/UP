@@ -1,0 +1,72 @@
+Informationen (Posts)
+
+@TODO: 
+- Links, Downloads, 
+- Update-Logik: wo ist etwas neu? (Höhere InfoID, Höhere KommentarID -> Merge)
+- Frontend mit IndexedDB
+- Mobile Frontend
+
+Informationen sind Textnachrichten, die von 
+allen Lehrenden mit "AccessLevel">=1 gepostet 
+und abgerufen werden können. 
+
+Die Informationen haben einen üblichen Lifecycle; 
+sie können nur von demjenigen geändert und gelöscht 
+werden, der sie auch erstellt hat.
+(Achtung: das Frontend sieht derzeit kein Löschen oder 
+Edieren vor, das Backend schon).
+
+Zu jeder Info kann es Kommentare geben. (In der 
+Datenbank tblBdInformation ¹ -- n tblBdInformationKommentar).
+
+Um einen Kommentar zu speichern, wird .add() mit dem 
+Parameter "sonderfkt"="Kommentar" aufgerufen.
+(Die JS Bibliothek signup-faculty-common.js verpackt 
+diese Funktionalität in die 
+Methode .kommentiere(text, fk(){});). .add() delegiert 
+den Aufruf dann an ./kommentiere.jsp
+
+Um Informationen zu löschen, die bereits kommentiert 
+sind (was wegen referentieller Integrität zu Problemen 
+führt), ist beim Löschen explizit der Parameter 
+"force":"all" zu übergeben. Dann werden Kommentare und 
+kommentierte Info gelöscht.
+
+-----------------------------------------------------------
+Bsp JS (setzt signup-faculty-common.js voraus):
+
+var g_SEMINAR_ID=1;var info={};
+
+// Informationen zum Anzeigen vom Server laden
+informationen = new shj.signUp.seminar.Informationen(g_SEMINAR_ID, function(data){
+    console.log('...es gibt ' + data.informationen.length + ' Informationen');
+    console.log(informationen);
+    info=informationen.informationen[0];
+});
+
+// Informationen edieren:
+info.inhalt='Neuer Inhalt der Info!';
+info.update(function(data){
+        alert('OK, geändert');
+});
+
+// Informationen speichern:
+info=new shj.signUp.seminar.Information(g_SEMINAR_ID);
+info.inhalt='Hallo, das ist eine neue Nachricht!';
+info.add(function(data){
+    console.log('Neue Nachricht hat die Id: ' + data.information.id);
+});
+
+// Informationen kommentieren:
+info.id=info_zum_kommentieren_id;
+info.kommentiere('Hier ist ein Kommentar!',function(data){
+    alert("Kommentar gespeichertn.");
+});
+
+// Information inkl. Kommentare löschen:
+info.force='all'; // Lösche mit Kommentaren!
+info.drop(function(data){
+    alert('Gelöscht!');
+});
+
+

@@ -1,0 +1,42 @@
+<%@page import="java.util.Hashtable"%><%@page contentType="text/json" pageEncoding="UTF-8" import="java.sql.ResultSet,de.shj.UP.data.Dozent,de.shj.UP.data.shjCore" session="true" isThreadSafe="false"  errorPage="../../error.jsp" %><jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" /><jsp:useBean id="seminar" scope="session" class="de.shj.UP.HTML.HtmlSeminar" /><jsp:useBean id="sd" scope="session" class="de.shj.UP.util.SessionData" /><jsp:useBean id="student" scope="session" class="de.shj.UP.beans.config.student.StudentBean" /><%@include file="../../../fragments/checkVersion.jsp" %><%long lERR_BASE=300000 + 100;    // Visualisierung + Get %><%@include file="../../../fragments/checkAccess1.jsp" %><%
+// Schnittstelle
+// Wir brauchen die Parameter:
+// dozent_id_1
+// dozent_name_1
+// dozent_id_2
+// dozent_name_2
+
+long lDozentID_1 = -1;
+long lDozentID_2 = -1;
+try{
+    lDozentID_1 = Long.parseLong(request.getParameter("dozent_id_1"));
+}catch(Exception e){
+    throw new Exception("Wir brauchen den Parameter >dozent_id_1<, der wurde aber nicht übergeben!");
+}
+try{
+    lDozentID_2 = Long.parseLong(request.getParameter("dozent_id_2"));
+}catch(Exception e){
+    throw new Exception("Wir brauchen den Parameter >dozent_id_2<, der wurde aber nicht übergeben!");
+}
+out.write("State," + request.getParameter("dozent_name_1") + "," + request.getParameter("dozent_name_2") + ",Matrikelnummer\n");
+ResultSet rR = user.sqlQuery("select distinct x1.\"strMatrikelnummer\", x1.\"dtmStudentLeistungAusstellungsd\" as \"s\", n1.\"sngNoteWertDE\" as \"T1\", n2.\"sngNoteWertDE\" as \"T2\" " +
+    "from \"tblSdNote\" n1, " +
+         "\"tblSdNote\" n2, " +
+         "\"tblBdStudentXLeistung\" x1, " +
+         "\"tblBdStudentXLeistung\" x2 where  " +
+    "n1.\"lngSdSeminarID\"=1 and n2.\"lngSdSeminarID\"=" + user.getSdSeminarID() + " and " +
+    "n1.\"intNoteID\"=x1.\"intNoteID\" and " +
+    "n2.\"intNoteID\"=x2.\"intNoteID\" and n1.\"sngNoteWertDE\">0 and n1.\"sngNoteWertDE\">0 and " +
+    "x1.\"lngSdSeminarID\"=" + user.getSdSeminarID() + " and " +
+    "x2.\"lngSdSeminarID\"=" + user.getSdSeminarID() + " and " +
+    "x1.\"strMatrikelnummer\"=x2.\"strMatrikelnummer\" and " +
+    "x1.\"lngDozentID\"=" + lDozentID_1 + " and " +
+    "x2.\"lngDozentID\"=" + lDozentID_2 + " order by x1.\"dtmStudentLeistungAusstellungsd\" desc limit 35;");
+
+long lLfdNr = 1;
+while(rR.next()){
+    out.write((lLfdNr++) + "," + rR.getFloat("T1") + "," + rR.getFloat("T2") + "," + rR.getString("strMatrikelnummer") + "\n");
+    //out.write(rR.getString("s") + "," + rR.getFloat("T1") + "," + rR.getFloat("T2") + "\n");
+}
+
+%>

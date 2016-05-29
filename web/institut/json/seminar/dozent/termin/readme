@@ -1,0 +1,71 @@
+TERMINE:
+
+@TODO: js in faculty-common integrieren.
+
+
+"Termine" meint hier Sprechstundentermine, die 
+von Dozenten angeboten und von Studierenden 
+(oder sonstigen externen "Nutzern") gebucht
+werden können.
+
+Termine anzubieten bedeutet, einen Datensatz 
+in "tblBdSprechstunde" anzulegen, der durch Anbieter
+(SeminarID und DozentID), Datum und Startzeit 
+eindeutig charakterisiert ist.
+Zuständig ist ./add.jsp
+# js: new Termin(....).add();
+
+
+Einen Termin zu buchen bedeutet, dem Termin 
+einen Nutzer zuzuweisen (in der Tabelle 
+"tblBdSprechstunde"). Der Nutzer wird 
+an diese Buchung, falls
+"tblBdSprechstunde"."blnSprechstundeEmailReminder"==true
+tags zuvor per E-Mail erinnert (siehe hierzu util/Scheduler.java)
+Zuständig für die Buchung ist ./update.jsp
+# js dozent().termine.get(ij).update(nutzer);
+
+Die Nutzer können die von ihnen gebuchten Termine stornieren:
+Einen Termin zu stornieren bedeutet, den 
+Nutzer aus "tblBdSprechstunde" zu entfernen. Damit 
+wird der Termin für die erneute Buchung wieder freigegeben.
+Zuständig ist ./delete.jsp
+# js dozent().termine.get(ij).drop(nutzer);
+
+Termine können aber auch abgesagt werden, d.h. der 
+anbietende Dozent kann sein Angebot zurückziehen. Dabei 
+wird entweder (a) der Eintrag in "tblBdSprechstunde" komplett 
+gelöscht -- nämlich dann, wenn die Sprechstunde noch 
+nicht gebucht war. Oder (b) der Eintrag in "tblBdSprechstunde" 
+als "blnSprechstundeAbgesagt" markiert und bei nächster 
+Gelegenheit gelöscht.
+Zuständig ist ebenfalls ./delete.jsp
+
+.get-wc.jsp liefert die Termine für "externe" Nutzer -- 
+derzeit allerdings spezifisch fürs Writing Center.
+
+test.jsp testet das automatische Versenden von 
+Erinnerungs E-Mails (das in logic/Sprechstunde.java 
+bzw. im Scheduler geregelt wird).
+
+JS
+=== === === === === === === === === === === === === === === 
+var termine=[];
+termine = "get ./get.jsp"
+
+for(var ii=0;ii<termine.length;ii++){
+  for(var jj=0; jj<termine[ii].intervalle.length;jj++){
+    alert(termine[ii].intervalle[jj].sprechstunde.start);
+    alert(termine[ii].datum);
+    alert(termine[ii].intervalle[jj].sprechstunde.nutzer.email);
+  }
+}
+
+=== === === === === === === === === === === === === === === 
+Writing Center:
+
+Idee: Sherry und Styles geben separat Termine ein, 
+diese werden über get-wc zusammen ausgeliefert.
+
+Todo: überall (insbesondere beim Buchen des Termins) 
+die DozentID übergeben.

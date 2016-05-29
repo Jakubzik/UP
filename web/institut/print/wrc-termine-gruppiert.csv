@@ -1,0 +1,33 @@
+<%@ page contentType="application/vnd.ms-excel" errorPage="../json/error.jsp" session="true" import="de.shj.UP.data.shjCore,de.shj.UP.HTML.HtmlDate,java.sql.ResultSet" %><%@include file="../fragments/conf_writing-center.jsp" %><jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" /><%
+    int ii=1;
+    
+    ResultSet rStudierende=user.sqlQuery("SELECT " +
+        "\"tblSdNutzer\".\"strNutzerUniID\", " +
+        "\"tblSdNutzer\".\"strNutzerInstitut\"," +
+        "\"tblSdNutzer\".\"strNutzerTitel\", " +
+        "\"tblSdNutzer\".\"intNutzerLevel\", " +
+        "count(\"tblBdSprechstunde\".\"lngSdSeminarID\") as counted " +
+      "FROM " +
+        "\"tblBdSprechstunde\", " +
+        "\"tblSdNutzer\" " +
+      "WHERE " +
+        "\"tblSdNutzer\".\"strNutzerUniID\" = \"tblBdSprechstunde\".\"strNutzerUniID\" " +
+        "and \"tblBdSprechstunde\".\"lngSdSeminarID\"=" + lSEMINAR_ID_WC + " " +
+        "and \"tblBdSprechstunde\".\"lngDozentID\" in " + sDOZENT_ID_WC + " " +
+        "Group by \"tblSdNutzer\".\"strNutzerUniID\",\"strNutzerInstitut\",\"strNutzerTitel\",\"intNutzerLevel\";");
+    
+%>"Titel";"Nutzernr.";"Institut";"Level";"Anzahl Termine";<%while(rStudierende.next()){%>
+<%=rStudierende.getString("strNutzerTitel") + ";" + ii++ + ";" +
+    rStudierende.getString("strNutzerInstitut") + ";" + 
+    getLevel(rStudierende.getInt("intNutzerLevel")) + ";" + 
+    rStudierende.getString("counted")%><%}%>
+<%!String getLevel(int i){
+switch(i){
+case 1: return "Studierende(r) BA";
+case 2: return "Studierende(r) MA";
+case 3: return "DoktorandIn";
+case 4: return "KollegIn";
+default: return "Level nicht bekannt";
+}
+}
+%>

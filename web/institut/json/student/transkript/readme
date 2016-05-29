@@ -1,0 +1,37 @@
+Transkripte:
+
+Die Transkripte Typ1 werden in der Tabelle 
+"tblBdStudentDokument"."strDokument" gespeichert 
+und sind von dort unter SignUp/dokument.jsp 
+aufrufbar.
+
+Studierende können so eigene, online verifizierbare 
+Leistungsübersichten ausstellen.
+
+Per add oder add_en werden neue Datensätze angelegt, 
+die dann per SignUp/Faculty/dokument.jsp (unter Angabe von 
+Matrikelnummer, Ausstellungsdatum und Verifikationsnr) 
+ein halbes Jahr lang abrufbar bleiben.
+
+Per delete sind einzelne Transkripte löschbar. (Auch 
+das können die Studierenden selbst erledigen).
+
+Transkripte des Typs2 sind RTF Dokumente, wie sie 
+in /print/transcript.rtf und /print/transcript_en.rtf
+erzeugt werden. Diese werden in der Regel direkt 
+an den Browser ausgeliefert und nicht dauerhaft 
+abgespeichert. Bei Abschlusstranskripten ist es aber 
+empfehlenswert, die Version des Transkripts dauerhaft 
+abzulegen.
+
+Über add_permanent.jsp kann man solche Transkripte 
+anlegen (mit Parameter englisch=true auch in Englisch). 
+Über get.jsp werden diese Transkripte bei Vorliegen 
+einer Berechtigung von 500 oder mehr automatisch 
+mit ausgeliefert.
+
+Seit Dezember 2015 gibt es außerden die Möglichkeit, 
+über .add_permanent.jsp die Leistungsdaten des Studierenden 
+im JSON-Format einzufrieren, das auch vom Zugang 
+/gpa/ verwendet wird. (Das JSON wird sogar von dort 
+produziert).

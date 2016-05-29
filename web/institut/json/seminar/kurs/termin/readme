@@ -1,0 +1,46 @@
+Termine
+
+Termine des Raumplans, 
+der Feiertage berücksichtigt und mit Blockseminaren 
+und Fremdbuchungen umgehen kann.
+
+Außerdem soll es möglich sein, zu Kursen alternative 
+Terminwünsche angeben zu können, die dann per Frontend 
+administriert und entschieden werden können.
+
+Räume lassen sich buchen per: kurs/termin/add.jsp, 
+insbesondere durch Setzen des Parameters book_directly=true.
+
+Raumbuchungen lassen sich löschen durch kurs/termin/delete.jsp
+
+Das Vermeiden von doppelten Buchungen eines Raums 
+wird von der Datenbank per Trigger verwaltet.
+
+
+
+TODO
+Räume:
+
+(1) Brauche Fkt. getFreieRaeume(Terminliste) .................... (OK)
+
+ - JS: In Kvv.jsp per Ajax abfragen
+ - In faculty_common_test.js Funktionalität testen
+
+Beteiligte Komponenten
+
+Datenbank
+tblBdKursTermin
+    verhandelt die Terminwünsche und Alternativen 
+    sowie die Raumzuordnung
+
+JSON/JSP
+seminar/kurs/termin/
+    verhandelt die Terminserien von Kursen.
+
+
+JS
+faculty-common.js
+ .shj.signUp.kurstermine
+    verhandelt das (Rück)verwandeln von Kürzeln 
+    wie "Mo 11.15-12.45" in Terminserien der einzelnen 
+    Termine eines Semesters

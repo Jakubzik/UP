@@ -1,0 +1,1 @@
+<%@ page language="java" pageEncoding="UTF8"%><%if(student.getStudentNachname()==null){System.out.println("Student's last name is null, calling an Exception"); throw new Exception("{\"error\":\"Das Login ist abgelaufen.\",\"errorcode\":11}");}%>

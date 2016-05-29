@@ -1,0 +1,19 @@
+<%@ page contentType="application/rtf" pageEncoding="UTF-8" import="java.sql.ResultSet,java.text.SimpleDateFormat, de.shj.UP.data.Dozent,de.shj.UP.data.shjCore" session="true" isThreadSafe="false"%>
+<%
+	// Übergibt lPruefungID und lPruefungCount -- 
+	// Pro Prüfung gibt es möglicherweise 
+	// unterschiedliche Druckerzeugnisse;
+	// das müsste freilich parametrisiert sein,
+	// ist es aber nicht.
+	// Daher entscheidet diese Seite hartkodiert,
+	// welche Druckerzeugnisse für welche
+	// ID aufgerufen werden.
+	String sPage="";
+	
+	long lPruefungID=Long.parseLong(request.getParameter("lPruefungID"));
+	long lPruefungCount=Long.parseLong(request.getParameter("lPruefungCount"));
+	
+	if(lPruefungID<=1) sPage="Orientierungspruefung.rtf?lPruefungID=" + lPruefungID + "&lPruefungCount=" + lPruefungCount;
+	else if(lPruefungID<=1) sPage="Zwischenpruefung.rtf?lPruefungID=" + lPruefungID + "&lPruefungCount=" + lPruefungCount;
+%>
+<jsp:forward page="<%=sPage %>" />

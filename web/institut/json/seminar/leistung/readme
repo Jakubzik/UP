@@ -1,0 +1,74 @@
+Leistung eines Seminars, Stammdaten
+
+Die Leistungen sind "Scheine" und bestehen wesentlich 
+aus einer Bezeichnung (dt. & engl.), ggf. einer 
+Codierung (tblSdLeistung.strLeistungCustom2, Medizin HD).
+Das Datum der Leistungspunkte kann bloß ein allgemeiner 
+Richtwert sein. Letztgültige Werte für Leistungspunkte 
+sind in tblSdModulXLeistung definiert.
+
+Mengen von Leistungen bilden Module, Mengen von Modulen 
+bilden "Fächer" oder Studiengänge.
+
+Leistungen sind auch Kurstypen zugeordnet (1:1); letztere 
+dienen aber zur Organisation von Lehrveranstaltungen ist 
+Kategorien für Vorlesungsverzeichnisse, nicht für die 
+Organisation von Prüfungsordnungen und Studiengängen.
+
+Leistungen sind auch Teil von seminar/fach, dort werden 
+sie nach Modulen sortiert ausgegeben. 
+
+Hier werden Leistungen von Modulen unabhängig pro Seminar 
+ausgegeben (get), einzeln verändert (update), hinzugefügt (add) 
+oder gelöscht.
+
+Da es sich um wesentliche Stammdaten handelt ist jede 
+Veränderung BenutzerInnen mit einer Berechtigung von >=500 
+vorbehalten.
+
+Es können nicht zwei Leistungen mit der gleichen Bezeichnung 
+erzeugt werden (das überprüft add.jsp).
+
+Beteiligt sind auch:
+de.shj.UP.data.Leistung.java
+signup-faculty-common.js
+
+Bsp [Javascript]:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Leistungen laden
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+leistungen = new shj.signUp.seminar.Leistungen(g_SEMINAR_ID, function(data){
+    console.log('...es gibt ' + data.leistungen.length + ' Leistungen');
+});
+
+leistung1=leistungen.get(200);
+
+console.log(leistung1.name);
+console.log(leistung1.name_en);
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Leistung ändern
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+leistung1.code='shj-1';
+leistung1.update(function(){alert('Updated!');});
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Leistung hinzufügen
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+var leistung_neu={};
+
+leistung_neu.name='Neue Leistung';
+leistung_neu.name_en='New Credit';
+leistung_neu.cp=3.5;
+leistung_neu.code='M1001';
+
+leistung_neu.add(function(data){
+    leistung_neu.id=data.leistung.id;
+});
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Leistung löschen
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+leistung_neu.drop(function(){alert('gelöscht');});
+

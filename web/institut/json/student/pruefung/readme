@@ -1,0 +1,21 @@
+Prüfungen des/r Studierenden -- sowohl bereits abgelegte 
+Prüfungen als auch Informationen zu weiteren konfigurierten 
+Prüfungen im Studiengang des/r Studierenden.
+
+Beim Hinzufügen von Prüfungen wird die DB Stored Proc issuePruefung
+ausgeführt.
+
+Es sei denn, über den Parameter saveAsIs wird das Fehlen von 
+Prüfungsvoraussetzungen explizit ignoriert. Dann wird 
+die Prüfung trotzdem gespeichert, und in 
+strStudentPruefungCustom2 wird der Text 
+"Manuelle Ausstellung/Anerkennung trotz fehlender Leistungen." 
+hinterlegt.
+
+@TODO Es wäre zu überlegen, ob die konfigurierten Studiengänge 
+des Studiengangs wirklich im Namespace "student" mit abge-
+handelt werden sollen. Vermutlich wären sie im "seminar" besser 
+aufgehoben.
+
+Die Fkt. zum Update fehlt; momentan muss also die Prüfung im 
+Fehlerfall gelöscht und neu ausgestellt werden.

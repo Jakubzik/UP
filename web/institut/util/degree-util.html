@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Converter</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <h1>JS Converter, Text2SignUp</h1>
+        <div>
+            <textarea cols="80" rows="40" id="txtPOText" name="txtPOText">
+            </textarea>
+        </div>
+        <div>
+            <input type="button" onclick="convert()" value="SQL" name="cmdConvert" id="cmdConvert" />
+            <input type="button" onclick="convert_undo()" value="SQL_Undo" name="cmdConvert_undo" id="cmdConvert_undo" />
+        </div>
+    </body>         
+</html>
+<script type="text/javascript">
+var g_iDEBUG_LEVEL=6;
+var g_iDEBUG_LEVEL_ALL=6;
+
+/**
+ * Hilfsprogramm, das eine menschenlesbare, vereinfachte
+ * Prüfungsordnung in SQL-Befehle für SignUp umwandeln 
+ * kann.
+ * 
+ * Dokumentation des Formats:
+ * ==========================
+ * Studiengang=Bachelor 75% English Studies/Anglistik (polyvalent); Pruefung_Name=Bachelor 75% English Studies; Pruefung_EN_Name=Bachelor 75% English Studies;Pruefung_Abschluss=Bachelor;Pruefung_ist_Abschluss=true;Pruefung_im_Hauptfach=true;Pruefung_LP=113;Seminar_ID=1;Pruefung_ID+=300000;EN=Bachelor English Studies 75%; ID+=500000; REM=PO 2015
+ *
+ * Einführungsmodul Literaturwissenschaft; EN=Module Introduction to Literature; LP=10; ID+=300010; REM=Prima Modul
+ * - Einführung Literatur; ID=1; LP=5
+ * - Proseminar I Litwiss; ID=10; LP=5
+ *
+ * Einführungsmodul Sprachwissenschaft; EN=Module Introduction to Linguistics; LP=10; ID+=300020
+ * - Einführung Sprachwiss.; ID=0; LP=5
+ * - Proseminar I Moppelkunde.; ID+=11; LP=5;
+ * 
+ * ---------------
+ * Erläuterungen:
+ * Die Zuweisung der ID per "ID=10" setzt voraus, dass 
+ * es ein Element mit der ID 10 in SignUp bereits gibt.
+ * 
+ * Die Zuweisung der ID per "ID+=10" bedeutet, dass 
+ * dieses Element mit der ID 10 zunächst angelegt wird;
+ * entsprechend werden auch nur solche Elemente per 
+ * SQL_UNDO explizit wieder aus der Datenbank entfernt.
+ * 
+ * Bei Zuweitungen mit "+=" ist (selbstverständlich) darauf 
+ * zu achten, dass die Angaben (der dt. und engl. Namen etc.)
+ * vollständig sind.
+ *   
+ * Bemerkungen zu Modulen mit "REM=Prima Modul" werden 
+ * in der Datenbank (wie bisher auch) in tblSdPruefungXModul.strCustom1 
+ * abgelegt.
+ * 
+ * 
+ * August 2015, shj
+ * ================
+ * 
+ * Status: Qualität SQL und SQL_undo ist ausgezeichnet.
+ *         Was fehlt, ist die Möglichkeit, Vorprüfungen
+ *         zu konfigurieren.
+ *         
+ * TODO:   
+ *          - Ausgabe der Befehle als Text (nicht bloß Konsole)
+ *          - Transkript-Name irgendwo explizit einführen?
+ *          
+ */
+
+/**
+ * Konvertiert den in der TextArea eingegebenen 
+ * Text (zunächst in JSON, dann in) die SQL 
+ * Befehle für SignUp.
+ * 
+ * Die Ausgabe der Befehle erfolgt AUF DER KONSOLE.
+ */
+function convert(){
+    var oStudiengang=convertText2JSON();
+    if(g_iDEBUG_LEVEL>=g_iDEBUG_LEVEL_ALL) console.log(oStudiengang);
+    var aSQL_COMMANDS=convertJSON2SQL(oStudiengang);
+    console.log(aSQL_COMMANDS.join('\n').replace(/ +(?= )/g,''));
+}
+
+/**
+ * Konvertiert den in der TextArea eingegebenen 
+ * Text (zunächst in JSON, dann in) die SQL_UNDO 
+ * Befehle für SignUp.
+ * 
+ * Die Ausgabe der Befehle erfolgt AUF DER KONSOLE.
+ */
+function convert_undo(){
+    var oStudiengang=convertText2JSON();
+    if(g_iDEBUG_LEVEL>=g_iDEBUG_LEVEL_ALL) console.log(oStudiengang);
+    console.log(getSQLUndo(oStudiengang));
+}
+
+/**
+ * LEGACY Rahmenfkt., die die Umwandlung 
+ * JSON -> SQL klammert.
+ */
+function convertJSON2SQL(oFach){
+    var aReturn=[];
+    aReturn.push(_getInitStudiengangSQL(oFach));
+    aReturn.push(_getModuleSQL(oFach));
+    return aReturn;
+}
+
+/**
+ * Funktion zum Umsortieren der SQL_UNDO Befehle, 
+ * die wegen referentieller Integrität nicht in
+ * der Reihenfolge des Sinnzusammenhangs
+ * (Fach/(/Prüfung/Module/Leistungen) 
+ * aufgerufen werden können, sondern z.B. 
+ * Leistungen erst ganz zum Schluss löschen.
+ * @param {type} oFach
+ * @returns {undefined}n 
+ * der 
+ */
+function getSQLUndo(oFach){
+    var aRes=[];var sTmp='';
+    
+    // Stellt das SQL_UNDO im Sinnzusammenhang 
+    // der Prüfungen und Module zusammen und 
+    // bildet daraus ein ARRAY.
+    aRes=(_getModuleSQL_undo(oFach) + _getInitStudientgangSQL_undo(oFach)).split(';');
+    
+    var aSDLeistung=[], aLeistungXModul=[], aModul=[], 
+            aPruefungXModul=[], aSeminarXFach=[], aPruefungXFach=[], 
+            aPruefung=[], aFach=[];
+    
+    // Durchläuft das Array der UNDO-Befehle
+    // und speichert sie in separaten 
+    // Arrays, je nach betroffener Tabelle.
+    for(var ii=0,ij=aRes.length;ii<ij;ii++){
+        if(aRes[ii].indexOf('"tblSdLeistung"')>0) aSDLeistung.push(aRes[ii]);
+        if(aRes[ii].indexOf('"tblSdModulXLeistung"')>0) aLeistungXModul.push(aRes[ii]);
+        if(aRes[ii].indexOf('"tblSdModul"')>0) aModul.push(aRes[ii]);
+        if(aRes[ii].indexOf('"tblSdPruefungXModul"')>0) aPruefungXModul.push(aRes[ii]);
+        if(aRes[ii].indexOf('"tblSdSeminarXFach"')>0) aSeminarXFach.push(aRes[ii]);
+        if(aRes[ii].indexOf('"tblSdPruefungXFach"')>0) aPruefungXFach.push(aRes[ii]);
+        if(aRes[ii].indexOf('tblSdPruefung')>0) aPruefung.push(aRes[ii]);
+        if(aRes[ii].indexOf('tblSdFach')>0) aFach.push(aRes[ii]);
+    }
+    
+    // Fügt die separaten Arrays in einer 
+    // für die referentielle Integrität 
+    // geeigneten Reihenfolge 
+    // wieder zusammen
+    // (und ein paar Kommentare hinzu).
+    var sReturn='-- UNDO (sortiert):\n'
+        + '-- ================================================\n'
+        + '-- lösche aus ModulXLeistung\n'
+        + aLeistungXModul.join(';') + ';'
+        + '\n\n'
+        + '-- ================================================\n'
+        + '-- lösche aus Leistung\n'
+        + aSDLeistung.join(';') + ';'
+        + '\n\n'
+        + '-- ================================================\n'
+        + '-- lösche aus PruefungXModul\n'
+        + aPruefungXModul.join(';') + ';'
+        + '\n\n'
+        + '-- ================================================\n'
+        + '-- lösche aus Modul\n'
+        + aModul.join(';') + ';'
+        + '\n\n'
+        + '-- ================================================\n'
+        + '-- lösche aus tblSdPruefungXFach\n'
+        + aPruefungXFach.join(';') + ';'
+        + '\n\n'
+        + '-- ================================================\n'
+        + '-- lösche aus tblSdPruefung\n'
+        + aPruefung.join(';') + ';'
+        + '\n\n'
+        + '-- ================================================\n'
+        + '-- lösche aus tblSdSeminarXFach\n'
+        + aSeminarXFach.join(';') + ';'
+        + '\n\n'
+        + '-- ================================================\n'
+        + '-- lösche aus tblSdFach\n'
+        + aFach.join(';') + ';';
+
+        return sReturn;
+}
+
+// = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = 
+// Zusammenstellung der SQL-Befehle aus dem JSON Objekt:
+// 
+// Es gibt jeweils ...SQL und gleichnamige ...SQL_undo
+// Funktionen.
+// 
+// Zuerst wird der Studiengang initialisiert, dann 
+// die Module, von dort aus die Leistungen.
+// 
+// Die Reihenfolge der Funktionen im Quelltext folgt 
+// dieser Hierarchisierung.
+// 
+// = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = 
+
+/**
+ * Liefert SQL zum Erzeugen des Fachs und der Prüfung.
+ * @param {type} oSG Typ Studiengang
+ * @returns {String}
+ */
+function _getInitStudiengangSQL(oSG){
+    var sReturn='';   
+    
+    // Falls es den Studiengang/das Fach noch 
+    // nicht gibt, hinzufügen:
+    if(oSG.add===true){
+        sReturn='-- Erzeuge das "Fach" oder den "Studiengang" >' + oSG.name + '<\n';
+        sReturn+='INSERT INTO "tblSdFach"('
+            + '"intFachID", "strFachBezeichnung", "strFachBeschreibung", "strHN", '
+            + '"strFachHISStg", "sngFachCreditPtsRequired", "strFachTranskriptName", '
+            + '"strFachTranskriptName_en")'
+            + 'VALUES (' + oSG.id + ', \'' + oSG.name + '\', \'' + oSG.name + '\', \'\', '
+            + '        \'\', ' + oSG.pruefung_lp + ', \'' + oSG.name + '\', '
+            + '        \'' + oSG.name_en + '\');\n\n';
+         
+        sReturn+='\n\n-- Verbinde den "Studiengang" >' + oSG.name 
+                + '< mit Seminar >' + oSG.seminar_id + '<\n';
+        sReturn+='INSERT INTO "tblSdSeminarXFach"('
+            + '"lngSeminarID", "intFachID", "strSdSeminarXFachBemerkung")'
+            + 'VALUES (' + oSG.seminar_id + ', ' + oSG.id 
+            + ', \'Automatisch per JS degree-util: ' + oSG.name + '\');\n\n';
+    }
+    
+    // Falls es die Prüfung noch nicht gibt, 
+    // hinzufügen
+    if(oSG.pruefung_add===true){
+        sReturn += '-- Speichere die Prüfung >' 
+                + oSG.pruefung_name + '< hinzu.\n';
+        sReturn += 'INSERT INTO "tblSdPruefung"(\
+                    "lngSdSeminarID", "lngPruefungID", "strPruefungBezeichnung", \
+                    "strPruefungBeschreibung", "strPruefungFach", "strPruefungAbschluss", \
+                    "strPruefungsordnung", "blnPruefungHauptfach", "strPruefungZUVAmt", \
+                    "strPruefungZUVFach", "strPruefungZUVTyp", "sngPruefungMinCreditPts", \
+                    "blnPruefungECTSGewicht", "strPruefungBezeichnung_en", "strPruefungBeschreibung_en", \
+                    "strPruefungFach_en", "strPruefungAbschluss_en", "strPruefungCustom1", \
+                    "strPruefungCustom2", "strPruefungCustom3", "blnPruefungTriggered") \
+            VALUES (' + oSG.seminar_id + ', ' + oSG.pruefung_id + ', \'' 
+                    + oSG.pruefung_name + '\', \
+                    \'\', \'Auto\', \'' + oSG.pruefung_abschluss + '\', \
+                    \'\', ' + oSG.pruefung_hf + ', \'1125002\', \
+                    \'Auto\', \'001\', ' + oSG.pruefung_lp + ', \
+                    true, \'' + oSG.pruefung_name_en + '\', \'' 
+                    + oSG.name_en + '\', \
+                    \'\', \'\', \'Automatisch von JS degree-util eingetragen.\', \
+                    \'\', \'\', false);\n\n';
+    }
+    sReturn += '-- Füge Fach >' + oSG.name + '< die Prüfung >' 
+                + oSG.pruefung_name + '< hinzu.\n';
+    sReturn += 'INSERT INTO "tblSdPruefungXFach"(\
+            "lngSdSeminarID", "lngPruefungID", "intFachID", "strBemerkung", \
+            "blnPruefungFachAbschluss")\
+            VALUES (' + oSG.seminar_id + ', ' + oSG.pruefung_id + ', ' 
+                + oSG.id + ', \'\', \
+                ' + oSG.pruefung_ist_abschluss + ');';
+
+    return sReturn;
+}
+
+/**
+ * Löst die Verbindung von Fach zum Seminar, löscht ggf. die Prüfung,
+ * und ggf. auch das Fach.
+ * 
+ * (Ggf. heißt, falls das Fach bzw. 
+ * die Prüfung neu hinzugefügt worden war, 
+ * ihre ID also mit "+=" zugewiesen wurde)
+ * 
+ * @param {type} oSG Typ Studiengang
+ * @returns {String}
+ */
+function _getInitStudientgangSQL_undo(oSG){
+    var sReturn='';
+    sReturn += '-- Löse Prüfung >'+ oSG.pruefung_name + '< von Fach >' 
+            + oSG.name + '<.\n';
+    sReturn += 'DELETE FROM "tblSdPruefungXFach" where '
+        + '"lngSdSeminarID"=' + oSG.seminar_id + ' and "lngPruefungID"=' 
+        + oSG.pruefung_id + ' and "intFachID"=' + oSG.id + ';\n\n';
+
+    if(oSG.pruefung_add===true){
+        sReturn +='-- Lösche Prüfung >'+ oSG.pruefung_name + '<.\n';
+        sReturn +='DELETE FROM "tblSdPruefung" where '
+            + '"lngSdSeminarID"=' + oSG.seminar_id + ' and "lngPruefungID"='
+            + oSG.pruefung_id + ';\n\n';
+    }
+    
+    if(oSG.add===true){
+        sReturn += '-- Löse Fach >' + oSG.name + '< von Seminar >' + oSG.seminar_id + '<.\n';
+        sReturn+='DELETE FROM "tblSdSeminarXFach" where "lngSeminarID"=' + oSG.seminar_id
+                + ' and "intFachID"=' + oSG.id + ';\n\n'
+        sReturn += '-- Lösche Fach >' + oSG.name + '<.\n';
+        sReturn+='DELETE from "tblSdFach" where "intFachID"=' + oSG.id + ';\n\n'
+    }
+    
+    return sReturn;
+}
+
+/**
+ * Rahmenfunktion:
+ * Durchläuft die Module des Studiengangs und 
+ * sammelt die SQL-Befehle als String.
+ * @param {type} oFach Studiengang
+ * @returns {String}
+ */
+function _getModuleSQL(oFach){
+    var sReturn='';
+    for(var ii=0,ij=oFach.module.length;ii<ij;ii++){
+        sReturn += '-- |||||||||||||||||||||||||||||||||||||||||||||||||||||||\n';
+        sReturn += '-- MODUL: ' + oFach.module[ii].name + '\n';
+        sReturn += '-- |||||||||||||||||||||||||||||||||||||||||||||||||||||||\n\n';
+        sReturn += _getModulSQL(oFach, oFach.module[ii], ii) + '\n';
+        sReturn += '-- *******************************************************\n';
+        sReturn += '-- // ENDE MODUL: ' + oFach.module[ii].name + '\n';
+        sReturn += '-- *******************************************************\n\n';
+    }
+    return sReturn;
+}
+
+/**
+ * Stellt die SQL-Befehle für das Einklinken 
+ * des Moduls >oModul< im spezifizierten Fach 
+ * zusammen.
+ * 
+ * ii wird für die Angabe einer Reihenfolgepos.
+ * übergeben (die auf ii*10 gesetzt wird).
+ * 
+ * ACHTUNG: Gewichtung des Moduls per Default auf "1"
+ * ii für "sequence"
+ * @param {type} oSG
+ * @returns {String}
+ */
+function _getModulSQL(oFach, oModul, ii){
+    var sReturn='';
+    if(oModul.add===true){
+        sReturn += '-- Füge Modul >' + oModul.name + '< mit der ID >' 
+                + oModul.id + '< hinzu\n';
+        sReturn += 'INSERT INTO "tblSdModul"(\
+            "lngSdSeminarID", "lngModulID", "strModulBezeichnung", "strModulBeschreibung", \
+            "lngModulNummer", "strModulEinordnung", "intModulSemester", "intModulSemesterMin", \
+            "intModulSemesterMax", "strModulCustom1", "strModulCustom2", \
+            "strModulCustom3", "strModulBezeichnung_en", "strModulBeschreibung_en", \
+            "strModulCustom1_en", "strModulCustom2_en", "strModulCustom3_en", \
+            "blnModulWaehlbar", "blnModulVarLP") \
+            VALUES (' + oFach.seminar_id + ', ' + oModul.id + ', \'' 
+                    + oModul.name + '\', \'\', \
+                    ' + oModul.id + ', \'\', 0, 0, \
+                    0, \'Automatisch per JS degree-util eingefügt\', \'\', \
+                    \'\', \'' + oModul.name_en + '\', \'\', \
+                    \'\', \'\', \'\', \
+                    true, false);\n\n';
+        
+        // Muss mich auch um die Leistungen kümmern:
+        sReturn += _getLeistungenSQL(oFach, oModul.id, oModul.leistungen);
+    }
+    
+    sReturn += '-- Ordne Modul >' + oModul.name + '< der Prüfung >' 
+            + oFach.pruefung_id + '< zu.\n';
+    sReturn += 'INSERT INTO "tblSdPruefungXModul"(\
+            "lngSdSeminarID", "lngPruefungID", "lngModulID", "sngPruefungLeistungGewichtung", \
+            "sngMinCreditPts", "strCustom1", "strCustom2", "strCustom3", \
+            "strCustom1_en", "strCustom2_en", "strCustom3_en", "sngMinCreditPtsPLeistung", \
+            "sngMinCreditPtsSLeistung", "blnZulassungsvoraussetzung", "lngPruefungModulSequence")\
+            VALUES (' + oFach.seminar_id + ', ' + oFach.pruefung_id 
+                    + ', ' + oModul.id + ', ' + oModul.gewichtung + ', \
+                    ' + oModul.lp + ', \'' + oModul.remark + '\', \'Automatisch per JS degree-util eingefügt.\', \'\', \
+                    \'\', \'\', \'\', ' + oModul.lp + ', \
+                    0, false, ' + (ii*10) + ');\n';
+    return sReturn;
+}
+
+/**
+ * Durchläuft die Module des Studiengangs und 
+ * sammelt die SQL-Befehle als String.
+ * @param {type} oFach Studiengang
+ * @returns {String}
+ */
+function _getModuleSQL_undo(oFach){
+    var sReturn='';
+    for(var ii=0,ij=oFach.module.length;ii<ij;ii++){
+        sReturn += '-- |||||||||||||||||||||||||||||||||||||||||||||||||||||||\n';
+        sReturn += '-- L Ö S C H E  MODUL: ' + oFach.module[ii].name + '\n';
+        sReturn += '-- |||||||||||||||||||||||||||||||||||||||||||||||||||||||\n\n';
+        sReturn += _getModulSQL_undo(oFach, oFach.module[ii], ii) + '\n';
+        sReturn += '-- *******************************************************\n';
+        sReturn += '-- // ENDE MODUL: ' + oFach.module[ii].name + '\n';
+        sReturn += '-- *******************************************************\n\n';
+    }
+    return sReturn;
+}
+
+/**
+ * Löscht das Modul
+ * @param {type} oFach
+ * @param {type} oModul
+ * @returns {undefined}
+ */
+function _getModulSQL_undo(oFach, oModul){
+    var sReturn='';
+    sReturn += '-- Löse Zuordnung von Modul >' + oModul.name 
+            + '< zu Prüfung >' + oFach.pruefung_id + '<\n'
+    sReturn += 'DELETE FROM "tblSdPruefungXModul" \
+            WHERE "lngSdSeminarID"=' + oFach.seminar_id 
+                + ' and "lngModulID"=' + oModul.id + ' \
+             and "lngPruefungID"=' + oFach.pruefung_id + ';\n';
+    if(oModul.add===true){
+        sReturn += '-- Löse Zuordnung der Leistungen zu Modul >' 
+                + oModul.name + '< (kann mehr als eine Leistung betreffen).\n';
+        sReturn += 'delete from "tblSdModulXLeistung" where '
+                    + '"lngSdSeminarID"=' + oFach.seminar_id 
+                    + ' and "lngModulID"=' + oModul.id + ';\n\n';
+        
+        for(var ii=0,ij=oModul.leistungen.length;ii<ij;ii++){
+            sReturn += '-- Löse Leistung >' + oModul.leistungen[ii].name 
+                    + '< aus Modul >' + oModul.name + '<.\n';
+            sReturn += 'DELETE FROM "tblSdModulXLeistung" \
+                    where "lngSdSeminarID"=' + oFach.seminar_id + 
+                    ' and "lngModulID"=' + oModul.id +
+                    ' and "lngLeistungID"=' + oModul.leistungen[ii].id + ';\n\n';
+            if(oModul.leistungen[ii].add===true){
+                sReturn += '-- Lösche Leistung >'
+                        + oModul.leistungen[ii].name + '<.\n';
+                sReturn += 'DELETE FROM "tblSdLeistung" where "lngSdSeminarID"='
+                    + oFach.seminar_id 
+                    + ' and "lngLeistungID"='+ oModul.leistungen[ii].id +';\n\n';
+            }
+        }
+        sReturn += '-- Lösche Modul >' + oModul.name 
+                + '< mit der ID >' + oModul.id + '<\n';
+        sReturn += 'DELETE FROM "tblSdModul" \
+                WHERE "lngSdSeminarID"=' + oFach.seminar_id 
+                    + ' and "lngModulID"=' + oModul.id + ';\n';
+    }
+    
+    return sReturn;
+}
+
+/**
+ * Durchläuft die Leistungen des Moduls und sammelt das SQL.
+ * @param {type} oFach
+ * @param {type} lModulID
+ * @param {type} oLeistung
+ * @returns {undefined}
+ */
+function _getLeistungenSQL(oFach, lModulID, aLeistungen){
+    var sReturn='';
+    
+    for(var ii=0,ij=aLeistungen.length;ii<ij;ii++){
+        sReturn += _getLeistungSQL(oFach,lModulID,aLeistungen[ii]);
+    }
+    
+    return sReturn;
+}
+
+/**
+ * Stelle das SQL für diese Leistung zusammen
+ * @param {type} oFach
+ * @param {type} lModulID
+ * @param {type} oLeistung
+ * @returns {undefined}
+ */
+function _getLeistungSQL(oFach, lModulID, oLeistung){
+    var sReturn='';
+    if(oLeistung.add===true){
+        sReturn += '-- Speichere neue Leistung >' + oLeistung.id 
+                + '< mit ID >' + oLeistung.name + '<\n';
+        sReturn += 'INSERT INTO "tblSdLeistung"(\
+            "lngSdSeminarID", "lngLeistungID", "strLeistungBezeichnung", \
+            "strLeistungBezeichnung_en", "strLeistungBeschreibung", "strLeistungBeschreibung_en", \
+            "strLeistungZuordnung", "sngLeistungCreditPts", "strLeistungCustom1", \
+            "strLeistungCustom2", "strLeistungCustom3", "intLeistungCommitmentMode") \
+            VALUES (' + oFach.seminar_id + ', '+ oLeistung.id +', \'' 
+                    + oLeistung.name + '\', \
+                    \''+ oLeistung.name_en + '\', \'\', \'\', \
+                    \'\', ' + oLeistung.lp + ', \'\', \
+                    \'\', \'\', 0);\n\n';
+    }
+    
+    sReturn += '-- Ordne >'+oLeistung.name+'< dem Modul >'+lModulID+'< zu.\n';
+    sReturn += 'INSERT INTO "tblSdModulXLeistung"(\
+            "lngSdSeminarID", "lngModulID", "lngLeistungID", "sngMinCreditPts", \
+            "strCustom1", "strCustom2", "strCustom3", "strCustom1_en", "strCustom2_en", \
+            "strCustom3_en", "blnModulLeistungTranskript")\
+            VALUES (' + oFach.seminar_id + ', ' + lModulID + ', '
+                + oLeistung.id + ', '+oLeistung.lp+', \
+                    \'\', \'\', \'\', \'\', \'\', \
+                    \'\', true);\n\n';
+    return sReturn;
+}
+
+function _getLeistungSQL_undo(oFach, lModulID, oLeistung){
+    var sReturn='';
+    sReturn += '-- Lösche Zuordnung der Leistung >'+oLeistung.name
+            +'< zum Modul >'+lModulID+'<\n';
+    sReturn += 'DELETE FROM "tblSdModulXLeistung"\
+                WHERE "lngSdSeminarID"=' + oFach.seminar_id 
+                + ' and "lngModulID"=' + lModulID 
+                + ' and "lngLeistungID"='+ oLeistung.id + ';\n\n';
+    if(oLeistung.add===true){
+        sReturn += '-- Lösche neue Leistung >' + oLeistung.id 
+                + '< mit ID >' + oLeistung.name + '<\n';
+        sReturn += 'DELETE FROM "tblSdLeistung" \
+            where "lngSdSeminarID"=' + oFach.seminar_id 
+                    + ' and "lngLeistungID"='+ oLeistung.id +';\n\n';
+    }
+    return sReturn;
+}
+
+
+
+/**
+ * Konvertiert den Text in ein JSON Objekt.
+ * 
+ * Zeilen, die mit "- " beginnen, kennzeichnen 
+ * Leistungen.
+ * 
+ * Zeilen, die mit "#" beginnen, kennzeichnen 
+ * Kommentare.
+ * 
+ * Zeilen, die mit "Studiengang=" beginnen, kennzeichnen 
+ * den Studiengang.
+ * 
+ * Die Zeilen können jeweils Attribute angeben, die 
+ * durch ";" zu trennen sind, also z.B. 
+ * "- Einführung Literatur; ID=10; LP=5; REM=Bemerkung"
+ * 
+ * Ist ein Objekt NEU hinzuzufügen, ist eine 
+ * ID mit += zuzuweisen, also z.B.
+ * "Modul Bronko; ID+=280; LP=12"
+ * 
+ * @param {type} sLine
+ * @returns {undefined|_extractProps.oReturn}
+ */
+function convertText2JSON(){
+    var sText=document.getElementById("txtPOText").value;   // Text aus Textarea
+    var aLines=[];
+    sText+='\n\n';
+    aLines=sText.split('\n');
+    if(g_iDEBUG_LEVEL>=g_iDEBUG_LEVEL_ALL) 
+        console.log(aLines.length + ' Zeilen gelesen.');
+    
+    console.log(aLines[aLines.length-4]);
+    console.log(aLines[aLines.length-3]);
+    console.log(aLines[aLines.length-2]);
+    console.log(aLines[aLines.length-1]);
+    var oStudiengang={};
+    var aModule=[];var oModTmp={};var iModCount=0;
+    
+    // Durchlaufe den Text zeilenweise und konvertiere zu Modulen
+    for(var ii=0, ij=aLines.length;ii<ij;ii++){
+        
+        if(aLines[ii].indexOf('Studiengang')===0){
+            oStudiengang=_extractPropsStudiengang(aLines[ii]);
+            oStudiengang.module=[];
+        }else{
+            if(aLines[ii].indexOf('- ')===0){
+                oModTmp.leistungen.push(_extractProps(aLines[ii]));
+            }else{
+                if(aLines[ii].trim().length>2){
+                    // Kommentare werden mit # eingeleitet
+                    // und ignoriert. Es handelt sich also um 
+                    // ein Modul
+                    if(aLines[ii].indexOf('#')<0){
+                          if(iModCount>0) oStudiengang.module.push(oModTmp);
+                          oModTmp=_extractProps(aLines[ii]);
+                          oModTmp.leistungen=[];
+                          iModCount++;
+                    }
+                }
+            }
+        }
+    }
+    oStudiengang.module.push(oModTmp);
+    return oStudiengang;
+}
+
+/**
+ * Wandelt die Leistung, das Modul oder 
+ * den Studiengang von der Textzeile
+ * in ein Objekt um 
+ * und gibt es zurück, d.h. aus 
+ * Einführung; EN=Intro; ID=5; LP=8; REM=New
+ * wird
+ * {
+ *   name:Einfrühung,
+ *   name_en:Intro
+ *   id:5
+ *   lp:8
+ *   remark:NEW
+ *   add:false
+ *   Gewichtung:-1 (ignorieren), 0 (geht nicht in Fachnote ein), n (geht mit Faktor n ein).
+ * }
+ * @param {type} sLine
+ * @returns {undefined}
+ */
+function _extractProps(sLine){
+    var aComp=sLine.split(';');
+    var oReturn={};
+    oReturn.add=false;  //default
+    oReturn.name=aComp[0].indexOf('-')===0 ? 
+                aComp[0].substring(1).trim() : aComp[0];      // ohne "-", falls Leistung
+                
+    for(var ii=1, ij=aComp.length;ii<ij;ii++){
+        aComp[ii]=aComp[ii].trim();
+        if(aComp[ii].indexOf('ID+=')===0) oReturn.add=true;
+        if(aComp[ii].indexOf('ID')===0) oReturn.id=_getVal(aComp[ii]);
+        if(aComp[ii].indexOf('EN')===0) oReturn.name_en=_getVal(aComp[ii]);
+        if(aComp[ii].indexOf('Gewichtung')===0) oReturn.gewichtung=_getVal(aComp[ii]);
+        if(aComp[ii].indexOf('LP')===0) oReturn.lp=_getVal(aComp[ii]);
+        if(aComp[ii].indexOf('REM')===0) oReturn.remark=_getVal(aComp[ii]);
+    }
+    
+    return oReturn;
+}
+
+function _extractPropsStudiengang(sLine){
+    var aComp=sLine.split(';');
+    var oReturn={};
+    oReturn.add=false;              //default
+    oReturn.pruefung_add=false;     //
+    oReturn.name=aComp[0].indexOf('-')===0 ? 
+                aComp[0].substring(1).trim() : aComp[0];      // ohne "-", falls Leistung
+    if(oReturn.name.indexOf('Studiengang=')===0) oReturn.name=oReturn.name.substring('Studiengang='.length);
+    for(var ii=1, ij=aComp.length;ii<ij;ii++){
+        aComp[ii]=aComp[ii].trim();
+        if(aComp[ii].indexOf('ID+=')===0) oReturn.add=true;
+        if(aComp[ii].indexOf('ID')===0) oReturn.id=_getVal(aComp[ii]);
+        if(aComp[ii].indexOf('EN')===0) oReturn.name_en=_getVal(aComp[ii]);
+        if(aComp[ii].indexOf('LP')===0) oReturn.lp=_getVal(aComp[ii]);
+        if(aComp[ii].indexOf('REM')===0) oReturn.remark=_getVal(aComp[ii]);
+        if(aComp[ii].indexOf('Pruefung_Name')===0) oReturn.pruefung_name=_getVal(aComp[ii]);
+        if(aComp[ii].indexOf('Pruefung_LP')===0) oReturn.pruefung_lp=_getVal(aComp[ii]);
+        if(aComp[ii].indexOf('Pruefung_EN_Name')===0) oReturn.pruefung_en=_getVal(aComp[ii]);
+        if(aComp[ii].indexOf('Pruefung_ID+=')===0) oReturn.pruefung_add=true;
+        if(aComp[ii].indexOf('Pruefung_ID')===0) oReturn.pruefung_id=_getVal(aComp[ii]);
+        if(aComp[ii].indexOf('Pruefung_Abschluss')===0) oReturn.pruefung_abschluss=_getVal(aComp[ii]);
+        if(aComp[ii].indexOf('Pruefung_ist_Abschluss')===0) oReturn.pruefung_ist_abschluss=_getVal(aComp[ii]);
+        if(aComp[ii].indexOf('Pruefung_im_Hauptfach')===0) oReturn.pruefung_hf=_getVal(aComp[ii]);
+        if(aComp[ii].indexOf('Seminar_ID')===0) oReturn.seminar_id=_getVal(aComp[ii]);
+    }
+    
+    return oReturn;
+}
+
+/**
+ * Gibt den Wert rechts des "=" zurück.
+ * @param {type} sIN
+ * @returns {undefined}
+ */
+function _getVal(sIN){
+    return sIN.substring(sIN.indexOf('=')+1);
+}
+</script>

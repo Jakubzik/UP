@@ -1,0 +1,16 @@
+Bemerkungen werden pro Studierende/r/m in "tblBdStudentBemerkung" 
+abgelegt und enthalten neben Autor und Datum vor allem den Text 
+der Bemerkung.
+
+Für zukünftige Versionen wären auch Bemerkungen mit Anhängen 
+wünschenswert.
+
+Die Bemerkungen sind (derzeit in Heidelberg) nur Lehrenden mit 
+einer Berechtigung >=500 zugänglich. Die Studierenden können 
+ihre eigenen Bemerkungen (entgegen datenschutzrechtlichen 
+Gepflogenheiten) nicht einsehen.
+
+Der Lifecycle der Bemerkungen hat keine Besonderheiten.
+
+Die Bemerkungen werden im JS signup-faculty-common.js 
+im Namensraum "student" abgehandelt.

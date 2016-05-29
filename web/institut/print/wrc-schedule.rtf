@@ -1,0 +1,46 @@
+<%@ page contentType="application/vnd.ms-word" errorPage="../json/error.jsp" session="true" import="java.util.Date,java.text.SimpleDateFormat,de.shj.UP.data.shjCore,de.shj.UP.HTML.HtmlDate,java.sql.ResultSet" %><jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" />{\rtf1\ansi
+<%String sDatum=new SimpleDateFormat("EEEE").format(shjCore.g_GERMAN_DATE_FORMAT.parse(request.getParameter("datum"))) + ", dem " + request.getParameter("datum");%>
+\deff0\uc1
+{\fonttbl
+{\f0\fswiss\fcharset0Helvetica;}}
+{\*\generator Ted 2.23, Feb 4, 2013 (http://www.nllgg.nl/Ted);}
+{\info
+{\creatim\yr2013\mo12\dy15\hr17\min0\sec35}
+{\revtim\yr2013\mo12\dy15\hr17\min13\sec4}
+}
+\paperw11906\paperh16838
+\fet0\aftntj\aftnnrlc
+\sectd
+\saftnnar\f0\fs48Writing Resources Center\par
+\fs24\i Ruprecht Karls Universit\'e4t Heidelberg\par
+\i0\par
+\fs28\b Sprechstunde am <%=sDatum%>\par
+\par
+\fs24\b0\par
+{\trowd\trgaph120\trleft-120
+\clbrdrt\brdrs\brdrw15
+\clbrdrb\brdrs\brdrw15
+\cellx2160
+\clbrdrt\brdrs\brdrw15
+\clbrdrb\brdrs\brdrw15
+\cellx8306
+<%@include file="../fragments/checkLogin.jsp" %>
+<%@include file="../fragments/checkAccess1.jsp" %>
+<%ResultSet rTermine=user.sqlQuery("SELECT \"lngSdSeminarID\", \"lngDozentID\", \"tblBdSprechstunde\".\"strNutzerUniID\", \"strMatrikelnummer\", " +
+       "\"strSprechstundeBemerkung\", \"blnSprechstundeNurStudent\", \"dtmSprechstundeDatum\", " +
+       "\"tmeSprechstundeStart\", \"tmeSprechstundeStop\", " +
+       "\"strNutzerVorname\", \"strNutzerNachname\", \"strNutzerTitel\", " +
+       "\"strNutzerInstitut\", \"strNutzerEmail\", \"strNutzerTelefon\", \"blnSprechstundeAbgesagt\" " +
+  "FROM \"tblBdSprechstunde\" left outer join \"tblSdNutzer\" on \"tblBdSprechstunde\".\"strNutzerUniID\"=\"tblSdNutzer\".\"strNutzerUniID\" where " +
+        "\"lngSdSeminarID\"=" + user.getSdSeminarID() + 
+        " and \"lngDozentID\"=" + user.getDozentID() + " and " +
+        "\"dtmSprechstundeDatum\"='" + shjCore.g_ISO_DATE_FORMAT.format(shjCore.g_GERMAN_DATE_FORMAT.parse(request.getParameter("datum"))) + "' " + 
+        "order by \"tmeSprechstundeStart\"");boolean bAbgesagt=false;
+while(rTermine.next()){bAbgesagt=rTermine.getBoolean("blnSprechstundeAbgesagt"); %>
+\pard\intbl\plain<%=bAbgesagt ? "\\strike" : "\\strike0"%> <%=rTermine.getTime("tmeSprechstundeStart").toString().substring(0,5) + " - " + rTermine.getTime("tmeSprechstundeStop").toString().substring(0,5)%> Uhr\cell
+<%if(rTermine.getString("strNutzerUniID")!=null){%>
+<%=(rTermine.getString("strNutzerTitel") + " " + rTermine.getString("strNutzerVorname")).trim() + " " + rTermine.getString("strNutzerNachname") + " (" + rTermine.getString("strNutzerInstitut") + ")"%>\par
+\fs18<%=shjCore.normalize(rTermine.getString("strSprechstundeBemerkung"))%>\cell\row
+<%}else{out.write("--\\par  \\cell\\row\n");}}%>}
+\par
+}

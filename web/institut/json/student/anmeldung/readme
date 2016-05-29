@@ -1,0 +1,13 @@
+Anmeldungen Studierender zum Leistungserwerb
+
+Die Anmeldung zum Scheinerwerb wird ebenso wie die 
+Leistung selbst in der Tabelle tblBdStudentXLeistung 
+verhandelt.
+
+Studierende können per ./add.jsp selbst Anmeldungen 
+hinzufügen und sie wieder löschen -- allerdings 
+jeweils nur innerhalb der definierten Anmeldefrist.
+
+Lehrende können Anmeldungen auch zu Kursen vergangener 
+Semester hinzufügen (hier ist allerdings eine Berechtigung 
+von 500 oder höher erforderlich).

@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+.chart {
+
+}
+
+.main text {
+    font: 10px sans-serif;	
+}
+
+.axis line, .axis path {
+    shape-rendering: crispEdges;
+    stroke: black;
+    fill: none;
+}
+
+circle {
+    fill: steelblue;
+}
+
+.select-style {
+    border: 1px solid #ccc;
+    width: 120px;
+    border-radius: 3px;
+    overflow: hidden;
+    background: #fafafa url("img/icon-select.png") no-repeat 90% 50%;
+}
+
+.select-style select {
+    padding: 5px 8px;
+    width: 130%;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+    background-image: none;
+    -webkit-appearance: none;
+}
+
+div.tooltip {
+  position: absolute;	
+  text-align: center;	
+  width: 60px;	
+  height: 28px;		
+  padding: 2px;	
+  font: 12px sans-serif;	
+  background: lightsteelblue;	
+  border: 0px;					
+  border-radius: 8px;
+ /*  pointer-events: none;	This line needs to be removed */
+	
+}
+
+</style>
+<body>
+    <h1>&raquo;Big Data&laquo; in <i>SignUp</i>: Benotungsvergleich</h1>
+    <p>Es werden jeweils Noten miteinander verglichen, die <i>den gleichen Studierenden</i> vergeben wurden.</p>
+    
+    <div style="background-color: #e1e1e1; border: 1px">Leistungen <select class="select-style" id="cboLeistung1" onchange="sDrawPlot()">
+                    <option value="">select</option>
+<option  value="10140">Advanced English in Use</option>
+<option  value="10120">Advanced Writing/Academic Essay Writing</option>
+<option  value="6110">BA: Mündliche Prüfung</option>
+<option  value="5110">Bachelorarbeit</option>
+<option  value="20000">Description and Narration</option>
+<option  value="22">EPG II</option>
+<option  value="1">Einführung Literaturwissenschaft</option>
+<option  value="0">Einführung Sprachwissenschaft</option>
+<option  value="10130">English in Use</option>
+<option  value="20005">Exposition and Argumentation</option>
+<option  value="50">Fachdidaktik</option>
+<option  value="20220">Fachdidaktik I</option>
+<option  value="20230">Fachdidaktik II</option>
+<option  value="5">Grammar/Tense and Aspect</option>
+<option  value="30200">HCA-Proseminar</option>
+<option  value="16">Hauptseminar Literaturwissenschaft</option>
+<option  value="21">Hauptseminar Sprachwissenschaft</option>
+<option  value="30110">Independent Studies</option>
+<option  value="30050">MA Abschlussarbeit</option>
+<option  value="30040">Mündliche Abschlussprüfung MA</option>
+<option  value="4">Phonetik</option>
+<option  value="3">Pronunciation Practice/Aussprachetest</option>
+<option  value="10075">Proseminar I Kulturwissenschaft</option>
+<option  value="10080">Proseminar I Kulturwissenschaft (anwendungsorientiert)</option>
+<option  value="10070">Proseminar I Kulturwissenschaft (theoretisch)</option>
+<option  value="10">Proseminar I Literaturwissenschaft</option>
+<option  value="11">Proseminar I Sprachwissenschaft</option>
+<option  value="10090">Proseminar II Kulturwissenschaft/Landeskunde</option>
+<option  value="15">Proseminar II Literaturwissenschaft</option>
+<option  value="17">Proseminar II Sprachwissenschaft</option>
+<option  value="10010">Proseminar II historische Sprachwissenschaft (Periode)</option>
+<option  value="10020">Proseminar II historische Sprachwissenschaft (Überblick)</option>
+<option  value="10030">Proseminar II moderne Sprachwissenschaft</option>
+<option  value="30220">Proseminar III Literaturwissenschaft</option>
+<option  value="30210">Proseminar III Sprachwissenschaft</option>
+<option  value="10110">Stylistics/Grammar and Style II</option>
+<option  value="18">Translation II (E-G)</option>
+<option  value="13">Translation into English/Structure and Idiom</option>
+<option  value="12">Writing/Essential Skills for Writing</option>
+        </select>; 
+        <select class="select-style" id="cboLeistung2" onchange="sDrawPlot()">
+                     <option value="">select</option>
+<option  value="10140">Advanced English in Use</option>
+<option  value="10120">Advanced Writing/Academic Essay Writing</option>
+<option  value="6110">BA: Mündliche Prüfung</option>
+<option  value="5110">Bachelorarbeit</option>
+<option  value="20000">Description and Narration</option>
+<option  value="22">EPG II</option>
+<option  value="1">Einführung Literaturwissenschaft</option>
+<option  value="0">Einführung Sprachwissenschaft</option>
+<option  value="10130">English in Use</option>
+<option  value="20005">Exposition and Argumentation</option>
+<option  value="50">Fachdidaktik</option>
+<option  value="20220">Fachdidaktik I</option>
+<option  value="20230">Fachdidaktik II</option>
+<option  value="5">Grammar/Tense and Aspect</option>
+<option  value="30200">HCA-Proseminar</option>
+<option  value="16">Hauptseminar Literaturwissenschaft</option>
+<option  value="21">Hauptseminar Sprachwissenschaft</option>
+<option  value="30110">Independent Studies</option>
+<option  value="30050">MA Abschlussarbeit</option>
+<option  value="30040">Mündliche Abschlussprüfung MA</option>
+<option  value="4">Phonetik</option>
+<option  value="3">Pronunciation Practice/Aussprachetest</option>
+<option  value="10075">Proseminar I Kulturwissenschaft</option>
+<option  value="10080">Proseminar I Kulturwissenschaft (anwendungsorientiert)</option>
+<option  value="10070">Proseminar I Kulturwissenschaft (theoretisch)</option>
+<option  value="10">Proseminar I Literaturwissenschaft</option>
+<option  value="11">Proseminar I Sprachwissenschaft</option>
+<option  value="10090">Proseminar II Kulturwissenschaft/Landeskunde</option>
+<option  value="15">Proseminar II Literaturwissenschaft</option>
+<option  value="17">Proseminar II Sprachwissenschaft</option>
+<option  value="10010">Proseminar II historische Sprachwissenschaft (Periode)</option>
+<option  value="10020">Proseminar II historische Sprachwissenschaft (Überblick)</option>
+<option  value="10030">Proseminar II moderne Sprachwissenschaft</option>
+<option  value="30220">Proseminar III Literaturwissenschaft</option>
+<option  value="30210">Proseminar III Sprachwissenschaft</option>
+<option  value="10110">Stylistics/Grammar and Style II</option>
+<option  value="18">Translation II (E-G)</option>
+<option  value="13">Translation into English/Structure and Idiom</option>
+<option  value="12">Writing/Essential Skills for Writing</option>
+        </select> Anzahl Vergleiche: <select id="cboLimit"  onchange="sDrawPlot()"><option selected value="10">10</option>
+            <option value="20">20</option>
+            <option value="30">30</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+            <option value="150">150</option>
+            <option value="200">200</option>
+            <option value="500">500</option>
+        </select>
+    </div>
+    <div class="content"></div>
+    <div id="divStatistik"></div>
+<script src="../../../js/jquery.min.js"></script>
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script>
+    
+
+
+
+function sDrawPlot(){
+    
+    /**
+     * 
+     * @param {type} aNoten
+     * @returns .Durchschnitt_X (Durchschnittsnote X),
+     * .Durchschnitt_Y (Durchschnittsnote Y)
+     * .Standardabweichung_X 
+     * .Standardabweichung_Y
+     * .Kovarianz
+     * .Korrelation
+     * .Durchfallquote_X
+     * .Durchfallquote_Y
+     */
+    function getStatistik(aNoten){
+        // 1/(n -1)Σ(xi - xavg)(yi - yavg)
+        var oResult = {};
+        var fAvgX = 0;
+        var fAvgY = 0;
+        var iFailX= 0;
+        var iFailY= 0;
+        
+        var fSumX = 0, fSumY=0;
+        var n = aNoten.length;
+        for(var ii=0; ii<n; ii++){
+            fSumX += parseFloat(aNoten[ii][0]);
+            fSumY += parseFloat(aNoten[ii][1]);
+            
+            if(parseFloat(aNoten[ii][0])>=5) iFailX++;
+            if(parseFloat(aNoten[ii][1])>=5) iFailY++;
+        }
+        
+        fAvgX = fSumX / aNoten.length;
+        fAvgY = fSumY / aNoten.length;
+        
+        oResult.Durchschnitt_X = fAvgX;
+        oResult.Durchschnitt_Y = fAvgY;
+        
+        oResult.Durchfallquote_X = parseInt(parseFloat(iFailX / n)*100);
+        oResult.Durchfallquote_Y = parseInt(parseFloat(iFailY / n)*100);
+        
+        var fTmp = 0;
+        var fSX = 0;    // Standardabweichung X
+        var fSY = 0;    // Standardabweichung Y
+        for(var ii=0; ii<n; ii++){
+            fTmp += (parseFloat(aNoten[ii][0]) - fAvgX) * (parseFloat(aNoten[ii][1]) - fAvgY);
+            fSX += (parseFloat(aNoten[ii][0]) - fAvgX)*(parseFloat(aNoten[ii][0]) - fAvgX);
+            fSY += (parseFloat(aNoten[ii][1]) - fAvgY)*(parseFloat(aNoten[ii][1]) - fAvgY);
+        }
+        fSX = Math.sqrt(fSX / n); 
+        fSY = Math.sqrt(fSY / n);
+        
+        oResult.Standardabweichung_X = fSX;
+        oResult.Standardabweichung_Y = fSY;
+        
+        var fCov = fTmp / n; //Kovarianz
+        oResult.Kovarianz = fCov;
+        
+        var fCorrelation = fCov / (fSX * fSY);
+        
+        oResult.Korrelation = fCorrelation;
+        return oResult;
+    }
+    d3.select("svg").remove();
+    if($('#cboLeistung2').val()=="") return;
+    
+var data2 = [[5,5], [4,3], [3,2], [1,2]];
+   
+    var margin = {top: 20, right: 15, bottom: 60, left: 60}
+      , width = 500 - margin.left - margin.right
+      , height = 500 - margin.top - margin.bottom;
+    
+    var x = d3.scale.linear()
+              .domain([0, 5])
+              .range([ 0, width ]);
+    
+    var y = d3.scale.linear()
+    	      .domain([0, 5])
+    	      .range([ height, 0 ]);
+ 
+    
+    var sParm = 'signup_expected_backend_version=1-0-0-2&' +
+            'leistung_id_1=' + $('#cboLeistung1').val() + '&' +
+            'leistung_id_2=' + $('#cboLeistung2').val() + '&' +
+            'limit_n=' + $('#cboLimit').val() + '&' +
+            'leistung_name_1=' + $('#cboLeistung1 option:selected').text() + '&' +
+            'leistung_name_2=' + $('#cboLeistung2 option:selected').text() + '';
+    d3.json("data_leistungen_scatter.csv?" + sParm, function(error, data) {
+        if (error) throw error;
+        var oStatistik = getStatistik(data);
+        document.getElementById('divStatistik').innerHTML = 
+                '<table border="1"><tr><td>X</td><td>' + $('#cboLeistung1 option:selected').text() + 
+                '</td><td>' + $('#cboLeistung2 option:selected').text() + '</td></tr>' + 
+                '<tr><td>Durchschnittsnote</td>' +
+                '<td>' + oStatistik.Durchschnitt_X + '</td>' +
+                '<td>' + oStatistik.Durchschnitt_Y + '</td></tr>' +
+                '<tr><td>Durchfallquote [%]</td>' +
+                '<td>' + oStatistik.Durchfallquote_X + '</td>' +
+                '<td>' + oStatistik.Durchfallquote_Y + '</td></tr>' +
+                '<tr><td>Standardabweichung</td>' +
+                '<td>' + oStatistik.Standardabweichung_X + '</td>' +
+                '<td>' + oStatistik.Standardabweichung_Y + '</td></tr>' +
+                '<tr><td>Korrelation</td>' +
+                '<td colspan="2">' + oStatistik.Korrelation + '</td></tr>';
+
+        var chart = d3.select('body')
+            .append('svg:svg')
+            .attr('width', width + margin.right + margin.left)
+            .attr('height', height + margin.top + margin.bottom)
+            .attr('class', 'chart')
+
+        var main = chart.append('g')
+            .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+            .attr('width', width)
+            .attr('height', height)
+            .attr('class', 'main')   
+
+        // draw the x axis
+        var xAxis = d3.svg.axis()
+            .scale(x)
+            .orient('bottom');
+
+        main.append('g')
+            .attr('transform', 'translate(0,' + height + ')')
+            .attr('class', 'main axis date')
+            .call(xAxis);
+
+        // draw the y axis
+        var yAxis = d3.svg.axis()
+            .scale(y)
+            .orient('left');
+
+        main.append('g')
+            .attr('transform', 'translate(0,0)')
+            .attr('class', 'main axis date')
+            .call(yAxis);
+
+    // Add the text label for the x axis
+    d3.select('body').append("text")
+        .attr("transform", "translate(" + (width / 2) + " ," + (height + margin.bottom) + ")")
+        .style("text-anchor", "middle")
+        .text($('#cboLeistung1 option:selected').text());
+
+    // Add the text label for the Y axis
+    d3.select('body').append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - margin.left)
+        .attr("x",0 - (height / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("Value");
+
+        var g = main.append("svg:g"); 
+        
+        g.selectAll("scatter-dots")
+          .data(data)
+          .enter().append("svg:circle")
+              .attr("cx", function (d,i) { return x(d[0]); } )
+              .attr("cy", function (d) { return y(d[1]); } )
+              .attr("r", function(d){
+                  var iRadius=0;
+                  for(var ii=0, ij=data.length; ii<ij; ii++){
+                      if(data[ii][0]==d[0] && data[ii][1]==d[1]) iRadius++;
+                  }
+                  // console.warn(iRadius);
+                  return iRadius;
+               });
+    });
+}
+</script>
+

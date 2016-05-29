@@ -1,0 +1,21 @@
+./signup reguliert die Kurswahl vor Vorlesungsbeginn
+
+get.jsp 
+Liefert Arrays der IDs von Kursen, die 
+der Studierende gewählt hat oder zu denen 
+er vorgemerkt ist.
+
+Über "fixiert" und "zuschlag" wohnen den 
+Objekten Informationen über das Stadium 
+der Kurswahl inne.
+
+
+./update
+Enthält Regulierungen über die Voraussetzungen 
+bzw. Verbote (z.B. die Wahl von Seminaren, die 
+man schon absolviert hat -- je nach Studiengang 
+kann das erlaubt oder verboten sein).
+
+Enthält auch Regulierung der maximal wählbaren 
+Kurse und der Ausnahmen, die dabei nicht mit-
+gezählt werden.

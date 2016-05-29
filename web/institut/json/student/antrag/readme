@@ -1,0 +1,43 @@
+Ein Antrag kann von Studierenden gestellt werden und wird dann 
+mit einem Status (einer Art Tracking-ID) angezeigt, bis er 
+abgeschlossen ist. Lehrende können auf antraege.jsp die 
+Anträge als 'abgeschlossen' markieren.
+
+Momentan gibt es Anträge auf 
+- Beurkungung eines dt. Transkripts,
+- Beurkungung eines engl. Transkripts,
+- Beurkungung eines unmodularen Transkripts.
+
+Ebenso denkbar (@todo) sind
+- Anträge auf Bescheinigung gemäß %48 Bafög,
+- Anträge auf Ausstellen von Zeugnissen.
+
+Ein Antrag wird von Studierenden hinzugefügt und
+nie gelöscht. (Denkbar wäre @todo eine Wartungsfkt., 
+die alte Anträge löscht).
+
+Das Abrufen von Anträgen ist für Lehrende möglich 
+(hier werden z.B. alle offenen Anträge angezeigt), 
+und für Studierende (die jeweils ihre eigenen Anträge
+anzeigen können).
+
+Das 'Update' von Anträgen ist nur für 
+Lehrende möglich: hier wird der Status eines 
+Antrags geändert, z.B. auf "Abgeschlossen".
+
+Hier ist derzeit (Dez 2013, @todo) nur das 
+Abschließen von Anträgen vorgesehen; Achtung: 
+die Stati "abgeschlossen" sowie "neu" sind in 
+fragments/conf_general.jsp fest-verdrahtet; 
+die Typen von Anträgen (Deutsches/Englisches/
+unmodulares Transkript) sind in 
+signup-faculty-common.js definiert, derzeit:
+"iTYP_ANTRAG_TRANSKRIPT_DE":1,
+"iTYP_ANTRAG_TRANSKRIPT_EN":2,
+"iTYP_ANTRAG_TRANSKRIPT_UNMODULAR":3
+
+In der Datenbank werden die Anträge über 
+tblBdStudentAntrag und tblBdStudentAntragStatus verhandelt.
+
+Im JS sind Anträge im Namensraum student von 
+signup-faculty-common.js als ShjCoreObjects realisiert.
