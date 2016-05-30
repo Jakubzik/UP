@@ -1,52 +1,7 @@
 <%-- 
     Document   : readme
     Created on : 18.11.2012, 19:45:15
-    Author     : heiko
-
-    Todo:
-    ======
-    - Anträge durchprogrammieren
-    - + Link aus der "Anträge" Tabelle von Config zur Studierendenakte      CHECK
-    - + Check neu beantragen unmodular/englisch wenn bereits ausgestellt.   CHECK
-
-    - Notenanerkennung Ausland programmieren
-    - Lehrveranstaltungen durchprogrammieren
-
-    - SignUp Kurswahl aus Studierendensicht
-
-    - Modulhandbuch automatik
-
-    - Plugin-Struktur durchdenken und dokumentieren
-    - Config-Parameter und Programmoptionen auslagern und dokumentieren
-
-    - Aktuelles umbauen zu Twitter: Planung, Umsetzung
-    - E-Mail Info bei neuem "Aktuelles" Eintrag (mit Filter) Opt-In
-    - SmartphoneApp neu implementieren
-
-    - Schwarzes Brett
-
-    - Vorschlagen und Supporten (a la Crowdfunding, z.B. Thema für Seminar etc.)
-    -- Bemerkungen in Rich Text
-    -- Bemerkungen mit Upload
-    ... student/antrag add,update: lANTRAG_STATUS_TYP_NEU und ABGESCHLOSSEN in shjCore
-
-    JSP: seminar/fach/pruefungen/ programmieren
-    (Auch zum Ausstellen neuer Prüfungen)
-    Siehe auskommentierter Code in student/pruefungen/get
-
-    JSP+JS: Note einer ausgestellten Prüfung ändern.
-    (Siehe auskommentierten [älteren] Code in signup-faculty-student.js
-    sowie in student/pruefung/update_unusued_and_old.jsp)
-
-    Druck von Scheinen: ist das zugangsberechtigt?    
-
-    Bugs
-    ======
-    tsort (find "sort" in l-index.jsp, ls-index.jsp und in dom-common.js)
-    Die Tabellensortierung spinnt unter Config, wenn 
-    übers Transkript eine Leistung geändert wird, und dann 
-    die Leistungsübersicht neu aufgerufen wird.
-    [Try faculty.student.transcriptEdit mit showLeistungen() anstatt _render?]
+    Author     : jakubzik
 
     Fehlerbehandlung
     =================
@@ -160,56 +115,4 @@
       Damit keine Pfadprobleme bei Updates 
       auftreten, wird das Skript unter /user/local/bin kopiert.
 
-    ===============================================
-    Produziere gs/Faculty aus as/Faculty Master
-    ===============================================
-    1) cp as/Faculty/* gs/Faculty
-ACHTUNG: json/student/anmeldung/add.jsp DARF NICHT ÜBERSCHRIEBEN WERDEN!
-
-    2) l-index.jsp: lösche Erasmus Transkript
-
-    3) daten.jsp: lösche Homepage-Funktionalität
-        (<li><a data-toggle="tab" href="#tab2">Homepage</a></li> auskommentieren)
-
-    4) json/login.jsp: SEMINAR_ID=5 (anstatt 1)
-
-    5) fragments/navigationLeftMaster.jsp: Tools, 2strikes und Anträge auskommentieren
-
-    6) index.jsp "Anglistisches Seminar" -> "Germanistik" sowie Link as.uni-heidelberg.de
-
-    7) index-studierende.jsp "Anglistisches Seminar" -> "Germanistik" sowie Link as.uni-heidelberg.de
-
-    8) hilfe/studierende/fragments/student-navbar-top.html: 
-        - Link Anglistik; 
-        - "Anträge" auskommentieren
-
-    ===============================================
-    TODO vor Liveschaltung Germanistik
-    ===============================================
-    (1) Werbetexte durchgehen
-
-    (2) Link zum alten Login setzen
-
-    (3) Implementieren "Kontakt.jsp"
-
-    (4) Vorgehen bei unmodularen Studiengängen?
-
-    (5) Fehlermeldungen, z.B. bei Anmeldungen
-
-    (6) Anzeige Kurswahl auch außerhalb Frist? Why?
-
-    (7) Transkriptdruck Layout Tabelle zerstört, wenn Leistungen, Anmeldungen, Prüfungen angezeigt
-
-    ===============================================
-    TODO vor OpenSource: was aus der LIB benötigt?
-    ===============================================
-    Unstreitig und problemlos
-    data.Dozent
-    util.SessionData
-    util.PasswordHash
-
-    Reduzibel?
-    Html.HTMLSeminar in json/* als Bean. Tut's auch data.Seminar?
-    de.shj.UP.beans.config.student.StudentBean tut's auch eine Nr. kleiner?
-    json/kurs/get:
 --%>
