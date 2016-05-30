@@ -7,7 +7,7 @@
 boolean isConnected=true;
 //System.out.println(request.getAttribute("javax.servlet.forward.request_uri"));
 String sCallerPath=request.getRequestURI();
-String sRelativity=sCallerPath.substring("/SignUpXP/as/Faculty/".length());
+String sRelativity=sCallerPath.substring("/UP/institut/".length());
 
 int count = sRelativity.length() - sRelativity.replace("/","").length();
 String sRel="";
