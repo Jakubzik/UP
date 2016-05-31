@@ -5,7 +5,7 @@
   <head> 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <meta charset="utf-8"> 
-    <title>SignUp Hilfe -- Anglistisches Seminar</title> 
+    <title>UP Hilfe</title> 
     <meta name="description" content=""> 
     <meta name="author" content="H. Jakubzik (shj-online)"> 
  
@@ -34,7 +34,7 @@
        <br /><br />
       <div class="row"> 
         <div class="span12 well"> 
-          <h2>Hilfe zu: SignUp Daten</h2> 
+          <h2>Hilfe zu: U<span style="color:red">:</span>P Daten</h2> 
         </div>
       </div>
       <div class="row"> 
@@ -43,7 +43,7 @@
           <img src="bild_laden.png" alt="screenshot" width="40%" />
         </div> 
         <div class="span8"> 
-           <p>Sie können in SignUp ein Foto hochladen, 
+           <p>Sie können in U<span style="color:red">:</span>P ein Foto hochladen, 
            das den Lehrenden und Studienberatern am Institut 
            angezeigt wird, damit diese sich besser erinnern, 
            mit wem sie es zu tun haben.</p> 
@@ -55,7 +55,7 @@
            (Tipp: um die Dateigröße zu reduzieren, können 
            Sie gut die Bildgröße skalieren; eine Bildbreite 
            von 150px reicht für diesen Zweck aus)</p> 
-           <p>Das Foto wird außerhalb von SignUp nicht 
+           <p>Das Foto wird außerhalb von U<span style="color:red">:</span>P nicht 
                verwendet und nicht an andere Universitätseinrichtungen 
                oder an Dritte weitergegeben.</p>
            <p>Selbstverständlich können Sie Ihr Bild jederzeit 
@@ -70,15 +70,15 @@
         </div> 
         <div class="span8"> 
            <p>Sie können Ihre Kontaktdaten &mdash; also E-Mail Adresse und 
-               Mobilfunknummer &mdash; selbst in SignUp verwalten, um 
+               Mobilfunknummer &mdash; selbst in U<span style="color:red">:</span>P verwalten, um 
                Lehrende, Studienberater und Seminarbibliothek auf dem Laufenden 
                zu halten. Wenn wir Sie kontaktieren möchten (weil Sie z.B. 
            Ihren Ausweis in der Bibliothek vergessen haben), wissen wir 
            so, wohin wir uns wenden müssen.</p> 
            <p>Wenn Sie die Option "E-Mail bei neuem Schein" aktivieren, 
-               versucht SignUp, an die von Ihnen angegebene E-Mail Adresse 
+               versucht U<span style="color:red">:</span>P, an die von Ihnen angegebene E-Mail Adresse 
                eine Nachricht zu senden, sobald eine neue Note 
-               in SignUp für Sie gespeichert wurde.</p> 
+               in U<span style="color:red">:</span>P für Sie gespeichert wurde.</p> 
            <p>Vergessen Sie bei Änderungen nicht, abschließend auf 
                "Speichern" zu klicken.</p>
        </div> 
@@ -92,20 +92,20 @@
            <p>Ihre Stammdaten (Name, Fachsemester, Anschrift etc.) werden aus der Datenbank 
                des Studentensekretariats übernommen. (Wenn sich z.B. Ihr Name ändert, reicht 
                es aus, das dem Studentensekretariat mitzuteilen; die Namensänderung dort wirkt 
-               sich mit einer ca. 10-tägigen Verzögerung automatisch auf SignUp aus).
+               sich mit einer ca. 10-tägigen Verzögerung automatisch auf U<span style="color:red">:</span>P aus).
             </p> 
            <p>Umgekehrt werden absolvierte Prüfungen (Orientierungs-, Zwischen- und Abschlussprüfungen) 
            ohne Angabe der Note an das Studentensekretariat elektronisch übermittelt.</p> 
-           <p>Ihre persönlichen Daten und die Leistungsnoten (und Daten) werden ausschließlich in SignUp gespeichert 
+           <p>Ihre persönlichen Daten und die Leistungsnoten (und Daten) werden ausschließlich in U<span style="color:red">:</span>P gespeichert 
                und grundsätzlich nicht übermittelt. Die IP-Adressen, MAC-Adressen, Browser-Footprints etc. 
-           Ihrer Transaktionen in SignUp (insbesondere bei Anmeldungen zu Leistungen, bei der Kurswahl, 
+           Ihrer Transaktionen in U<span style="color:red">:</span>P (insbesondere bei Anmeldungen zu Leistungen, bei der Kurswahl, 
            bei dem Beantragen von Transkripten) werden nicht gespeichert. Logdateien des Servers 
            die bei Fehlfunktionen Informationen zu IP-Adressen enthalten können werden nicht 
            weitergegeben.</p>
-           <p>Zugang zu Ihren Leistungsdaten (Noten, Anmeldungen etc.) in SignUp haben nur 
+           <p>Zugang zu Ihren Leistungsdaten (Noten, Anmeldungen etc.) in U<span style="color:red">:</span>P haben nur 
                Beschäftigte des Landes Baden-Württemberg und Lehrbeauftragte; in der Regel 
                haben Lehrende nur Zugriff auf diejenigen Noten, die diese Ihnen gegeben haben.
-           <p>Ihre Passworte oder UniID werden in SignUp nicht gespeichert; SignUp &quot;fragt&quot; den 
+           <p>Ihre Passworte oder UniID werden in U<span style="color:red">:</span>P nicht gespeichert; U<span style="color:red">:</span>P &quot;fragt&quot; den 
                Server des Rechenzentrums beim Login (über einen verschlüsselten Kanal), ob Ihre 
                Zugangsdaten korrekt sind oder nicht</p>
        </div> 

@@ -5,7 +5,7 @@
   <head> 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <meta charset="utf-8"> 
-    <title>SignUp Hilfe -- Anglistisches Seminar</title> 
+    <title>UP Hilfe</title> 
     <meta name="description" content=""> 
     <meta name="author" content="H. Jakubzik (shj-online)"> 
  
@@ -35,7 +35,7 @@
        <br /><br />
       <div class="row"> 
         <div class="span12 well"> 
-          <h2>Hilfe zu: SignUp Prüfungen</h2> 
+          <h2>Hilfe zu: U<span style="color:red">:</span>P Prüfungen</h2> 
         </div>
       </div>
       <div class="row"> 
@@ -43,7 +43,7 @@
           <h2>Anzeige der Prüfungen</h2> 
         </div> 
         <div class="span8"> 
-           <p>Sie können Ihre "Prüfungen" in SignUp auflisten 
+           <p>Sie können Ihre "Prüfungen" in U<span style="color:red">:</span>P auflisten 
                lassen. Unter Prüfungen werden hier nur die 
            Orientierungs-, Zwischen- und Abschlussprüfungen verstanden 
            (und nicht die studienbegleitenden Leistungen).</p> 

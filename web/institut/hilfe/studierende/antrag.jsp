@@ -5,7 +5,7 @@
   <head> 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <meta charset="utf-8"> 
-    <title>SignUp Hilfe -- Anglistisches Seminar</title> 
+    <title>UP Hilfe</title> 
     <meta name="description" content=""> 
     <meta name="author" content="H. Jakubzik (shj-online)"> 
  
@@ -36,14 +36,14 @@
        <br /><br />
       <div class="row"> 
         <div class="span12 well"> 
-          <h2>Hilfe zu: SignUp Antrag</h2> 
+          <h2>Hilfe zu: U<span style="color:red">:</span>P Antrag</h2> 
         </div>
       </div>
       <div class="row"> 
         <div class="span12"> 
           <h2>Antrag auf Ausstellen eines Transkripts</h2> 
            <p>Hier können Sie beantragen, dass Ihnen eine (deutsche oder englische) Leistungsübersicht 
-               (&bdquo;Transcript of Records&ldquo;) ausgestellt und im Glaskasten hinterlegt wird.</p>
+               (&bdquo;Transcript of Records&ldquo;) ausgestellt und hinterlegt wird.</p>
            <p>Dazu müssen Sie zunächst selbst sicherstellen, dass Ihre Studienbilanz 
            keine Fehler enthält und alle Daten korrekt gespeichert sind.</p>
         </div>

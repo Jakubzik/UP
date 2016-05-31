@@ -5,7 +5,7 @@
   <head> 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <meta charset="utf-8"> 
-    <title>SignUp Hilfe -- Anglistisches Seminar</title> 
+    <title>UP Hilfe -- Anglistisches Seminar</title> 
     <meta name="description" content=""> 
     <meta name="author" content="H. Jakubzik (shj-online)"> 
  
@@ -34,7 +34,7 @@
        <br /><br />
       <div class="row"> 
         <div class="span12 well"> 
-          <h2>Hilfe zu: SignUp An- und Abmeldung zum Leistungserwerb</h2> 
+          <h2>Hilfe zu: U<span style="color:red">:</span>P An- und Abmeldung zum Leistungserwerb</h2> 
         </div>
       </div>
       <div class="row"> 
@@ -42,7 +42,7 @@
           <h2>Anmeldeverfahren</h2> 
         </div> 
         <div class="span8"> 
-            <p>Es gibt in SignUp verschiedene Anmeldeverfahren (daher auch der Name "SignUp"): es 
+            <p>Es gibt in U<span style="color:red">:</span>P verschiedene Anmeldeverfahren (daher auch der frühere Name "SignUp"): es 
                 gibt die Kurswahl vor Semesterbeginn und die Anmeldung zum Leistungserwerb im 
                 Semester
             </p>
@@ -73,7 +73,7 @@
             </p>
             <p>
                 Nur wenn Sie für die Leistung angemeldet sind, kann Ihr Dozent/Ihre Dozentin
-                Ihre Note in SignUp eintragen.
+                Ihre Note in U<span style="color:red">:</span>P eintragen.
             </p>
         </div>
       </div>
@@ -99,7 +99,6 @@
                 Fachstudienberater/Fachstudienberaterin ändern lassen. Wichtig 
                 ist vor allem, dass Sie sich überhaupt anmelden.
             </p>
-            <p>Den An- und Abmeldevorgang können Sie sich <a href="#" id="show_demo">hier demonstrieren lassen</a></p>
        </div> 
       </div>
 
@@ -132,29 +131,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <script src="../../js/2.1.1/bootstrap.min.js"></script>
 
-    <script>
-	$(document).ready(function() {
-            $('#modShj_SignUp_Lightbox').modal({
-                        backdrop: true,
-                        keyboard: true,
-                        show: false
-                    }).css({
-                        // make width 90% of screen
-                       'width': function () { 
-                           return ($(document).width() * .6) + 'px';  
-                       },
-                        // center model
-                       'margin-left': function () { 
-                           return -($(this).width() / 2); 
-                       }
-                });
-		// Automatische Validierung
-		// fürs Formular einschalten:
-                $('#show_demo').on('click', function(){
-                    $('#modShj_SignUp_Lightbox').modal('show');
-                })
 
-	});
-</script>
   </body> 
 </html> 
