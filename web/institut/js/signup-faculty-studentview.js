@@ -352,7 +352,7 @@ function getAntragLast(iTyp_IN){
 // 
 function addAntrag(iTypID, sAntragstext){
     if(!checkAntragPlausibility(iTypID)) return;
-    
+       
     shj.signUp.toolbox.confirmDelete(
             '#modShj_SignUp_ConfirmDelete',
             'Antrag stellen?',
