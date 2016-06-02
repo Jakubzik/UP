@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Tests für SignUp</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="../institut/js/jquery.min.js"></script>
+    </head>
+    <body>
+        <h1>Tests für Anglistik Config</h1>
+        <p>
+        <form method="post" action="#" id="fTestASConf">
+            <input type="text" name="txtDozentName" id="txtDozentName" placeholder="name" />
+            <input type="text" name="txtPwd" id="txtPwd" placeholder="passwort" />
+            <input type="submit" id="cmdTestASConfig" value="Test starten..." />
+        </form>
+        </p>
+        <script>
+$(document).ready(function() {
+    $( "#cmdTestASConfig" ).on('click', function( event ) {
+        event.preventDefault();
+        $.ajax({
+             url: '../institut/json/login.jsp',
+             type: 'post',
+             dataType: 'json',
+             data: $('form#fTestASConf').serialize(),
+             success: function(data) {
+                        window.open("./index_as_config.html?shj_seminar=as","_self");
+            }
+         });
+    });
+    
+});
+            </script>
+    </body>
+</html>
