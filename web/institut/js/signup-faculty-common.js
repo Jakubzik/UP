@@ -317,7 +317,7 @@ $(document).ready(function() {
             if(sPath.indexOf('institut')>=0)
                 sPath=sPath.substring(0, sPath.indexOf('institut/') + 'institut'.length);
             else
-                sPath=sPath.substring(0, sPath.indexOf('test')) + getRequestValue('shj_seminar') + '/Faculty';
+                sPath=sPath.substring(0, sPath.indexOf('test')) + '/institut';
 
             var sURL = sPath + '/json/' + oSignUpItem.namespace + "/" + oSignUpItem.lifecycle_base_url+ '/' + sAction + ".jsp";
             $.ajax({
