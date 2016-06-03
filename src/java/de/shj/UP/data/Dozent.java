@@ -1118,42 +1118,36 @@ public class Dozent extends shjCore{
          * @deprecated 
 	 * @return true if login okay and complete. False otherwise, i.e. if password or name wrong, or if an error occurred.
 	 */
-	public boolean login(String strName, String strPwd, long lngSeminarID){
+    public boolean login(String strName, String strPwd, long lngSeminarID) {
 
-		boolean blnReturn=false;
-		ResultSet rst=null;
+        boolean blnReturn = false;
+        ResultSet rst = null;
 
-		String strSQL = "SELECT * " +
-						"FROM \"tblSdDozent\" " +
-				"WHERE ((\"lngSdSeminarID\"=" + lngSeminarID + ") AND " +
-						"(\"strDozentPasswort\"='" + getDBCleanString(strPwd) + "') AND " +
-						"(\"intDozentAccessLevel\">0) AND " +
-						"(\"strDozentNachname\"='" + getDBCleanString(strName) + "'));";
+        String strSQL = "SELECT * FROM \"tblSdDozent\" "
+                + "WHERE ((\"lngSdSeminarID\"=?) AND "
+                + "(\"strDozentPasswort\"=?) AND "
+                + "(\"intDozentAccessLevel\">0) AND "
+                + "(\"strDozentNachname\"=?));";
 
-		try{
-			rst=sqlQuery(strSQL);
-			if(rst.next()){
+        try {
+            PreparedStatement pstm = prepareStatement(strSQL);
+            pstm.setLong(1, lngSeminarID);
+            pstm.setString(2, strPwd);
+            pstm.setString(3, strName);
+            String sPwd;
+            rst = pstm.executeQuery();
 
-				initByRst(rst);
-				rst.close();
-
-				// update SessionID 'lngRandom' in 'tblBdStudent' in database:
-				long lngSessionID=Math.round((Math.random()*2147483647));
-				strSQL = "UPDATE \"tblSdDozent\" ";
-				strSQL+= "SET \"dtmDozentLastAction\" = CURRENT_TIMESTAMP, ";
-				strSQL+= "\"lngDozentSessionID\" = " + lngSessionID +" ";
-				strSQL+= "WHERE (\"lngDozentID\"=" + this.getDozentID() + ") AND ";
-				strSQL+= "(\"lngSdSeminarID\"=" + lngSeminarID + ");";
-				blnReturn=sqlExe(strSQL);
-				this.setDozentSessionID(lngSessionID);
-				}
-			}catch(Exception eLogin){
-				blnReturn=false;
-		}
-		// new March 1 2010:
-		try{this.disconnect();}catch(Exception e){}
-		return blnReturn;
-	}
+            blnReturn = rst.next();
+        } catch (Exception eLogin) {
+            blnReturn = false;
+        }
+        // new March 1 2010:
+        try {
+            this.disconnect();
+        } catch (Exception e) {
+        }
+        return blnReturn;
+    }
 
 ////////////////////////////////////////////////////////////////
 // 3.   X M L  U T I L I T I E S
@@ -1475,63 +1469,6 @@ public class Dozent extends shjCore{
                 this.m_sDozentHomepageOptions=rst.getString("strDozentHomepageOptions");
 	}	
 	
-	/**
-	 * Lade die Objekteigenschaften aus einer XML-Node.
-	 * param node XML-Node mit allen Eigenschaften als Tags.
-	 * @throws ParseException (Datum muss im ISO-Format yyyy-MM-dd übergeben werden).
-	 **/
-	private void initByNode(Node node) throws ParseException{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-		this.m_lSdSeminarID=Long.parseLong(shjNodeValue(node, "SdSeminarID"));
-		this.m_lDozentID=Long.parseLong(shjNodeValue(node, "DozentID"));
-		this.m_sDozentUnivISID=(shjNodeValue(node, "DozentUnivISID"));
-		this.m_sDozentPasswort=(shjNodeValue(node, "DozentPasswort"));
-		this.m_sDozentTitel=(shjNodeValue(node, "DozentTitel"));
-		this.m_sDozentVorname=(shjNodeValue(node, "DozentVorname"));
-		this.m_sDozentNachname=(shjNodeValue(node, "DozentNachname"));
-		this.m_dDozentGebdatum=(Date) (sdf.parse(shjNodeValue(node, "DozentGebdatum")));
-		this.m_sDozentStellennr=(shjNodeValue(node, "DozentStellennr"));
-		this.m_sDozentTelefonPrivat=(shjNodeValue(node, "DozentTelefonPrivat"));
-		this.m_sDozentStrasse=(shjNodeValue(node, "DozentStrasse"));
-		this.m_sDozentPLZ=(shjNodeValue(node, "DozentPLZ"));
-		this.m_sDozentOrt=(shjNodeValue(node, "DozentOrt"));
-		this.m_sDozentDienstendeMonat=(shjNodeValue(node, "DozentDienstendeMonat"));
-		this.m_sDozentDienstendeJahr=(shjNodeValue(node, "DozentDienstendeJahr"));
-		this.m_sDozentOD=(shjNodeValue(node, "DozentOD"));
-		this.m_sDozentVertragsart=(shjNodeValue(node, "DozentVertragsart"));
-		this.m_sDozentBank=(shjNodeValue(node, "DozentBank"));
-		this.m_sDozentKto=(shjNodeValue(node, "DozentKto"));
-		this.m_sDozentBLZ=(shjNodeValue(node, "DozentBLZ"));
-		this.m_sDozentSprechstundeTag=(shjNodeValue(node, "DozentSprechstundeTag"));
-		this.m_dDozentSprechstundeDatum=(Date) (sdf.parse(shjNodeValue(node, "DozentSprechstundeDatum")));
-		this.m_tDozentSprechstundeZeitVon=(shjNodeValue(node, "DozentSprechstundeZeitVon"));
-		this.m_tDozentSprechstundeZeitBis=(shjNodeValue(node, "DozentSprechstundeZeitBis"));
-		this.m_sDozentSprechstunde=(shjNodeValue(node, "DozentSprechstunde"));
-		this.m_sDozentBau=(shjNodeValue(node, "DozentBau"));
-		this.m_sDozentZimmer=(shjNodeValue(node, "DozentZimmer"));
-		this.m_sDozentBereich=(shjNodeValue(node, "DozentBereich"));
-		this.m_sDozentTelefon=(shjNodeValue(node, "DozentTelefon"));
-		this.m_sDozentEmail=(shjNodeValue(node, "DozentEmail"));
-		this.m_sDozentHomepage=(shjNodeValue(node, "DozentHomepage"));
-		this.m_bDozentLehrend=Boolean.valueOf(shjNodeValue(node, "DozentLehrend")).booleanValue();
-		this.m_sDozentBemerkung=(shjNodeValue(node, "DozentBemerkung"));
-		this.m_sDozentAnrede=(shjNodeValue(node, "DozentAnrede"));
-		this.m_sDozentInteressen=(shjNodeValue(node, "DozentInteressen"));
-		this.m_tSprechstundeLastChange=(shjNodeValue(node, "SprechstundeLastChange"));
-		this.m_sDozentPostfach=(shjNodeValue(node, "DozentPostfach"));
-		this.m_iDozentAccessLevel=Integer.parseInt(shjNodeValue(node, "DozentAccessLevel"));
-		this.m_sDozentIP=(shjNodeValue(node, "DozentIP"));
-		this.m_lDozentSessionID=Long.parseLong(shjNodeValue(node, "DozentSessionID"));
-		this.m_tDozentLastAction=(shjNodeValue(node, "DozentLastAction"));
-		this.m_sDozentCertSubjectDN=(shjNodeValue(node, "DozentCertSubjectDN"));
-		this.m_sDozentCertIssuerDN=(shjNodeValue(node, "DozentCertIssuerDN"));
-		this.m_sDozentCertSerialID=(shjNodeValue(node, "DozentCertSerialID"));
-		this.m_bDozentCertValidated=Boolean.valueOf(shjNodeValue(node, "DozentCertValidated")).booleanValue();
-		this.m_bDozentCertRevoked=Boolean.valueOf(shjNodeValue(node, "DozentCertRevoked")).booleanValue();
-		this.m_bDozentExtern=Boolean.valueOf(shjNodeValue(node, "DozentExtern")).booleanValue();
-	}		
-	
 ////////////////////////////////////////////////////////////////
 // 6.   S Q L  U T I L I T I E S
 ////////////////////////////////////////////////////////////////
@@ -1650,13 +1587,5 @@ public class Dozent extends shjCore{
 		this.m_bIsDirty = false;
 	}
 
-	/**
-	 * Konstruktor per XML-Darstellung des Objekts.
-	 * @throws ParseException, if a date can't be read.
-	 **/
-	public Dozent(Node node) throws ParseException{
-		this.initByNode(node);
-		this.m_bIsDirty = false;
-	}
 
   }//Klassenende

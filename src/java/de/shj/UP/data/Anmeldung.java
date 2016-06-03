@@ -433,26 +433,7 @@ public class Anmeldung extends shjCore{
 		this.m_bAnmeldungFixiert=rst.getBoolean("blnAnmeldungFixiert");
 		this.m_dAnmeldungDatum=rst.getDate("dtmAnmeldungDatum");	
 	}	
-	
-	/**
-	 * Lade die Objekteigenschaften aus einer XML-Node.
-	 * param node XML-Node mit allen Eigenschaften als Tags.
-	 * @throws ParseException (Datum muss im ISO-Format yyyy-MM-dd übergeben werden).
-	 **/
-	private void initByNode(Node node) throws ParseException{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-		this.m_lSdSeminarID=Long.parseLong(shjNodeValue(node, "SdSeminarID"));
-		this.m_sMatrikelnummer=(shjNodeValue(node, "Matrikelnummer"));
-		this.m_lKursID=Long.parseLong(shjNodeValue(node, "KursID"));
-		this.m_lKurstypID=Long.parseLong(shjNodeValue(node, "KurstypID"));
-		this.m_iAnmeldungPrioritaet=Integer.parseInt(shjNodeValue(node, "AnmeldungPrioritaet"));
-		this.m_lAnmeldungRandom=Long.parseLong(shjNodeValue(node, "AnmeldungRandom"));
-		this.m_bAnmeldungZuschlag=Boolean.valueOf(shjNodeValue(node, "AnmeldungZuschlag")).booleanValue();
-		this.m_bAnmeldungFixiert=Boolean.valueOf(shjNodeValue(node, "AnmeldungFixiert")).booleanValue();
-		this.m_dAnmeldungDatum=(Date) (sdf.parse(shjNodeValue(node, "AnmeldungDatum")));
-	}		
-	
+		
 ////////////////////////////////////////////////////////////////
 // 6.   S Q L  U T I L I T I E S
 ////////////////////////////////////////////////////////////////
@@ -566,15 +547,6 @@ public class Anmeldung extends shjCore{
 	 **/
 	public Anmeldung(ResultSet rst) throws SQLException{
 		this.initByRst(rst);
-		this.m_bIsDirty = false;
-	}
-
-	/**
-	 * Konstruktor per XML-Darstellung des Objekts.
-	 * @throws ParseException, if a date can't be read.
-	 **/
-	public Anmeldung(Node node) throws ParseException{
-		this.initByNode(node);
 		this.m_bIsDirty = false;
 	}
 
