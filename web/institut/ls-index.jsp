@@ -449,7 +449,7 @@
                     Modalfenster Allg.: Wirklich löschen?
                     ----------------------------------------------- 
                 --%>	            
-                <div class="modal hide fade" id="modShj_SignUp_ConfirmDelete signUp_viewToggle">
+                <div class="modal hide fade signUp_viewToggle" id="modShj_SignUp_ConfirmDelete">
                     <div class="modal">
                         <div class="modal-header">
                             <a class="close" data-dismiss="modal">×</a>
@@ -478,7 +478,7 @@
                             <ul><li><strong>Modulzuordnung stimmt nicht</strong>: wenn Leistungen falschen 
                                     Modulen zugeordnet sind, können Sie das entweder in der Sprechstunde 
                                     der Fachstudienberatung korrigieren lassen. Oder Sie schildern das 
-                                    Problem ganz exakt in einer <a href="mailto:heiko.jakubzik@as.uni-heidelberg.de">E-Mail an Herrn Jakubzik</a>.
+                                    Problem ganz exakt in einer <a href="mailto:hier-email@angeben">E-Mail an die Fachstudienberatung</a>.
                                 </li>
                                 <li><strong>Ein Schein ist nicht in &quot;U<span style="color:red">:</span>P&quot; eingetragen</strong>: schicken Sie 
                                     in diesem Fall entweder eine E-Mail an den Aussteller des Scheins und bitten 
@@ -487,7 +487,7 @@
                                     der Sprechstunde der Fachstudienberatung vor und lassen die Note in &quot;U<span style="color:red">:</span>P&quot;
                                     nachtragen.</li>
                                 <li><strong>Persönliche Daten oder der Studiengang stimmen nicht</strong>: schicken 
-                                    Sie in dem Fall eine <a href="mailto:heiko.jakubzik@as.uni-heidelberg.de">E-Mail mit Bitte um Korrektur an Herrn Jakubzik</a>
+                                    Sie in dem Fall eine <a href="mailto:hier-email@angeben">E-Mail mit Bitte um Korrektur an den Studienberater</a>
                         </div>
                         <div class="modal-footer">
                             <%-- <button class="btn btn-danger" data-loading="Wird gelöscht..." id="cmdShj_SignUp_ConfirmDelete"><u>J</u>a</button>
