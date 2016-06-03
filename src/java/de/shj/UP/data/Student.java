@@ -29,12 +29,15 @@
  * version 7-00	            
  *
  * Oct-2009		    h. jakubzik             autoclass
- * 
+ * Jun-2016                 h. jakubzik             login für OS
  */
 
 package de.shj.UP.data;
 
+import de.shj.UP.util.PasswordHash;
 import java.net.UnknownHostException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -1176,8 +1179,72 @@ public class Student extends shjCore{
 		this.m_sStudentUrlaub=value;
 	}
 	
+////////////////////////////////////////////////////////////////
+// 2b.   E X T R A  M E T H O D E N 
+////////////////////////////////////////////////////////////////
+	/**
+         * Prüft Login
+	 * @param strName Nachname
+	 * @param strPwd Passwort
+         * @param strMatrikelnummer Matrikelnummer
+	 * @param lngSeminarID id of institute or seminar.
+	 * @return true, falls erfolgreich.
+	 */
+	public boolean loginSec(String strName, String strPwd, String strMatrikelnummer, long lngSeminarID){
 
+		boolean blnReturn=false;
+		ResultSet rst=null;
 
+		try{
+                    PreparedStatement pstm=prepareStatement( "SELECT " +
+                        "b.*, " +
+                             "x.\"lngSeminarID\", " +
+                             "x.\"intFachID\" " +
+
+                     "FROM \"tblBdStudent\" b, \"tblSdSeminarXFach\" x " +
+                     "WHERE " +
+                      "(" +
+                        "b.\"strMatrikelnummer\"=? AND " +
+                        "b.\"strStudentNachname\"=? AND " +
+                        "x.\"lngSeminarID\"=? AND " +
+                        "(" +
+                              "b.\"intStudentFach1\"=x.\"intFachID\" OR " +
+                              "b.\"intStudentFach2\"=x.\"intFachID\" OR " +
+                              "b.\"intStudentFach3\"=x.\"intFachID\" OR " +
+                              "b.\"intStudentFach4\"=x.\"intFachID\" OR " +
+                              "b.\"intStudentFach5\"=x.\"intFachID\" OR " +
+                              "b.\"intStudentFach6\"=x.\"intFachID\" " +
+                        ")" +
+                    ");");
+                    
+                    pstm.setString(1, strMatrikelnummer);
+                    pstm.setString(2, strName);
+                    pstm.setLong(3, lngSeminarID);
+                    
+                    String sPwd;
+		    rst=pstm.executeQuery();
+			while(rst.next()){
+
+                           sPwd=rst.getString("strStudentPasswort");
+                           if(PasswordHash.validatePassword(strPwd, sPwd)){
+				initByRst(rst);
+				rst.close();
+				blnReturn=true;
+                                break;
+                            }
+                        }
+                    }catch(NoSuchAlgorithmException eLogin){
+				blnReturn=false;
+                    } catch (InvalidKeySpecException eLogin) {
+                            blnReturn=false;
+                    } catch (SQLException eLogin) {
+                        blnReturn=false;
+                    } catch (NamingException eLogin) {
+                        blnReturn=false;
+                    }
+		try{this.disconnect();}catch(Exception e){}
+		return blnReturn;
+	}
 ////////////////////////////////////////////////////////////////
 // 3.   X M L  U T I L I T I E S
 ////////////////////////////////////////////////////////////////
