@@ -908,45 +908,6 @@ public class DozentPublikation extends shjCore{
 		this.m_sDPWeiterePersonen=rst.getString("strDPWeiterePersonen");	
 	}	
 	
-	/**
-	 * Lade die Objekteigenschaften aus einer XML-Node.
-	 * param node XML-Node mit allen Eigenschaften als Tags.
-	 * @throws ParseException (Datum muss im ISO-Format yyyy-MM-dd übergeben werden).
-	 **/
-	private void initByNode(Node node) throws ParseException{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-		this.m_lSdSeminarID=Long.parseLong(shjNodeValue(node, "SdSeminarID"));
-		this.m_lDozentID=Long.parseLong(shjNodeValue(node, "DozentID"));
-		this.m_lDozentPublikationID=Long.parseLong(shjNodeValue(node, "DozentPublikationID"));
-		this.m_sDPAutorName=(shjNodeValue(node, "DPAutorName"));
-		this.m_sDPAutorVorname=(shjNodeValue(node, "DPAutorVorname"));
-		this.m_sDPVerfassertyp=(shjNodeValue(node, "DPVerfassertyp"));
-		this.m_sDPTitel=(shjNodeValue(node, "DPTitel"));
-		this.m_sDPOrt=(shjNodeValue(node, "DPOrt"));
-		this.m_sDPVerlag=(shjNodeValue(node, "DPVerlag"));
-		this.m_iDPJahr=Integer.parseInt(shjNodeValue(node, "DPJahr"));
-		this.m_sDPBuchtitel=(shjNodeValue(node, "DPBuchtitel"));
-		this.m_sDPZeitschrift=(shjNodeValue(node, "DPZeitschrift"));
-		this.m_sDPHeft=(shjNodeValue(node, "DPHeft"));
-		this.m_sDPBand=(shjNodeValue(node, "DPBand"));
-		this.m_sDPSeitenangaben=(shjNodeValue(node, "DPSeitenangaben"));
-		this.m_sDPReihe=(shjNodeValue(node, "DPReihe"));
-		this.m_sDPReiheHgName=(shjNodeValue(node, "DPReiheHgName"));
-		this.m_sDPReiheHgVorname=(shjNodeValue(node, "DPReiheHgVorname"));
-		this.m_sDPHgName=(shjNodeValue(node, "DPHgName"));
-		this.m_sDPHgVorname=(shjNodeValue(node, "DPHgVorname"));
-		this.m_sDPAuflage=(shjNodeValue(node, "DPAuflage"));
-		this.m_sDPArt=(shjNodeValue(node, "DPArt"));
-		this.m_sDPIndex=(shjNodeValue(node, "DPIndex"));
-		this.m_sDPAlternativeAusgabe=(shjNodeValue(node, "DPAlternativeAusgabe"));
-		this.m_sDPBemerkung=(shjNodeValue(node, "DPBemerkung"));
-		this.m_sDPURL=(shjNodeValue(node, "DPURL"));
-		this.m_sDPISBN=(shjNodeValue(node, "DPISBN"));
-		this.m_sDPISSN=(shjNodeValue(node, "DPISSN"));
-		this.m_sDPWeiterePersonen=(shjNodeValue(node, "DPWeiterePersonen"));
-	}		
-	
 ////////////////////////////////////////////////////////////////
 // 6.   S Q L  U T I L I T I E S
 ////////////////////////////////////////////////////////////////
@@ -1060,15 +1021,6 @@ public class DozentPublikation extends shjCore{
 	 **/
 	public DozentPublikation(ResultSet rst) throws SQLException{
 		this.initByRst(rst);
-		this.m_bIsDirty = false;
-	}
-
-	/**
-	 * Konstruktor per XML-Darstellung des Objekts.
-	 * @throws ParseException, if a date can't be read.
-	 **/
-	public DozentPublikation(Node node) throws ParseException{
-		this.initByNode(node);
 		this.m_bIsDirty = false;
 	}
 

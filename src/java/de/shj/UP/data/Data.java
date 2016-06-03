@@ -393,23 +393,6 @@ public class Data extends shjCore{
 		this.m_iAllowRegistration=rst.getInt("blnAllowRegistration");	
 	}	
 	
-	/**
-	 * Lade die Objekteigenschaften aus einer XML-Node.
-	 * param node XML-Node mit allen Eigenschaften als Tags.
-	 * @throws ParseException (Datum muss im ISO-Format yyyy-MM-dd übergeben werden).
-	 **/
-	private void initByNode(Node node) throws ParseException{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-		this.m_lSdSeminarID=Long.parseLong(shjNodeValue(node, "SdSeminarID"));
-		this.m_sSemesterbezeichnung=(shjNodeValue(node, "Semesterbezeichnung"));
-		this.m_dSignUpStart=(Date) (sdf.parse(shjNodeValue(node, "SignUpStart")));
-		this.m_dSignUpStop=(Date) (sdf.parse(shjNodeValue(node, "SignUpStop")));
-		this.m_bHttpserverAktiv=Boolean.valueOf(shjNodeValue(node, "HttpserverAktiv")).booleanValue();
-		this.m_bHttpShowResults=Boolean.valueOf(shjNodeValue(node, "HttpShowResults")).booleanValue();
-		this.m_iAllowRegistration=Integer.parseInt(shjNodeValue(node, "AllowRegistration"));
-	}		
-	
 ////////////////////////////////////////////////////////////////
 // 6.   S Q L  U T I L I T I E S
 ////////////////////////////////////////////////////////////////
@@ -523,15 +506,6 @@ public class Data extends shjCore{
 	 **/
 	public Data(ResultSet rst) throws SQLException{
 		this.initByRst(rst);
-		this.m_bIsDirty = false;
-	}
-
-	/**
-	 * Konstruktor per XML-Darstellung des Objekts.
-	 * @throws ParseException, if a date can't be read.
-	 **/
-	public Data(Node node) throws ParseException{
-		this.initByNode(node);
 		this.m_bIsDirty = false;
 	}
 

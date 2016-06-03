@@ -525,28 +525,6 @@ public class Aktuelles extends shjCore{
 		this.m_sAktuellesCustom3=rst.getString("strAktuellesCustom3");	
 	}	
 	
-	/**
-	 * Lade die Objekteigenschaften aus einer XML-Node.
-	 * param node XML-Node mit allen Eigenschaften als Tags.
-	 * @throws ParseException (Datum muss im ISO-Format yyyy-MM-dd übergeben werden).
-	 **/
-	private void initByNode(Node node) throws ParseException{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-		this.m_lAktuellesSequence=Long.parseLong(shjNodeValue(node, "AktuellesSequence"));
-		this.m_lSdSeminarID=Long.parseLong(shjNodeValue(node, "SdSeminarID"));
-		this.m_sAktuellesHeading=(shjNodeValue(node, "AktuellesHeading"));
-		this.m_sAktuellesDetails=(shjNodeValue(node, "AktuellesDetails"));
-		this.m_dAktuellesStart=(Date) (sdf.parse(shjNodeValue(node, "AktuellesStart")));
-		this.m_dAktuellesStop=(Date) (sdf.parse(shjNodeValue(node, "AktuellesStop")));
-		this.m_sAktuellesDetailLink=(shjNodeValue(node, "AktuellesDetailLink"));
-		this.m_sAktuellesAutorName=(shjNodeValue(node, "AktuellesAutorName"));
-		this.m_lAktuellesAutorDozentID=Long.parseLong(shjNodeValue(node, "AktuellesAutorDozentID"));
-		this.m_sAktuellesCustom1=(shjNodeValue(node, "AktuellesCustom1"));
-		this.m_sAktuellesCustom2=(shjNodeValue(node, "AktuellesCustom2"));
-		this.m_sAktuellesCustom3=(shjNodeValue(node, "AktuellesCustom3"));
-	}		
-	
 ////////////////////////////////////////////////////////////////
 // 6.   S Q L  U T I L I T I E S
 ////////////////////////////////////////////////////////////////
@@ -660,15 +638,6 @@ public class Aktuelles extends shjCore{
 	 **/
 	public Aktuelles(ResultSet rst) throws SQLException{
 		this.initByRst(rst);
-		this.m_bIsDirty = false;
-	}
-
-	/**
-	 * Konstruktor per XML-Darstellung des Objekts.
-	 * @throws ParseException, if a date can't be read.
-	 **/
-	public Aktuelles(Node node) throws ParseException{
-		this.initByNode(node);
 		this.m_bIsDirty = false;
 	}
 
