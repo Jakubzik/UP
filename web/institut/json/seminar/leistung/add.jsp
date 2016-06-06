@@ -59,15 +59,27 @@
     // -------------------------------------------------------------
     // Schnittstelle
     try{
-        lLeistungID=user.getNextID("lngLeistungID", "tblSdLeistung", "\"lngSdSeminarID\"=" + user.getSdSeminarID());
+        ResultSet rTmp = user.sqlQuery("select max(\"lngLeistungID\")+1 as next_id from \"tblSdLeistung\" where \"lngSdSeminarID\"=" + user.getSdSeminarID());
+        lLeistungID=0;
+        if(rTmp.next()) lLeistungID = rTmp.getLong("next_id");
+        rTmp.close();
     }catch(Exception eNotNumeric){
         throw new Exception("{\"error\":\"Die Leistung kann nicht hinzugefügt werden. Es gibt keine neue ID.\"" + 
                     ",\"errorDebug\":\"Keine weitere Info.\",\"errorcode\":" + lERR_BASE + 3 + ",\"severity\":10}");               
     }
-    if(!(user.lookUp("lngLeistungID", "tblSdLeistung", "\"strLeistungBezeichnung\"='" + 
-                request.getParameter("name").trim() + "' and \"lngSdSeminarID\"=" + user.getSdSeminarID()).startsWith("#")))
+    
+    PreparedStatement pstm1 = user.prepareStatement("select \"lngLeistungID\" "
+            + "from \"tblSdLeistung\" where "
+            + "\"strLeistungBezeichnung\"=? and \"lngSdSeminarID\"=" + user.getSdSeminarID());
+    int ij=1;
+    pstm1.setString(ij++, request.getParameter("name").trim());
+    ResultSet rTmp2 = pstm1.executeQuery();
+    if(rTmp2.next())
         throw new Exception("{\"error\":\"Eine Leistung mit der Bezeichnung '" + request.getParameter("name").trim() + "' gibt es bereits.\"" + 
-                    ",\"errorDebug\":\"Keine weitere Info.\",\"errorcode\":" + lERR_BASE + 5 + ",\"severity\":10}");     
+                    ",\"errorDebug\":\"Keine weitere Info.\",\"errorcode\":" + lERR_BASE + 5 + ",\"severity\":10}");
+    
+    rTmp2.close();
+    
     PreparedStatement pstm= user.prepareStatement("insert into \"tblSdLeistung\" (" +
             "\"strLeistungBezeichnung\",\"strLeistungBezeichnung_en\",\"sngLeistungCreditPts\",\"strLeistungCustom2\", \"lngLeistungID\", \"lngSdSeminarID\") values (" +
             "?,?,?,?,?,?);");

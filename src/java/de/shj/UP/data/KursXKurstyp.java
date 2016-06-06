@@ -572,31 +572,6 @@ public class KursXKurstyp extends shjCore{
 		this.m_sCustom3_en=rst.getString("strCustom3_en");	
 	}	
 	
-	/**
-	 * Lade die Objekteigenschaften aus einer XML-Node.
-	 * param node XML-Node mit allen Eigenschaften als Tags.
-	 * @throws ParseException (Datum muss im ISO-Format yyyy-MM-dd übergeben werden).
-	 **/
-	private void initByNode(Node node) throws ParseException{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-		this.m_lSeminarID=Long.parseLong(shjNodeValue(node, "SeminarID"));
-		this.m_lKurstypID=Long.parseLong(shjNodeValue(node, "KurstypID"));
-		this.m_lKursID=Long.parseLong(shjNodeValue(node, "KursID"));
-		this.m_sBemerkung=(shjNodeValue(node, "Bemerkung"));
-		this.m_sBemerkung_en=(shjNodeValue(node, "Bemerkung_en"));
-		this.m_sKursCreditPts=Float.valueOf(shjNodeValue(node, "KursCreditPts")).floatValue();
-		this.m_iKursSemesterMin=Integer.parseInt(shjNodeValue(node, "KursSemesterMin"));
-		this.m_iKursSemesterMax=Integer.parseInt(shjNodeValue(node, "KursSemesterMax"));
-		this.m_iKursCommitmentMode=Integer.parseInt(shjNodeValue(node, "KursCommitmentMode"));
-		this.m_sCustom1=(shjNodeValue(node, "Custom1"));
-		this.m_sCustom2=(shjNodeValue(node, "Custom2"));
-		this.m_sCustom3=(shjNodeValue(node, "Custom3"));
-		this.m_sCustom1_en=(shjNodeValue(node, "Custom1_en"));
-		this.m_sCustom2_en=(shjNodeValue(node, "Custom2_en"));
-		this.m_sCustom3_en=(shjNodeValue(node, "Custom3_en"));
-	}		
-	
 ////////////////////////////////////////////////////////////////
 // 6.   S Q L  U T I L I T I E S
 ////////////////////////////////////////////////////////////////
@@ -710,15 +685,6 @@ public class KursXKurstyp extends shjCore{
 	 **/
 	public KursXKurstyp(ResultSet rst) throws SQLException{
 		this.initByRst(rst);
-		this.m_bIsDirty = false;
-	}
-
-	/**
-	 * Konstruktor per XML-Darstellung des Objekts.
-	 * @throws ParseException, if a date can't be read.
-	 **/
-	public KursXKurstyp(Node node) throws ParseException{
-		this.initByNode(node);
 		this.m_bIsDirty = false;
 	}
 

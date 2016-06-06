@@ -350,21 +350,6 @@ public class KvvInhalt extends shjCore{
 		this.m_iKvvInhaltHeadingSequence=rst.getInt("intKvvInhaltHeadingSequence");
 		this.m_sKvvInhaltTyp=rst.getString("strKvvInhaltTyp");	
 	}	
-	
-	/**
-	 * Lade die Objekteigenschaften aus einer XML-Node.
-	 * param node XML-Node mit allen Eigenschaften als Tags.
-	 * @throws ParseException (Datum muss im ISO-Format yyyy-MM-dd übergeben werden).
-	 **/
-	private void initByNode(Node node) throws ParseException{
-		this.m_lSdSeminarID=Long.parseLong(shjNodeValue(node, "SdSeminarID"));
-		this.m_lSdKvvInhaltNr=Long.parseLong(shjNodeValue(node, "SdKvvInhaltNr"));
-		this.m_sKvvInhaltHeading=(shjNodeValue(node, "KvvInhaltHeading"));
-		this.m_sKvvInhaltHeadingDescription=(shjNodeValue(node, "KvvInhaltHeadingDescription"));
-		this.m_iKvvInhaltHeadingSequence=Integer.parseInt(shjNodeValue(node, "KvvInhaltHeadingSequence"));
-		this.m_sKvvInhaltTyp=(shjNodeValue(node, "KvvInhaltTyp"));
-	}		
-	
 ////////////////////////////////////////////////////////////////
 // 6.   S Q L  U T I L I T I E S
 ////////////////////////////////////////////////////////////////
@@ -478,15 +463,6 @@ public class KvvInhalt extends shjCore{
 	 **/
 	public KvvInhalt(ResultSet rst) throws SQLException{
 		this.initByRst(rst);
-		this.m_bIsDirty = false;
-	}
-
-	/**
-	 * Konstruktor per XML-Darstellung des Objekts.
-	 * @throws ParseException, if a date can't be read.
-	 **/
-	public KvvInhalt(Node node) throws ParseException{
-		this.initByNode(node);
 		this.m_bIsDirty = false;
 	}
 

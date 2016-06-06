@@ -299,21 +299,6 @@ public class Uni extends shjCore{
 		this.m_sUniOrt=rst.getString("strUniOrt");
 		this.m_sUniLink=rst.getString("strUniLink");	
 	}	
-	
-	/**
-	 * Lade die Objekteigenschaften aus einer XML-Node.
-	 * param node XML-Node mit allen Eigenschaften als Tags.
-	 * @throws ParseException (Datum muss im ISO-Format yyyy-MM-dd übergeben werden).
-	 **/
-	private void initByNode(Node node) throws ParseException{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-		this.m_lSdUniID=Long.parseLong(shjNodeValue(node, "SdUniID"));
-		this.m_sUniName=(shjNodeValue(node, "UniName"));
-		this.m_sUniOrt=(shjNodeValue(node, "UniOrt"));
-		this.m_sUniLink=(shjNodeValue(node, "UniLink"));
-	}		
-	
 ////////////////////////////////////////////////////////////////
 // 6.   S Q L  U T I L I T I E S
 ////////////////////////////////////////////////////////////////
@@ -429,14 +414,4 @@ public class Uni extends shjCore{
 		this.initByRst(rst);
 		this.m_bIsDirty = false;
 	}
-
-	/**
-	 * Konstruktor per XML-Darstellung des Objekts.
-	 * @throws ParseException, if a date can't be read.
-	 **/
-	public Uni(Node node) throws ParseException{
-		this.initByNode(node);
-		this.m_bIsDirty = false;
-	}
-
   }//Klassenende

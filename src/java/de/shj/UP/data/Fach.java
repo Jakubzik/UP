@@ -397,24 +397,6 @@ public class Fach extends shjCore{
 		this.m_sFachHISStg=rst.getString("strFachHISStg");	
 	}	
 	
-	/**
-	 * Lade die Objekteigenschaften aus einer XML-Node.
-	 * param node XML-Node mit allen Eigenschaften als Tags.
-	 * @throws ParseException (Datum muss im ISO-Format yyyy-MM-dd übergeben werden).
-	 **/
-	private void initByNode(Node node) throws ParseException{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-		this.m_iFachID=Integer.parseInt(shjNodeValue(node, "FachID"));
-		this.m_sFachBezeichnung=(shjNodeValue(node, "FachBezeichnung"));
-		this.m_sFachCreditPtsRequired=Float.valueOf(shjNodeValue(node, "FachCreditPtsRequired")).floatValue();
-		this.m_sFachTranskriptName=(shjNodeValue(node, "FachTranskriptName"));
-		this.m_sFachTranskriptName_en=(shjNodeValue(node, "FachTranskriptName_en"));
-		this.m_sFachBeschreibung=(shjNodeValue(node, "FachBeschreibung"));
-		this.m_sHN=(shjNodeValue(node, "HN"));
-		this.m_sFachHISStg=(shjNodeValue(node, "FachHISStg"));
-	}		
-	
 ////////////////////////////////////////////////////////////////
 // 6.   S Q L  U T I L I T I E S
 ////////////////////////////////////////////////////////////////
@@ -528,15 +510,6 @@ public class Fach extends shjCore{
 	 **/
 	public Fach(ResultSet rst) throws SQLException{
 		this.initByRst(rst);
-		this.m_bIsDirty = false;
-	}
-
-	/**
-	 * Konstruktor per XML-Darstellung des Objekts.
-	 * @throws ParseException, if a date can't be read.
-	 **/
-	public Fach(Node node) throws ParseException{
-		this.initByNode(node);
 		this.m_bIsDirty = false;
 	}
 

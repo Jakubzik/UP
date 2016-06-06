@@ -1146,54 +1146,6 @@ public class Kurs extends shjCore{
 		this.m_sKursCustom3=rst.getString("strKursCustom3");	
 	}	
 	
-	/**
-	 * Lade die Objekteigenschaften aus einer XML-Node.
-	 * param node XML-Node mit allen Eigenschaften als Tags.
-	 * @throws ParseException (Datum muss im ISO-Format yyyy-MM-dd übergeben werden).
-	 **/
-	private void initByNode(Node node) throws ParseException{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		SimpleDateFormat sdt = new SimpleDateFormat("HH:mm");
-		this.m_lSdSeminarID=Long.parseLong(shjNodeValue(node, "SdSeminarID"));
-		this.m_lKursID=Long.parseLong(shjNodeValue(node, "KursID"));
-		this.m_sKursUnivISID=(shjNodeValue(node, "KursUnivISID"));
-		this.m_lDozentID=Long.parseLong(shjNodeValue(node, "DozentID"));
-		this.m_sKursTag=(shjNodeValue(node, "KursTag"));
-		this.m_tKursBeginn=new Time(sdt.parse((shjNodeValue(node, "KursBeginn"))).getTime());
-		this.m_tKursEnde=new Time(sdt.parse((shjNodeValue(node, "KursEnde"))).getTime());
-		this.m_sKursRaum=(shjNodeValue(node, "KursRaum"));
-		this.m_sKursTag2=(shjNodeValue(node, "KursTag2"));
-		this.m_tKursBeginn2=new Time(sdt.parse((shjNodeValue(node, "KursBeginn2"))).getTime());
-		this.m_tKursEnde2=new Time(sdt.parse((shjNodeValue(node, "KursEnde2"))).getTime());
-		this.m_sKursRaum2=(shjNodeValue(node, "KursRaum2"));
-		this.m_lKursTeilnehmerMaximal=Long.parseLong(shjNodeValue(node, "KursTeilnehmerMaximal"));
-		this.m_lKursRequests=Long.parseLong(shjNodeValue(node, "KursRequests"));
-		this.m_sKursTitel=(shjNodeValue(node, "KursTitel"));
-		this.m_sKursTitel_en=(shjNodeValue(node, "KursTitel_en"));
-		this.m_sKursBeschreibung=(shjNodeValue(node, "KursBeschreibung"));
-		this.m_sKursBeschreibung_en=(shjNodeValue(node, "KursBeschreibung_en"));
-		this.m_sKursLiteratur=(shjNodeValue(node, "KursLiteratur"));
-		this.m_sKursZusatz=(shjNodeValue(node, "KursZusatz"));
-		this.m_sKursAnmeldung=(shjNodeValue(node, "KursAnmeldung"));
-		this.m_sKursVoraussetzung=(shjNodeValue(node, "KursVoraussetzung"));
-		this.m_bKursSchein=Boolean.valueOf(shjNodeValue(node, "KursSchein")).booleanValue();
-		this.m_sKursEinordnung=(shjNodeValue(node, "KursEinordnung"));
-		this.m_iKursStunden=Integer.parseInt(shjNodeValue(node, "KursStunden"));
-		this.m_tKursLastChange=new Timestamp(g_TIMESTAMT_FORMAT.parse((shjNodeValue(node, "KursLastChange"))).getTime());
-		this.m_dKursScheinanmeldungBis=(Date) (sdf.parse(shjNodeValue(node, "KursScheinanmeldungBis")));
-		this.m_dKursScheinanmeldungVon=(Date) (sdf.parse(shjNodeValue(node, "KursScheinanmeldungVon")));
-		this.m_bKursScheinanmeldungErlaubt=Boolean.valueOf(shjNodeValue(node, "KursScheinanmeldungErlaubt")).booleanValue();
-		this.m_iKursSequence=Integer.parseInt(shjNodeValue(node, "KursSequence"));
-		this.m_bKursPlanungssemester=Boolean.valueOf(shjNodeValue(node, "KursPlanungssemester")).booleanValue();
-		this.m_sKursTerminFreitext=(shjNodeValue(node, "KursTerminFreitext"));
-		this.m_iKursTeilnehmer=Integer.parseInt(shjNodeValue(node, "KursTeilnehmer"));
-		this.m_sKursRaumExtern1=(shjNodeValue(node, "KursRaumExtern1"));
-		this.m_sKursRaumExtern2=(shjNodeValue(node, "KursRaumExtern2"));
-		this.m_sKursCustom1=(shjNodeValue(node, "KursCustom1"));
-		this.m_sKursCustom2=(shjNodeValue(node, "KursCustom2"));
-		this.m_sKursCustom3=(shjNodeValue(node, "KursCustom3"));
-	}		
-	
 ////////////////////////////////////////////////////////////////
 // 6.   S Q L  U T I L I T I E S
 ////////////////////////////////////////////////////////////////
@@ -1307,15 +1259,6 @@ public class Kurs extends shjCore{
 	 **/
 	public Kurs(ResultSet rst) throws SQLException{
 		this.initByRst(rst);
-		this.m_bIsDirty = false;
-	}
-
-	/**
-	 * Konstruktor per XML-Darstellung des Objekts.
-	 * @throws ParseException, if a date can't be read.
-	 **/
-	public Kurs(Node node) throws ParseException{
-		this.initByNode(node);
 		this.m_bIsDirty = false;
 	}
 

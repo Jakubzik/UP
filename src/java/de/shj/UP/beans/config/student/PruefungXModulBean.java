@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat;
 
 import javax.servlet.http.*;
 
-import de.shj.UP.HTML.HtmlDate;
 import de.shj.UP.data.Note;
 
 /**
@@ -159,7 +158,12 @@ public class PruefungXModulBean extends de.shj.UP.data.Modul {
 		// Als Leistungspunkte (Leistungspunkte - Reduktion) eingetragen; hoffe, das stimmt immer
 		// Pr?fungsleistung? --> chosenAsPruefungsleistung
 		this.m_strSQL += "insert into \"tblBdStudentPruefungDetail\" (\"lngSdSeminarID\", \"lngSdPruefungsID\", \"strMatrikelnummer\", \"lngLeistungsID\", \"lngStudentLeistungCount\", \"lngModulID\", \"strCustom1\", \"blnStudentLeistungPruefung\", \"sngStudentLeistungCreditPts\") VALUES " +
-			" ( " + this.getSdSeminarID() + ", " + this.m_lngPruefungID + ", '" + this.m_StudentData.getMatrikelnummer() + "'," + this.getLeistungID() + ", " + this.getLeistungCount() + ", " + this.getModulID() + ", 'Auto " + this.m_strReduktionsvermerk + "', " + getDBBoolRepresentation(this.chosenAsPruefungsleistung()) + "::bool, " + (this.getLeistungCreditPoints()-this.getLeistungPLReduktion()) + " );\n\n";		
+			" ( " + this.getSdSeminarID() + ", " + this.m_lngPruefungID + ", '" + 
+                        this.m_StudentData.getMatrikelnummer() + "'," + this.getLeistungID() + 
+                        ", " + this.getLeistungCount() + ", " + this.getModulID() + 
+                        ", 'Auto " + this.m_strReduktionsvermerk + "', " + 
+                        (this.chosenAsPruefungsleistung() ? "true" : "false") + ", " + 
+                        (this.getLeistungCreditPoints()-this.getLeistungPLReduktion()) + " );\n\n";		
 	}
 	
 	/**
@@ -201,16 +205,7 @@ public class PruefungXModulBean extends de.shj.UP.data.Modul {
 	protected long getMaxDateMillisec(){
 		return this.m_lngDateMaxMillisec;
 	}
-	
-	/**
-	 * @return Date when last credit was issued. Of course all credits must have been checked with nextLeistung().
-	 * @throws Exception
-	 */
-	public HtmlDate suggestMaxDate() throws Exception{
-		SimpleDateFormat sdfIso=new SimpleDateFormat ("yyyy-MM-dd");
-		return new HtmlDate(sdfIso.format(this.getMaxDate()), this.m_request.getLocale());
-	}
-	
+		
 	/**
 	 * If you want this bean to ignore the 'manual' input in the 
 	 * request (i.e. the parameters 'cboWertung-XYZ', then set this

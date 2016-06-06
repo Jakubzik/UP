@@ -49,10 +49,24 @@
     
 --%>
 
-<%@page contentType="text/json" pageEncoding="UTF-8" import="java.sql.ResultSet,de.shj.UP.logic.AktuellesIterator,java.text.SimpleDateFormat, de.shj.UP.data.Dozent,de.shj.UP.data.shjCore" session="true" isThreadSafe="false"  errorPage="../error.jsp" %>
-<jsp:useBean id="student" scope="session" class="de.shj.UP.beans.config.student.StudentBean" /><jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" /><jsp:useBean id="seminar" scope="session" class="de.shj.UP.HTML.HtmlSeminar" /><jsp:useBean id="studenten" scope="page" class="de.shj.UP.beans.config.student.StudentSearchBean" />
+<%@page import="java.sql.PreparedStatement"%>
+<%@page import="de.shj.UP.util.ResultSetSHJ"%>
+<%@page contentType="text/json" pageEncoding="UTF-8" import="java.sql.ResultSet,java.text.SimpleDateFormat, de.shj.UP.data.Dozent,de.shj.UP.data.shjCore" session="true" isThreadSafe="false"  errorPage="../error.jsp" %>
+<jsp:useBean id="student" scope="session" class="de.shj.UP.beans.config.student.StudentBean" /><jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" /><jsp:useBean id="seminar" scope="session" class="de.shj.UP.HTML.HtmlSeminar" />
 <%@include file="../../fragments/checkVersion.jsp" %>
 <%@include file="../../fragments/conf_general.jsp" %>
+<%!String getZUVZielInfo(int lZUVZiel){
+    switch(lZUVZiel){
+        case 181: return "Bachelor";
+        case 182: return "Bachelor";
+        case 188: return "Master";
+        case 102: return "Magister";
+        case 125: return "Lehramt";
+        case 506: return "Promotion";
+        case 2: return "Erasmus";
+        default: return "unbekannt (" + lZUVZiel + ")";
+    }
+}%>
 <%  
 // Handelt es sich um eine Suche nach Studenten?
 if(request.getParameter("txtSuchen")!=null){
@@ -67,53 +81,85 @@ if(request.getParameter("txtSuchen")!=null){
     <%@include file="../../fragments/checkAccess1.jsp" %>
 <%    // Initialisiere die Suche (txtSuchen enthält entweder
     // einen Teil des Nachnamens, oder die Matrikelnummer)
-    studenten.setSeminarID(user.getSdSeminarID());
-    studenten.setShowAllOnEmptySearch( (g_iMinSearchChars_Studierende<=0) );
-    studenten.init(request);
+
+// @TODO:
+// Nachname säubern (um Wildcards zumindest, Länge mit g_iMinSearchChars_Studierende abgleichen)
+// Matrikelnummer anstatt Nachnamen zulassen
+
+    PreparedStatement pstm = user.prepareStatement("select " +
+            "x.\"lngSeminarID\",x.\"intFachID\",f.\"strFachBeschreibung\", s.*, " +
+           "CASE WHEN s.\"intStudentFach1\"=x.\"intFachID\" THEN s.\"intStudentFachsemester1\" " +
+            "WHEN s.\"intStudentFach2\"=x.\"intFachID\" THEN s.\"intStudentFachsemester2\" " +
+            "WHEN s.\"intStudentFach3\"=x.\"intFachID\" THEN s.\"intStudentFachsemester3\" " +
+            "WHEN s.\"intStudentFach4\"=x.\"intFachID\" THEN s.\"intStudentFachsemester4\" " +
+            "WHEN s.\"intStudentFach5\"=x.\"intFachID\" THEN s.\"intStudentFachsemester5\" " +
+            "WHEN s.\"intStudentFach6\"=x.\"intFachID\" THEN s.\"intStudentFachsemester6\" " +
+            "END  as fachsemester " +
+            "FROM \"tblSdSeminarXFach\" x, \"tblBdStudent\" s, \"tblSdFach\" f " +
+          "WHERE " +
+           "(" +
+            "(x.\"lngSeminarID\"=" + user.getSdSeminarID() + ") AND " + 
+            "lower(\"strStudentNachname\") LIKE ? AND " +
+                  "x.\"intFachID\"=f.\"intFachID\" and " +
+              "(" +
+                "(s.\"intStudentFach1\"=x.\"intFachID\") OR " +
+                "(s.\"intStudentFach2\"=x.\"intFachID\") OR " +
+                "(s.\"intStudentFach3\"=x.\"intFachID\") OR " +
+                "(s.\"intStudentFach4\"=x.\"intFachID\") OR " +
+                "(s.\"intStudentFach5\"=x.\"intFachID\") OR " +
+                "(s.\"intStudentFach6\"=x.\"intFachID\")" +
+              ")" +
+           ")");
+    pstm.setString(1, "%" + request.getParameter("txtSuchen").toLowerCase() + "%");
+    ResultSetSHJ studenten = new ResultSetSHJ(pstm.executeQuery());
+
+//    studenten.setShowAllOnEmptySearch( (g_iMinSearchChars_Studierende<=0) );
     String sInfo="";boolean bStart=true;
     boolean bEhemalige=false;
     try{bEhemalige=request.getParameter("chkEhemalige").equals("true");}catch(Exception eIsNullIgnore){}
     int iFachsemester=0;
     out.write("[");
-    while(studenten.nextStudent()){
+    while(studenten.next()){
        sInfo="";
        try{
-            if(studenten.getStudentUrlaub()!=null && studenten.getStudentUrlaub().startsWith("!")){sInfo="Urlaub";}
+            if(studenten.getString("strStudentUrlaub")!=null && studenten.getString("strStudentUrlaub").startsWith("!")){sInfo="Urlaub";}
             // Altbestand nur falls älter als 3 Monate.
             //System.out.println(studenten.getStudentNachname() + ": " + (seminar.getLastZUVUpdate().getTime()-studenten.getStudentZUVUpdate().getTime()));
-            if((seminar.getLastZUVUpdate().getTime()-studenten.getStudentZUVUpdate().getTime()) > (long)1000*60*60*24*30*3){sInfo="Altbestand";}
-            //if(studenten.getStudentZUVUpdate().before(seminar.getLastZUVUpdate())){sInfo="Altbestand";}
+            if((seminar.getLastZUVUpdate().getTime()-studenten.getDate("dtmStudentZUVUpdate").getTime()) > (long)1000*60*60*24*30*3){sInfo="Altbestand";}
+            //if(studenten.getStudentZUVUpdate().before(sZielEZielEeminar.getLastZUVUpdate())){sInfo="Altbestand";}
        }catch(Exception eWhat){System.out.println("Caught an error");}
     if(bEhemalige || !sInfo.equals("Altbestand")){if(!bStart) out.write(",");bStart=false;
+    String sUrlaub = shjCore.normalize(studenten.getString("strStudentUrlaub")).trim();
+    if(sUrlaub.equals("[# 0]")) sUrlaub = "--";
     
     %>{"student":
-        {"vorname":"<%=shjCore.string2JSON(studenten.getStudentVorname()) %>",
-        "nachname":"<%=shjCore.string2JSON(studenten.getStudentNachname()) %>",
-        "matrikelnummer":"<%=studenten.getMatrikelnummer() %>",
-        "studiengang":"<%=studenten.getZUVZielExplain() %>",
+        {"vorname":"<%=shjCore.string2JSON(studenten.getString("strStudentVorname")) %>",
+        "nachname":"<%=shjCore.string2JSON(studenten.getString("strStudentNachname")) %>",
+        "matrikelnummer":"<%=studenten.getString("strMatrikelnummer")%>",
+        "studiengang":"<%=getZUVZielInfo(studenten.getInt("lngStudentZUVZiel")) %>",
         "info":"<%=sInfo %>",
-        "strasse":"<%=studenten.getStudentStrasse() %>",
-        "plz":"<%=studenten.getStudentPLZ()%>",
-        "ort":"<%=studenten.getStudentOrt()%>",
-        "semester":"<%=studenten.getStudentSemester() %>",
-        "email":"<%=studenten.getStudentEmail() %>",
-        "telefon":"<%=studenten.getStudentTelefon() %>",
-        "fach":"<%=studenten.getFach()%>",
-        "fach_id":"<%=studenten.getFachID()%>",
-        "fachsemester":"<%=studenten.getFachsemester(studenten.getFachID())%> ",
-        "pid":"<%=studenten.getStudentPID()%>",
-        "geburtstag":"<%= (studenten.getStudentGeburtstag()==null ? "" : shjCore.shjGetGermanDate(studenten.getStudentGeburtstag())) %>",
-        "geburtsort":"<%=studenten.getStudentGeburtsort()%>",
-        "staat":"<%=studenten.getStudentStaat()%>",
-        "mobil":"<%=studenten.getStudentHandy() %>",
-        "homepage":"<%=studenten.getStudentHomepage() %>",
-        "erstimmatrikulation":"<%=studenten.getStudentZUVImmatrikuliert() %>",
-        "update":"<%=studenten.getStudentZUVUpdate() %>",
-        "anmeldung_gympo":"<%= shjCore.normalize(studenten.getStudentZUVFach()) %>",
-        "urlaub":"<%=shjCore.string2JSON(studenten.getStudentUrlaubSummary()) %>",
-        "ziel":"<%=studenten.getZUVZielExplain() %>",
-        "info_email":"<%=studenten.getStudentPublishEmail() %>",
-        "anrede":"<%=(studenten.getStudentFemale() ? "Frau" : "Herr") %>"}
+        "strasse":"<%=studenten.getString("strStudentStrasse")%>",
+        "plz":"<%=studenten.getString("strStudentPLZ")%>",
+        "ort":"<%=studenten.getString("strStudentOrt")%>",
+        "semester":"<%=studenten.getLong("fachsemester") %>",
+        "email":"<%=studenten.getString("strStudentEmail") %>",
+        "telefon":"<%=studenten.getString("strStudentTelefon") %>",
+        "fach":"<%=studenten.getString("strFachBeschreibung")%>",
+        "fach_id":"<%=studenten.getString("intFachID") %>",
+        "fachsemester":"<%=studenten.getLong("fachsemester") %> ",
+        "pid":"<%=studenten.getString("lngStudentPID") %>",
+        "geburtstag":"<%= (studenten.getDate("dtmStudentGeburtstag")==null ? "" : shjCore.shjGetGermanDate(studenten.getDate("dtmStudentGeburtstag"))) %>",
+        "geburtsort":"<%=studenten.getString("strStudentGeburtsort")%>",
+        "staat":"<%=studenten.getString("strStudentStaat")%>",
+        "mobil":"<%=studenten.getString("strStudentHandy")%>",
+        "homepage":"<%=studenten.getString("strStudentHomepage")%>",
+        "erstimmatrikulation":"<%=studenten.getDate("dtmStudentZUVImmatrikuliert")%>",
+        "update":"<%=studenten.getDate("dtmStudentZUVUpdate") %>",
+        "anmeldung_gympo":"<%= shjCore.normalize(studenten.getString("strStudentZUVFach")) %>",
+        "urlaub":"<%=shjCore.string2JSON(sUrlaub) %>",
+        "ziel":"<%=getZUVZielInfo(studenten.getInt("lngStudentZUVZiel")) %>",
+        "info_email":"<%=studenten.getBoolean("blnStudentPublishEmail")%>",
+        "anrede":"<%=(studenten.getBoolean("blnStudentFemale") ? "Frau" : "Herr") %>"}
         }
 <%}}out.write("]");
 

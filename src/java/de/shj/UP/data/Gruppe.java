@@ -354,21 +354,7 @@ public class Gruppe extends shjCore{
 		this.m_bMitarbeiterliste=rst.getBoolean("blnMitarbeiterliste");
 		this.m_iMitarbeiterlisteReihenfolge=rst.getInt("intMitarbeiterlisteReihenfolge");	
 	}	
-	
-	/**
-	 * Lade die Objekteigenschaften aus einer XML-Node.
-	 * param node XML-Node mit allen Eigenschaften als Tags.
-	 * @throws ParseException (Datum muss im ISO-Format yyyy-MM-dd übergeben werden).
-	 **/
-	private void initByNode(Node node) throws ParseException{
-		this.m_sSdSeminarID=(shjNodeValue(node, "SeminarID"));
-		this.m_lSdGruppenID=Long.parseLong(shjNodeValue(node, "GruppenID"));
-		this.m_sGruppenBezeichnung=(shjNodeValue(node, "GruppenBezeichnung"));
-		this.m_sGruppenBeschreibung=(shjNodeValue(node, "GruppenBeschreibung"));
-		this.m_bMitarbeiterliste=Boolean.valueOf(shjNodeValue(node, "Mitarbeiterliste")).booleanValue();
-		this.m_iMitarbeiterlisteReihenfolge=Integer.parseInt(shjNodeValue(node, "MitarbeiterlisteReihenfolge"));
-	}		
-	
+
 ////////////////////////////////////////////////////////////////
 // 6.   S Q L  U T I L I T I E S
 ////////////////////////////////////////////////////////////////
@@ -485,13 +471,5 @@ public class Gruppe extends shjCore{
 		this.m_bIsDirty = false;
 	}
 
-	/**
-	 * Konstruktor per XML-Darstellung des Objekts.
-	 * @throws ParseException, if a date can't be read.
-	 **/
-	public Gruppe(Node node) throws ParseException{
-		this.initByNode(node);
-		this.m_bIsDirty = false;
-	}
 
   }//Klassenende

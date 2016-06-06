@@ -85,9 +85,6 @@ public class PruefungData extends de.shj.UP.data.Pruefung{
 	// ------------------------------ ------------------------------
 	// ------------------------------ ------------------------------
 
-	public String m_strDebug;
-
-
 	// ------------------------------ ------------------------------
 	// ------------------------------ ------------------------------
 	// 2.   P R O T E C T E D  P R O P E R T I E S
@@ -99,15 +96,6 @@ public class PruefungData extends de.shj.UP.data.Pruefung{
 	// 	3.   P U B L I C  M E T H O D S
 	// ------------------------------ ------------------------------
 	// ------------------------------ ------------------------------
-	/**
-	 * @return List of Modules in this exam that are NOT blnZulassungsvoraussetzungen.
-	 * @deprecated since 5-29, please use getModules(blnZulassungsvoraussetzung) of this class instead.
-	 * @see #getModules(boolean)
-	 * @throws Exception
-	 */
-	public ResultSet getModules() throws Exception{
-		return this.getModules(false);
-	}
 	
 	/**
 	 * @since 5-29
@@ -123,7 +111,7 @@ public class PruefungData extends de.shj.UP.data.Pruefung{
 		  "WHERE (" + 
 		   "(x.\"lngSdSeminarID\" = m.\"lngSdSeminarID\") AND " +
 		   "(x.\"lngModulID\" = m.\"lngModulID\") AND " +
-		   "(x.\"blnZulassungsvoraussetzung\" = " + this.getDBBoolRepresentation(blnZulassungsvoraussetzung) + ") AND " +
+		   "(x.\"blnZulassungsvoraussetzung\" = " + (blnZulassungsvoraussetzung ? "true" : "false") + ") AND " +
 		   "(x.\"lngSdSeminarID\" = " + this.getSdSeminarID() + ") AND " + 
 		   "(x.\"lngPruefungID\" = " + this.getPruefungID() + ")" +
 		  ") order by \"lngModulNummer\" asc;");
@@ -137,17 +125,16 @@ public class PruefungData extends de.shj.UP.data.Pruefung{
 	 * @throws Exception if connection to db erroneous, or if there is no record of this exam.
 	 **/
 	public boolean isModular() throws Exception{
-
 		boolean 	blnReturn = false;
-		ResultSet 	rst		  = sqlQuery("select * from \"tblSdPruefungXModul\" where " +
-									"\"lngSdSeminarID\" = " + this.getSdSeminarID() + " AND " +
-									"\"lngPruefungID\" = " + this.getPruefungID() + " AND " +
-									"\"sngMinCreditPts\" > 0");
+		ResultSet 	rst  = sqlQuery("select * from \"tblSdPruefungXModul\" where " +
+                     "\"lngSdSeminarID\" = " + this.getSdSeminarID() + " AND "
+                    + "\"lngPruefungID\" = " + this.getPruefungID() + " AND "
+                    + "\"sngMinCreditPts\" > 0");
 
-		blnReturn			  = rst.next();
+            blnReturn = rst.next();
 
-		rst.close();
-		return blnReturn;
+            rst.close();
+            return blnReturn;
 	}
 
 	// ------------------------------ ------------------------------

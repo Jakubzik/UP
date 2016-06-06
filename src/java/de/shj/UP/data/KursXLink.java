@@ -476,27 +476,6 @@ public class KursXLink extends shjCore{
 		this.m_sKursLinkCustom3=rst.getString("strKursLinkCustom3");	
 	}	
 	
-	/**
-	 * Lade die Objekteigenschaften aus einer XML-Node.
-	 * param node XML-Node mit allen Eigenschaften als Tags.
-	 * @throws ParseException (Datum muss im ISO-Format yyyy-MM-dd übergeben werden).
-	 **/
-	private void initByNode(Node node) throws ParseException{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-		this.m_lSdSeminarID=Long.parseLong(shjNodeValue(node, "SdSeminarID"));
-		this.m_lKursID=Long.parseLong(shjNodeValue(node, "KursID"));
-		this.m_lLinkID=Long.parseLong(shjNodeValue(node, "LinkID"));
-		this.m_sKursLinkURL=(shjNodeValue(node, "KursLinkURL"));
-		this.m_sKursLinkBezeichnung=(shjNodeValue(node, "KursLinkBezeichnung"));
-		this.m_sKursLinkBeschreibung=(shjNodeValue(node, "KursLinkBeschreibung"));
-		this.m_bKursLinkDownload=Boolean.valueOf(shjNodeValue(node, "KursLinkDownload")).booleanValue();
-		this.m_bKursLinkVisible=Boolean.valueOf(shjNodeValue(node, "KursLinkVisible")).booleanValue();
-		this.m_sKursLinkCustom1=(shjNodeValue(node, "KursLinkCustom1"));
-		this.m_sKursLinkCustom2=(shjNodeValue(node, "KursLinkCustom2"));
-		this.m_sKursLinkCustom3=(shjNodeValue(node, "KursLinkCustom3"));
-	}		
-	
 ////////////////////////////////////////////////////////////////
 // 6.   S Q L  U T I L I T I E S
 ////////////////////////////////////////////////////////////////
@@ -610,15 +589,6 @@ public class KursXLink extends shjCore{
 	 **/
 	public KursXLink(ResultSet rst) throws SQLException{
 		this.initByRst(rst);
-		this.m_bIsDirty = false;
-	}
-
-	/**
-	 * Konstruktor per XML-Darstellung des Objekts.
-	 * @throws ParseException, if a date can't be read.
-	 **/
-	public KursXLink(Node node) throws ParseException{
-		this.initByNode(node);
 		this.m_bIsDirty = false;
 	}
 

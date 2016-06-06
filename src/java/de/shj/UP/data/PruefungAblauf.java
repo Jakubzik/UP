@@ -452,26 +452,6 @@ public class PruefungAblauf extends shjCore{
 		this.m_sCustom3=rst.getString("strCustom3");	
 	}	
 	
-	/**
-	 * Lade die Objekteigenschaften aus einer XML-Node.
-	 * param node XML-Node mit allen Eigenschaften als Tags.
-	 * @throws ParseException (Datum muss im ISO-Format yyyy-MM-dd übergeben werden).
-	 **/
-	private void initByNode(Node node) throws ParseException{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-		this.m_lSdSeminarID=Long.parseLong(shjNodeValue(node, "SdSeminarID"));
-		this.m_lPruefungID=Long.parseLong(shjNodeValue(node, "PruefungID"));
-		this.m_lAblaufID=Long.parseLong(shjNodeValue(node, "AblaufID"));
-		this.m_sPruefungAblaufBezeichnung=(shjNodeValue(node, "PruefungAblaufBezeichnung"));
-		this.m_sPruefungAblaufBeschreibung=(shjNodeValue(node, "PruefungAblaufBeschreibung"));
-		this.m_bPruefungAblaufPrereq=Boolean.valueOf(shjNodeValue(node, "PruefungAblaufPrereq")).booleanValue();
-		this.m_bPruefungAblaufStudentinfo=Boolean.valueOf(shjNodeValue(node, "PruefungAblaufStudentinfo")).booleanValue();
-		this.m_sCustom1=(shjNodeValue(node, "Custom1"));
-		this.m_sCustom2=(shjNodeValue(node, "Custom2"));
-		this.m_sCustom3=(shjNodeValue(node, "Custom3"));
-	}		
-	
 ////////////////////////////////////////////////////////////////
 // 6.   S Q L  U T I L I T I E S
 ////////////////////////////////////////////////////////////////
@@ -587,14 +567,4 @@ public class PruefungAblauf extends shjCore{
 		this.initByRst(rst);
 		this.m_bIsDirty = false;
 	}
-
-	/**
-	 * Konstruktor per XML-Darstellung des Objekts.
-	 * @throws ParseException, if a date can't be read.
-	 **/
-	public PruefungAblauf(Node node) throws ParseException{
-		this.initByNode(node);
-		this.m_bIsDirty = false;
-	}
-
   }//Klassenende

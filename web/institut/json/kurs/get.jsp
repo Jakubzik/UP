@@ -83,15 +83,13 @@
     * in deren Kurstitel "Poetry" vorkommt, z.B. "19th Century American Poetry.
 --%><%@page import="java.sql.PreparedStatement"%>
 <%@page import="de.shj.UP.data.shjCore"%>
-<%@ page language="java" pageEncoding="UTF8" contentType="text/html" import="java.sql.ResultSet,de.shj.UP.HTML.HtmlDate" errorPage="../error.jsp"%>
+<%@ page language="java" pageEncoding="UTF8" contentType="text/html" import="java.sql.ResultSet" errorPage="../error.jsp"%>
 <jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" />
 <jsp:useBean id="seminar" scope="session" class="de.shj.UP.HTML.HtmlSeminar" />
 <jsp:useBean id="sd" scope="session" class="de.shj.UP.util.SessionData" />
 <%!
 de.shj.UP.HTML.HtmlSeminar sem;
-String s2j(String s){
-	return s.replace('\n', ' ').replace('\r', ' ').replace('\t', ' ').replace('\"', '\''); 
-}
+
 // Gibt "Mi 11:15" o.ä. aus.
 // Fkt. nur beim Standard 1x wöchentlich, 
 // feste Uhrzeit -- gibt ansonsten "?" aus.
@@ -167,7 +165,8 @@ ResultSet getSQL(HttpServletRequest m_request) throws Exception{
 		  "k.\"lngKursID\" as id, " + 
 		  "t.\"lngKurstypID\", " +
 		  "'Current' AS Indicator, " +
-		  "'" + sem.getDBCleanString(m_request.getParameter("cboKurssucheSemester")) + "' AS Semester, " + 
+//		  "'" + sem.getDBCleanString(m_request.getParameter("cboKurssucheSemester")) + "' AS Semester, " + 
+                  "? as Semester," + //sem.getDBCleanString(m_request.getParameter("cboKurssucheSemester")) + "' AS Semester, " + 
 		  "k.\"strKursTitel\" as titel, " +
 		  "k.\"strKursTitel_en\" as titel_en, " +
 		  "l.\"strLeistungBezeichnung\" as leistung, " + 
@@ -198,6 +197,7 @@ ResultSet getSQL(HttpServletRequest m_request) throws Exception{
 		")"); 	  
            
            int ii=1;
+           pstm.setString(ii++, m_request.getParameter("cboKurssucheSemester"));
            if(m_request.getParameter("planungssemester")!=null) pstm.setBoolean(ii++, m_request.getParameter("planungssemester").startsWith("t"));
            pstm.setLong(ii++, sem.getSeminarID());
            pstm.setString(ii++, ".*" + m_request.getParameter("txtSLKurssucheKursTitel") + ".*");
@@ -243,7 +243,7 @@ ResultSet getSQL(HttpServletRequest m_request) throws Exception{
 %>
 {
  "kurse":[<%long lERR_BASE=103000 + 100;    // Kurs + Get
- sem=seminar;System.out.println(seminar.getParameterDebug(request));
+ sem=seminar;
  ResultSet rKurse=null;
  String sKurstypColumn="";
  if(sd.getSessionType().equals("student")){

@@ -194,39 +194,7 @@ public class StudentLeistung extends de.shj.UP.data.StudentXLeistung{
 	// ------------------------------ ------------------------------
 	// ------------------------------ ------------------------------
 
-	/**
-	 * @return 'true', if the underlying KlausuranmeldungKurs is during commitment-phase
-	 * @see com.shj.signUp.logic.Kurs#isDuringCommitmentPeriod()
-	 */
-	public boolean isDuringCommitmentChangePeriod(){
-		try {
-			Kurs k = new Kurs(getSeminarID(), getKlausuranmeldungKursID());
-			return k.isDuringCommitmentPeriod();
-		} catch (Exception e) {
-			return false;
-		}
-	}
-	/**
-	 * <pre>
-	 * Set the property 'blnStudentLeistungPruefung' to its reverse.
-	 * 
-	 * Note: this method returns false, if it is called outside the 
-	 * commitment-period of the course specified in 'KlausuranmeldungKursID'.
-	 * </pre>
-	 * @version 6-14-06
-	 * @see #isDuringCommitmentChangePeriod()
-	 * @return 'true', if swapping was successful
-	 */
-	public boolean swapStudentLeistungPruefung(){
-		if(!isDuringCommitmentChangePeriod()) return false;
-		try {
-			return sqlExe("update \"tblBdStudentXLeistung\" " +
-					"set \"blnStudentLeistungPruefung\"=" + getDBBoolRepresentation((!getStudentLeistungPruefung())) + 
-					" where " + getSQLWhereClauseOld());
-		} catch (Exception e) {
-			return false;
-		}
-	}
+
 	/**
 	 *	In many bachelor and master studies, students _must_ file
 	 *  a commitment (Klausuranmeldung) to get a credit that counts.
@@ -254,11 +222,21 @@ public class StudentLeistung extends de.shj.UP.data.StudentXLeistung{
 	 * @return true, if there is one course with this Id in this seminar.
 	 */
 	public boolean kursExists(long lngKursID, boolean blnArchiv){
-		 if(blnArchiv){
-			 return dbCount("lngID", "tblBdKvvArchiv", "\"lngSdSeminarID\"=" + getSdSeminarID() + " and \"lngID\"=" + lngKursID) > 0;
-		 }else{
-			 return dbCount("lngKursID", "tblBdKurs", "\"lngSdSeminarID\"=" + getSdSeminarID() + " and \"lngKursID\"=" + lngKursID) > 0;
-		 }
+            boolean bReturn = false;
+            try{
+                if(blnArchiv){                 
+                    ResultSet rTmp = sqlQuery("select \"lngID\" from \"tblBdKvvArchiv\" where " +
+                       "\"lngSdSeminarID\"=" + getSdSeminarID() + " and \"lngID\"=" + lngKursID);
+                    bReturn = rTmp.next();
+                    rTmp.close();
+                }else{
+                    ResultSet rTmp = sqlQuery("select \"lngKursID\" from \"tblBdKurs\" where " +
+                       "\"lngSdSeminarID\"=" + getSdSeminarID() + " and \"lngKursID\"=" + lngKursID);
+                    bReturn = rTmp.next();
+                    rTmp.close();
+                }
+            }catch(Exception e){}
+            return bReturn;
 	 }
 
 	/**
@@ -375,10 +353,17 @@ public class StudentLeistung extends de.shj.UP.data.StudentXLeistung{
 	 * @throws Exception
 	 */
 	public long getNextLeistungCount() throws Exception {
-		return getNextID("lngStudentLeistungCount","tblBdStudentXLeistung",
-				"\"lngLeistungsID\"=" + this.getLeistungsID() + " AND " +
-				"\"strMatrikelnummer\"='" + this.getMatrikelnummer() + "' AND " + 
-				"\"lngSdSeminarID\"=" + this.getSeminarID());
+            long lReturn = 0;
+            ResultSet rTmp = sqlQuery("select max(\"lngStudentLeistungCount\")+1 as \"nextid\" from \"tblBdStudentXLeistung\" where " +
+                    "\"lngLeistungsID\"=" + this.getLeistungsID() + " AND " +
+                    "\"strMatrikelnummer\"='" + Long.parseLong(this.getMatrikelnummer()) + "' AND " + 
+                    "\"lngSdSeminarID\"=" + this.getSeminarID());
+            rTmp.next();
+            try{
+                lReturn = rTmp.getLong("nextid");
+                rTmp.close();
+            }catch(Exception eNull){}
+            return lReturn;
 	}
 
 	// empty constructor.

@@ -423,26 +423,6 @@ public class KvvArchivXLinks extends shjCore{
 		this.m_sArchivLinkCustom2=rst.getString("strArchivLinkCustom2");
 		this.m_sArchivLinkCustom3=rst.getString("strArchivLinkCustom3");	
 	}	
-	
-	/**
-	 * Lade die Objekteigenschaften aus einer XML-Node.
-	 * param node XML-Node mit allen Eigenschaften als Tags.
-	 * @throws ParseException (Datum muss im ISO-Format yyyy-MM-dd übergeben werden).
-	 **/
-	private void initByNode(Node node) throws ParseException{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-		this.m_lID=Long.parseLong(shjNodeValue(node, "ID"));
-		this.m_lLinkID=Long.parseLong(shjNodeValue(node, "LinkID"));
-		this.m_sArchivLinkURL=(shjNodeValue(node, "ArchivLinkURL"));
-		this.m_sArchivLinkBezeichnung=(shjNodeValue(node, "ArchivLinkBezeichnung"));
-		this.m_sArchivLinkBeschreibung=(shjNodeValue(node, "ArchivLinkBeschreibung"));
-		this.m_bArchivLinkDownload=Boolean.valueOf(shjNodeValue(node, "ArchivLinkDownload")).booleanValue();
-		this.m_sArchivLinkCustom1=(shjNodeValue(node, "ArchivLinkCustom1"));
-		this.m_sArchivLinkCustom2=(shjNodeValue(node, "ArchivLinkCustom2"));
-		this.m_sArchivLinkCustom3=(shjNodeValue(node, "ArchivLinkCustom3"));
-	}		
-	
 ////////////////////////////////////////////////////////////////
 // 6.   S Q L  U T I L I T I E S
 ////////////////////////////////////////////////////////////////
@@ -556,15 +536,6 @@ public class KvvArchivXLinks extends shjCore{
 	 **/
 	public KvvArchivXLinks(ResultSet rst) throws SQLException{
 		this.initByRst(rst);
-		this.m_bIsDirty = false;
-	}
-
-	/**
-	 * Konstruktor per XML-Darstellung des Objekts.
-	 * @throws ParseException, if a date can't be read.
-	 **/
-	public KvvArchivXLinks(Node node) throws ParseException{
-		this.initByNode(node);
 		this.m_bIsDirty = false;
 	}
 

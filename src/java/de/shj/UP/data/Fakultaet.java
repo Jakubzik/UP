@@ -349,20 +349,6 @@ public class Fakultaet extends shjCore{
 		this.m_lFakultaetNr=rst.getLong("strFakultaetNr");
 		this.m_sFakultaetName=rst.getString("strFakultaetName");
 		this.m_sFakultaetLink=rst.getString("strFakultaetLink");	
-	}	
-	
-	/**
-	 * Lade die Objekteigenschaften aus einer XML-Node.
-	 * param node XML-Node mit allen Eigenschaften als Tags.
-	 * @throws ParseException (Datum muss im ISO-Format yyyy-MM-dd übergeben werden).
-	 **/
-	private void initByNode(Node node) throws ParseException{
-		this.m_lSdUniID=Long.parseLong(shjNodeValue(node, "SdUniID"));
-		this.m_lSdFakultaetID=Long.parseLong(shjNodeValue(node, "SdFakultaetID"));
-		this.m_sFakultaetUnivISID=(shjNodeValue(node, "FakultaetUnivISID"));
-		this.m_lFakultaetNr=Long.parseLong(shjNodeValue(node, "FakultaetNr"));
-		this.m_sFakultaetName=(shjNodeValue(node, "FakultaetName"));
-		this.m_sFakultaetLink=(shjNodeValue(node, "FakultaetLink"));
 	}		
 	
 ////////////////////////////////////////////////////////////////
@@ -478,15 +464,6 @@ public class Fakultaet extends shjCore{
 	 **/
 	public Fakultaet(ResultSet rst) throws SQLException{
 		this.initByRst(rst);
-		this.m_bIsDirty = false;
-	}
-
-	/**
-	 * Konstruktor per XML-Darstellung des Objekts.
-	 * @throws ParseException, if a date can't be read.
-	 **/
-	public Fakultaet(Node node) throws ParseException{
-		this.initByNode(node);
 		this.m_bIsDirty = false;
 	}
 

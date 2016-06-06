@@ -303,21 +303,6 @@ public class Raum extends shjCore{
 		this.m_sRaumBeschreibung=rst.getString("strRaumBeschreibung");
 		this.m_sRaumUnivISID=rst.getString("strRaumUnivISID");	
 	}	
-	
-	/**
-	 * Lade die Objekteigenschaften aus einer XML-Node.
-	 * param node XML-Node mit allen Eigenschaften als Tags.
-	 * @throws ParseException (Datum muss im ISO-Format yyyy-MM-dd übergeben werden).
-	 **/
-	private void initByNode(Node node) throws ParseException{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-		this.m_lSdSeminarID=Long.parseLong(shjNodeValue(node, "SdSeminarID"));
-		this.m_sRaumBezeichnung=(shjNodeValue(node, "RaumBezeichnung"));
-		this.m_sRaumBeschreibung=(shjNodeValue(node, "RaumBeschreibung"));
-		this.m_sRaumUnivISID=(shjNodeValue(node, "RaumUnivISID"));
-	}		
-	
 ////////////////////////////////////////////////////////////////
 // 6.   S Q L  U T I L I T I E S
 ////////////////////////////////////////////////////////////////
@@ -433,14 +418,4 @@ public class Raum extends shjCore{
 		this.initByRst(rst);
 		this.m_bIsDirty = false;
 	}
-
-	/**
-	 * Konstruktor per XML-Darstellung des Objekts.
-	 * @throws ParseException, if a date can't be read.
-	 **/
-	public Raum(Node node) throws ParseException{
-		this.initByNode(node);
-		this.m_bIsDirty = false;
-	}
-
   }//Klassenende

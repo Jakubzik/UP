@@ -425,25 +425,6 @@ public class Termin extends shjCore{
 		this.m_sTerminVerteiler=rst.getString("strTerminVerteiler");	
 	}	
 	
-	/**
-	 * Lade die Objekteigenschaften aus einer XML-Node.
-	 * param node XML-Node mit allen Eigenschaften als Tags.
-	 * @throws ParseException (Datum muss im ISO-Format yyyy-MM-dd übergeben werden).
-	 **/
-	private void initByNode(Node node) throws ParseException{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-		this.m_lSeminarID=Long.parseLong(shjNodeValue(node, "SeminarID"));
-		this.m_lTerminID=Long.parseLong(shjNodeValue(node, "TerminID"));
-		this.m_dTerminDatum=(Date) (sdf.parse(shjNodeValue(node, "TerminDatum")));
-		this.m_tTerminZeit=(shjNodeValue(node, "TerminZeit"));
-		this.m_sTerminOrt=(shjNodeValue(node, "TerminOrt"));
-		this.m_sTerminBeschreibung=(shjNodeValue(node, "TerminBeschreibung"));
-		this.m_sTerminAP=(shjNodeValue(node, "TerminAP"));
-		this.m_sTerminAPEmail=(shjNodeValue(node, "TerminAPEmail"));
-		this.m_sTerminVerteiler=(shjNodeValue(node, "TerminVerteiler"));
-	}		
-	
 ////////////////////////////////////////////////////////////////
 // 6.   S Q L  U T I L I T I E S
 ////////////////////////////////////////////////////////////////
@@ -559,14 +540,4 @@ public class Termin extends shjCore{
 		this.initByRst(rst);
 		this.m_bIsDirty = false;
 	}
-
-	/**
-	 * Konstruktor per XML-Darstellung des Objekts.
-	 * @throws ParseException, if a date can't be read.
-	 **/
-	public Termin(Node node) throws ParseException{
-		this.initByNode(node);
-		this.m_bIsDirty = false;
-	}
-
   }//Klassenende

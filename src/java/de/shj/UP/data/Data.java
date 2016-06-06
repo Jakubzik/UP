@@ -45,7 +45,6 @@ import java.util.Locale;
 
 import org.w3c.dom.Node; 
 
-import de.shj.UP.HTML.HtmlDate;
 
 /**
  *  Module: SignUp
@@ -252,7 +251,6 @@ public class Data extends shjCore{
  	 * @throws Exception
  	 */
  	public Data(long lngSdSeminarID) throws Exception{
- 		this.m_sSemesterbezeichnung = new HtmlDate(Locale.GERMANY).getSemesterName(); 
  		this.init(lngSdSeminarID,m_sSemesterbezeichnung);
  		this.m_bIsDirty = false;
  	}

@@ -833,44 +833,7 @@ public class Kurstyp extends shjCore{
 		this.m_sKurstypCustom1_en=rst.getString("strKurstypCustom1_en");
 		this.m_sKurstypCustom2_en=rst.getString("strKurstypCustom2_en");
 		this.m_sKurstypCustom3_en=rst.getString("strKurstypCustom3_en");	
-	}	
-	
-	/**
-	 * Lade die Objekteigenschaften aus einer XML-Node.
-	 * param node XML-Node mit allen Eigenschaften als Tags.
-	 * @throws ParseException (Datum muss im ISO-Format yyyy-MM-dd übergeben werden).
-	 **/
-	private void initByNode(Node node) throws ParseException{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-		this.m_lSdSeminarID=Long.parseLong(shjNodeValue(node, "SdSeminarID"));
-		this.m_lKurstypID=Long.parseLong(shjNodeValue(node, "KurstypID"));
-		this.m_sKurstypUnivISID=(shjNodeValue(node, "KurstypUnivISID"));
-		this.m_sKurstypBezeichnung=(shjNodeValue(node, "KurstypBezeichnung"));
-		this.m_sKurstypBeschreibung=(shjNodeValue(node, "KurstypBeschreibung"));
-		this.m_iKurstypSemesterMinimum=Integer.parseInt(shjNodeValue(node, "KurstypSemesterMinimum"));
-		this.m_iKurstypKurswahlMin=Integer.parseInt(shjNodeValue(node, "KurstypKurswahlMin"));
-		this.m_sKurstypEinordnung=(shjNodeValue(node, "KurstypEinordnung"));
-		this.m_bKurstypFormularanmeldung=Boolean.valueOf(shjNodeValue(node, "KurstypFormularanmeldung")).booleanValue();
-		this.m_bKurstypKvvOnlyGrouped=Boolean.valueOf(shjNodeValue(node, "KurstypKvvOnlyGrouped")).booleanValue();
-		this.m_iKurstypSequence=Integer.parseInt(shjNodeValue(node, "KurstypSequence"));
-		this.m_lKurstypLeistungsID=Long.parseLong(shjNodeValue(node, "KurstypLeistungsID"));
-		this.m_sKurstypCreditPts=Float.valueOf(shjNodeValue(node, "KurstypCreditPts")).floatValue();
-		this.m_iKurstypSemesterMin=Integer.parseInt(shjNodeValue(node, "KurstypSemesterMin"));
-		this.m_iKurstypSemesterMax=Integer.parseInt(shjNodeValue(node, "KurstypSemesterMax"));
-		this.m_iKurstypCommitmentMode=Integer.parseInt(shjNodeValue(node, "KurstypCommitmentMode"));
-		this.m_bKurstypTeilmodul=Boolean.valueOf(shjNodeValue(node, "KurstypTeilmodul")).booleanValue();
-		this.m_bKurstypVv=Boolean.valueOf(shjNodeValue(node, "KurstypVv")).booleanValue();
-		this.m_sKurstypCustom1=(shjNodeValue(node, "KurstypCustom1"));
-		this.m_sKurstypCustom2=(shjNodeValue(node, "KurstypCustom2"));
-		this.m_sKurstypCustom3=(shjNodeValue(node, "KurstypCustom3"));
-		this.m_sKurstypBezeichnung_en=(shjNodeValue(node, "KurstypBezeichnung_en"));
-		this.m_sKurstypBeschreibung_en=(shjNodeValue(node, "KurstypBeschreibung_en"));
-		this.m_sKurstypCustom1_en=(shjNodeValue(node, "KurstypCustom1_en"));
-		this.m_sKurstypCustom2_en=(shjNodeValue(node, "KurstypCustom2_en"));
-		this.m_sKurstypCustom3_en=(shjNodeValue(node, "KurstypCustom3_en"));
-	}		
-	
+	}
 ////////////////////////////////////////////////////////////////
 // 6.   S Q L  U T I L I T I E S
 ////////////////////////////////////////////////////////////////
@@ -986,14 +949,4 @@ public class Kurstyp extends shjCore{
 		this.initByRst(rst);
 		this.m_bIsDirty = false;
 	}
-
-	/**
-	 * Konstruktor per XML-Darstellung des Objekts.
-	 * @throws ParseException, if a date can't be read.
-	 **/
-	public Kurstyp(Node node) throws ParseException{
-		this.initByNode(node);
-		this.m_bIsDirty = false;
-	}
-
   }//Klassenende

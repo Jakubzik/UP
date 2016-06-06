@@ -1115,52 +1115,6 @@ public class KvvArchiv extends shjCore{
 		this.m_sKvvArchivCustom3=rst.getString("strKvvArchivCustom3");	
 	}	
 	
-	/**
-	 * Lade die Objekteigenschaften aus einer XML-Node.
-	 * param node XML-Node mit allen Eigenschaften als Tags.
-	 * @throws ParseException (Datum muss im ISO-Format yyyy-MM-dd übergeben werden).
-	 **/
-	private void initByNode(Node node) throws ParseException{
-		this.m_lSdFakultaetID=Long.parseLong(shjNodeValue(node, "SdFakultaetID"));
-		this.m_sSdFakultaetName=(shjNodeValue(node, "SdFakultaetName"));
-		this.m_lSdSeminarID=Long.parseLong(shjNodeValue(node, "SdSeminarID"));
-		this.m_sSdSeminarName=(shjNodeValue(node, "SdSeminarName"));
-		this.m_lID=Long.parseLong(shjNodeValue(node, "ID"));
-		this.m_lKvvArchivLeistungID=Long.parseLong(shjNodeValue(node, "KvvArchivLeistungID"));
-		this.m_sKvvArchivLeistungBezeichnung=(shjNodeValue(node, "KvvArchivLeistungBezeichnung"));
-		this.m_lKvvArchivKurstypID=Long.parseLong(shjNodeValue(node, "KvvArchivKurstypID"));
-		this.m_lKvvArchivKursID=Long.parseLong(shjNodeValue(node, "KvvArchivKursID"));
-		this.m_sKvvArchivSemesterName=(shjNodeValue(node, "KvvArchivSemesterName"));
-		this.m_sKvvArchivDozentname=(shjNodeValue(node, "KvvArchivDozentname"));
-		this.m_sKvvArchivDozentvorname=(shjNodeValue(node, "KvvArchivDozentvorname"));
-		this.m_sKvvArchivDozenttitel=(shjNodeValue(node, "KvvArchivDozenttitel"));
-		this.m_sKvvArchivKurstypBezeichnung=(shjNodeValue(node, "KvvArchivKurstypBezeichnung"));
-		this.m_sKvvArchivKursEinordnung=(shjNodeValue(node, "KvvArchivKursEinordnung"));
-		this.m_sKvvArchivKursKategorie=(shjNodeValue(node, "KvvArchivKursKategorie"));
-		this.m_sKvvArchivKurstitel=(shjNodeValue(node, "KvvArchivKurstitel"));
-		this.m_sKvvArchivKurstitel_en=(shjNodeValue(node, "KvvArchivKurstitel_en"));
-		this.m_sKvvArchivKursTag=(shjNodeValue(node, "KvvArchivKursTag"));
-		this.m_tKvvArchivKursBeginn=(shjNodeValue(node, "KvvArchivKursBeginn"));
-		this.m_tKvvArchivKursEnde=(shjNodeValue(node, "KvvArchivKursEnde"));
-		this.m_sKvvArchivKursRaum=(shjNodeValue(node, "KvvArchivKursRaum"));
-		this.m_sKvvArchivKursTag2=(shjNodeValue(node, "KvvArchivKursTag2"));
-		this.m_tKvvArchivKursBeginn2=(shjNodeValue(node, "KvvArchivKursBeginn2"));
-		this.m_tKvvArchivKursEnde2=(shjNodeValue(node, "KvvArchivKursEnde2"));
-		this.m_sKvvArchivKursKursRaum2=(shjNodeValue(node, "KvvArchivKursKursRaum2"));
-		this.m_sKvvArchivKursBeschreibung=(shjNodeValue(node, "KvvArchivKursBeschreibung"));
-		this.m_sKvvArchivKursBeschreibung_en=(shjNodeValue(node, "KvvArchivKursBeschreibung_en"));
-		this.m_sKvvArchivKursVoraussetzung=(shjNodeValue(node, "KvvArchivKursVoraussetzung"));
-		this.m_bKvvArchivKursSchein=Boolean.valueOf(shjNodeValue(node, "KvvArchivKursSchein")).booleanValue();
-		this.m_sKvvArchivKursLiteratur=(shjNodeValue(node, "KvvArchivKursLiteratur"));
-		this.m_sKvvArchivKursZusatz=(shjNodeValue(node, "KvvArchivKursZusatz"));
-		this.m_sKvvArchivKursTerminFreitext=(shjNodeValue(node, "KvvArchivKursTerminFreitext"));
-		this.m_iKvvArchivKursTeilnehmer=Integer.parseInt(shjNodeValue(node, "KvvArchivKursTeilnehmer"));
-		this.m_sKvvArchivKursCreditPts=Float.valueOf(shjNodeValue(node, "KvvArchivKursCreditPts")).floatValue();
-		this.m_sKvvArchivCustom1=(shjNodeValue(node, "KvvArchivCustom1"));
-		this.m_sKvvArchivCustom2=(shjNodeValue(node, "KvvArchivCustom2"));
-		this.m_sKvvArchivCustom3=(shjNodeValue(node, "KvvArchivCustom3"));
-	}		
-	
 ////////////////////////////////////////////////////////////////
 // 6.   S Q L  U T I L I T I E S
 ////////////////////////////////////////////////////////////////
@@ -1274,15 +1228,6 @@ public class KvvArchiv extends shjCore{
 	 **/
 	public KvvArchiv(ResultSet rst) throws SQLException{
 		this.initByRst(rst);
-		this.m_bIsDirty = false;
-	}
-
-	/**
-	 * Konstruktor per XML-Darstellung des Objekts.
-	 * @throws ParseException, if a date can't be read.
-	 **/
-	public KvvArchiv(Node node) throws ParseException{
-		this.initByNode(node);
 		this.m_bIsDirty = false;
 	}
 

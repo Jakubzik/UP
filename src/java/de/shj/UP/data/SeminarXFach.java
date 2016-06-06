@@ -278,17 +278,6 @@ public class SeminarXFach extends shjCore{
 		this.m_sSdSeminarXFachBemerkung=rst.getString("strSdSeminarXFachBemerkung");	
 	}	
 	
-	/**
-	 * Lade die Objekteigenschaften aus einer XML-Node.
-	 * param node XML-Node mit allen Eigenschaften als Tags.
-	 * @throws ParseException (Datum muss im ISO-Format yyyy-MM-dd übergeben werden).
-	 **/
-	private void initByNode(Node node) throws ParseException{
-		this.m_lSeminarID=Long.parseLong(shjNodeValue(node, "SeminarID"));
-		this.m_iFachID=Integer.parseInt(shjNodeValue(node, "FachID"));
-		this.m_sSdSeminarXFachBemerkung=(shjNodeValue(node, "SdSeminarXFachBemerkung"));
-	}		
-	
 ////////////////////////////////////////////////////////////////
 // 6.   S Q L  U T I L I T I E S
 ////////////////////////////////////////////////////////////////
@@ -404,14 +393,4 @@ public class SeminarXFach extends shjCore{
 		this.initByRst(rst);
 		this.m_bIsDirty = false;
 	}
-
-	/**
-	 * Konstruktor per XML-Darstellung des Objekts.
-	 * @throws ParseException, if a date can't be read.
-	 **/
-	public SeminarXFach(Node node) throws ParseException{
-		this.initByNode(node);
-		this.m_bIsDirty = false;
-	}
-
   }//Klassenende

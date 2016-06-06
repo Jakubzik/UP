@@ -475,25 +475,6 @@ public class Seminar extends shjCore{
 		this.m_sSeminarCustom3=rst.getString("strSeminarCustom3");	
 	}	
 	
-	/**
-	 * Lade die Objekteigenschaften aus einer XML-Node.
-	 * param node XML-Node mit allen Eigenschaften als Tags.
-	 * @throws ParseException (Datum muss im ISO-Format yyyy-MM-dd übergeben werden).
-	 **/
-	private void initByNode(Node node) throws ParseException{
-		this.m_lUniID=Long.parseLong(shjNodeValue(node, "UniID"));
-		this.m_lFakultaetID=Long.parseLong(shjNodeValue(node, "FakultaetID"));
-		this.m_lSeminarID=Long.parseLong(shjNodeValue(node, "SeminarID"));
-		this.m_sSeminarShort=(shjNodeValue(node, "SeminarShort"));
-		this.m_sSeminarUnivISID=(shjNodeValue(node, "SeminarUnivISID"));
-		this.m_sSeminarName=(shjNodeValue(node, "SeminarName"));
-		this.m_sSeminarLink=(shjNodeValue(node, "SeminarLink"));
-		this.m_bSeminarNoteCboLocal=Boolean.valueOf(shjNodeValue(node, "SeminarNoteCboLocal")).booleanValue();
-		this.m_sSeminarCustom1=(shjNodeValue(node, "SeminarCustom1"));
-		this.m_sSeminarCustom2=(shjNodeValue(node, "SeminarCustom2"));
-		this.m_sSeminarCustom3=(shjNodeValue(node, "SeminarCustom3"));
-	}		
-	
 ////////////////////////////////////////////////////////////////
 // 6.   S Q L  U T I L I T I E S
 ////////////////////////////////////////////////////////////////
@@ -607,15 +588,6 @@ public class Seminar extends shjCore{
 	 **/
 	public Seminar(ResultSet rst) throws SQLException{
 		this.initByRst(rst);
-		this.m_bIsDirty = false;
-	}
-
-	/**
-	 * Konstruktor per XML-Darstellung des Objekts.
-	 * @throws ParseException, if a date can't be read.
-	 **/
-	public Seminar(Node node) throws ParseException{
-		this.initByNode(node);
 		this.m_bIsDirty = false;
 	}
 

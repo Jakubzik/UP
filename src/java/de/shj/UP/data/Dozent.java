@@ -1134,10 +1134,12 @@ public class Dozent extends shjCore{
             pstm.setLong(1, lngSeminarID);
             pstm.setString(2, strPwd);
             pstm.setString(3, strName);
-            String sPwd;
             rst = pstm.executeQuery();
-
             blnReturn = rst.next();
+            if(blnReturn){
+                this.initByRst(rst);
+                rst.close();
+            }
         } catch (Exception eLogin) {
             blnReturn = false;
         }

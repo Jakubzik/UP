@@ -308,20 +308,6 @@ public class PruefungXPruefung extends shjCore{
 		this.m_sPruefungBemerkung=rst.getString("strPruefungBemerkung");	
 	}	
 	
-	/**
-	 * Lade die Objekteigenschaften aus einer XML-Node.
-	 * param node XML-Node mit allen Eigenschaften als Tags.
-	 * @throws ParseException (Datum muss im ISO-Format yyyy-MM-dd übergeben werden).
-	 **/
-	private void initByNode(Node node) throws ParseException{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-		this.m_lSdSeminarID=Long.parseLong(shjNodeValue(node, "SdSeminarID"));
-		this.m_lPruefungID=Long.parseLong(shjNodeValue(node, "PruefungID"));
-		this.m_lPruefungPrereqID=Long.parseLong(shjNodeValue(node, "PruefungPrereqID"));
-		this.m_sPruefungBemerkung=(shjNodeValue(node, "PruefungBemerkung"));
-	}		
-	
 ////////////////////////////////////////////////////////////////
 // 6.   S Q L  U T I L I T I E S
 ////////////////////////////////////////////////////////////////
@@ -437,14 +423,4 @@ public class PruefungXPruefung extends shjCore{
 		this.initByRst(rst);
 		this.m_bIsDirty = false;
 	}
-
-	/**
-	 * Konstruktor per XML-Darstellung des Objekts.
-	 * @throws ParseException, if a date can't be read.
-	 **/
-	public PruefungXPruefung(Node node) throws ParseException{
-		this.initByNode(node);
-		this.m_bIsDirty = false;
-	}
-
   }//Klassenende

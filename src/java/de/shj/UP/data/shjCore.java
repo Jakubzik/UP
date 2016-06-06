@@ -74,7 +74,7 @@ import org.apache.commons.beanutils.RowSetDynaClass;
 import de.shj.UP.util.ResultSetSHJ;
 
 
-public class shjCore implements Serializable{
+public class shjCore implements Serializable, HttpSessionBindingListener{
 
     // ------------------------------ ------------------------------
     // ------------------------------ ------------------------------
@@ -699,10 +699,20 @@ public class shjCore implements Serializable{
         g_TODAY = new Date(new java.util.Date().getTime());
         try {
             m_ctx = new InitialContext();
-            m_DB = (DataSource) m_ctx.lookup("java:comp/env/jdbc/UP");
+            m_DB = (DataSource) m_ctx.lookup("java:comp/env/jdbc/UP_db");
         } catch (NamingException e) {
             m_strDebug += e.toString();
         }
 
+    }
+
+    @Override
+    public void valueBound(HttpSessionBindingEvent event) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void valueUnbound(HttpSessionBindingEvent event) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

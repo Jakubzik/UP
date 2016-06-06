@@ -1692,75 +1692,6 @@ public class StudentXLeistung extends shjCore{
 		this.m_dStudentLeistungHISExport=rst.getDate("dtmStudentLeistungHISExport");
 		this.m_dStudentLeistungHISVerified=rst.getDate("dtmStudentLeistungHISVerified");	
                 this.m_bStudentLeistungAnerkannt=rst.getBoolean("blnStudentLeistungAnerkannt");
-	}	
-	
-	/**
-	 * Lade die Objekteigenschaften aus einer XML-Node.
-	 * param node XML-Node mit allen Eigenschaften als Tags.
-	 * @throws ParseException (Datum muss im ISO-Format yyyy-MM-dd übergeben werden).
-	 **/
-	private void initByNode(Node node) throws ParseException{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		SimpleDateFormat sdt = new SimpleDateFormat("HH:mm");
-		this.m_lSdSeminarID=Long.parseLong(shjNodeValue(node, "SdSeminarID"));
-		this.m_sMatrikelnummer=(shjNodeValue(node, "Matrikelnummer"));
-		this.m_lLeistungsID=Long.parseLong(shjNodeValue(node, "LeistungsID"));
-		this.m_lStudentLeistungCount=Long.parseLong(shjNodeValue(node, "StudentLeistungCount"));
-		this.m_lDozentID=Long.parseLong(shjNodeValue(node, "DozentID"));
-		this.m_iNoteID=Integer.parseInt(shjNodeValue(node, "NoteID"));
-		this.m_lStudentLeistungHISPrId=Long.parseLong(shjNodeValue(node, "StudentLeistungHISPrId"));
-		this.m_lKlausuranmeldungKurstypID=Long.parseLong(shjNodeValue(node, "KlausuranmeldungKurstypID"));
-		this.m_lKlausuranmeldungKursID=Long.parseLong(shjNodeValue(node, "KlausuranmeldungKursID"));
-		this.m_sSLKursUnivISID=(shjNodeValue(node, "SLKursUnivISID"));
-		this.m_sSLKursTag=(shjNodeValue(node, "SLKursTag"));
-		this.m_tSLKursBeginn=(Time) (sdt.parse((shjNodeValue(node, "SLKursBeginn"))));
-		this.m_tSLKursEnde=(Time) (sdt.parse((shjNodeValue(node, "SLKursEnde"))));
-		this.m_sSLKursRaum=(shjNodeValue(node, "SLKursRaum"));
-		this.m_sSLKursTag2=(shjNodeValue(node, "SLKursTag2"));
-		this.m_tSLKursBeginn2=(Time)sdt.parse((shjNodeValue(node, "SLKursBeginn2")));
-		this.m_tSLKursEnde2=(Time)sdt.parse((shjNodeValue(node, "SLKursEnde2")));
-		this.m_sSLKursRaum2=(shjNodeValue(node, "SLKursRaum2"));
-		this.m_sSLKursTitel=(shjNodeValue(node, "SLKursTitel"));
-		this.m_sSLKursTitel_en=(shjNodeValue(node, "SLKursTitel_en"));
-		this.m_sSLKursBeschreibung=(shjNodeValue(node, "SLKursBeschreibung"));
-		this.m_sSLKursBeschreibung_en=(shjNodeValue(node, "SLKursBeschreibung_en"));
-		this.m_sSLKursLiteratur=(shjNodeValue(node, "SLKursLiteratur"));
-		this.m_sSLKursZusatz=(shjNodeValue(node, "SLKursZusatz"));
-		this.m_sSLKursAnmeldung=(shjNodeValue(node, "SLKursAnmeldung"));
-		this.m_sSLKursVoraussetzung=(shjNodeValue(node, "SLKursVoraussetzung"));
-		this.m_bSLKursSchein=Boolean.valueOf(shjNodeValue(node, "SLKursSchein")).booleanValue();
-		this.m_sSLKursEinordnung=(shjNodeValue(node, "SLKursEinordnung"));
-		this.m_iSLKursStunden=Integer.parseInt(shjNodeValue(node, "SLKursStunden"));
-		this.m_tSLKursLastChange= (shjNodeValue(node, "SLKursLastChange"));
-		this.m_dSLKursScheinanmeldungBis=(Date) (sdf.parse(shjNodeValue(node, "SLKursScheinanmeldungBis")));
-		this.m_dSLKursScheinanmeldungVon=(Date) (sdf.parse(shjNodeValue(node, "SLKursScheinanmeldungVon")));
-		this.m_bSLKursScheinanmeldungErlaubt=Boolean.valueOf(shjNodeValue(node, "SLKursScheinanmeldungErlaubt")).booleanValue();
-		this.m_sSLKursTerminFreitext=(shjNodeValue(node, "SLKursTerminFreitext"));
-		this.m_iSLKursTeilnehmer=Integer.parseInt(shjNodeValue(node, "SLKursTeilnehmer"));
-		this.m_sSLKursRaumExtern1=(shjNodeValue(node, "SLKursRaumExtern1"));
-		this.m_sSLKursRaumExtern2=(shjNodeValue(node, "SLKursRaumExtern2"));
-		this.m_sSLKursDetails=(shjNodeValue(node, "SLKursDetails"));
-		this.m_sStudentLeistungDetails=(shjNodeValue(node, "StudentLeistungDetails"));
-		this.m_bStudentLeistungBestanden=Boolean.valueOf(shjNodeValue(node, "StudentLeistungBestanden")).booleanValue();
-		this.m_sStudentLeistungNote=(shjNodeValue(node, "StudentLeistungNote"));
-		this.m_sStudentLeistungCreditPts=Float.valueOf(shjNodeValue(node, "StudentLeistungCreditPts")).floatValue();
-		this.m_dStudentLeistungAusstellungsdatum=(Date) (sdf.parse(shjNodeValue(node, "StudentLeistungAusstellungsdatum")));
-		this.m_sStudentLeistungAussteller=(shjNodeValue(node, "StudentLeistungAussteller"));
-		this.m_sStudentLeistungAusstellerVor=(shjNodeValue(node, "StudentLeistungAusstellerVor"));
-		this.m_sStudentLeistungAusstellerTit=(shjNodeValue(node, "StudentLeistungAusstellerTit"));
-		this.m_sStudentLeistungBemerkung=(shjNodeValue(node, "StudentLeistungBemerkung"));
-		this.m_bStudentLeistungValidiert=Boolean.valueOf(shjNodeValue(node, "StudentLeistungValidiert")).booleanValue();
-		this.m_bStudentLeistungPruefung=Boolean.valueOf(shjNodeValue(node, "StudentLeistungPruefung")).booleanValue();
-		this.m_dStudentLeistungAntragdatum=(Date) (sdf.parse(shjNodeValue(node, "StudentLeistungAntragdatum")));
-		this.m_bStudentLeistungKlausuranmeldung=Boolean.valueOf(shjNodeValue(node, "StudentLeistungKlausuranmeldung")).booleanValue();
-		this.m_bStudentLeistungEditierbar=Boolean.valueOf(shjNodeValue(node, "StudentLeistungEditierbar")).booleanValue();
-		this.m_bStudentLeistungGesiegelt=Boolean.valueOf(shjNodeValue(node, "StudentLeistungGesiegelt")).booleanValue();
-		this.m_sStudentLeistungCustom1=(shjNodeValue(node, "StudentLeistungCustom1"));
-		this.m_sStudentLeistungCustom2=(shjNodeValue(node, "StudentLeistungCustom2"));
-		this.m_sStudentLeistungCustom3=(shjNodeValue(node, "StudentLeistungCustom3"));
-		this.m_lModulID=Long.parseLong(shjNodeValue(node, "ModulID"));
-		this.m_dStudentLeistungHISExport=(Date) (sdf.parse(shjNodeValue(node, "StudentLeistungHISExport")));
-		this.m_dStudentLeistungHISVerified=(Date) (sdf.parse(shjNodeValue(node, "StudentLeistungHISVerified")));
 	}		
 	
 ////////////////////////////////////////////////////////////////
@@ -1801,9 +1732,18 @@ public class StudentXLeistung extends shjCore{
 		Long.parseLong(this.m_sMatrikelnummer);
 		long lngNewLeistungNextCount = 0;
 		try{
-			lngNewLeistungNextCount = this.getNextID("lngStudentLeistungCount", "tblBdStudentXLeistung", "\"lngSdSeminarID\"=" + this.m_lSdSeminarID + " AND "  +
-								"\"strMatrikelnummer\"='" + this.m_sMatrikelnummer + "' AND "  +
-								"\"lngLeistungsID\"=" + lngLeistungIdNew);
+                    PreparedStatement pstm = this.prepareStatement("select \"lngStudentLeistungCount\" "
+                            + "from \"tblBdStudentXLeistung\" where "
+                            + "\"lngSdSeminarID\"=? AND "  +
+                            "\"strMatrikelnummer\"=? AND "  +
+                            "\"lngLeistungsID\"=?");
+                    
+                    pstm.setLong(1, m_lSdSeminarID);
+                    pstm.setString(2, this.m_sMatrikelnummer);
+                    pstm.setLong(3, lngLeistungIdNew);
+                    ResultSet rN = pstm.executeQuery();
+                    rN.next();
+                    lngNewLeistungNextCount = rN.getLong("lngStudentLeistungCount")+1;
 		}catch(Exception eNoLeistungOfThatIdFound){}		
 		
 		boolean bReturn= sqlExe("update \"tblBdStudentXLeistung\" set \"lngLeistungsID\"=" + lngLeistungIdNew + ", \"lngStudentLeistungCount\"=" + lngNewLeistungNextCount + " where (" + 
@@ -1833,9 +1773,18 @@ public class StudentXLeistung extends shjCore{
 		
 		long lngNewLeistungNextCount = 0;
 		try{
-			lngNewLeistungNextCount = this.getNextID("lngStudentLeistungCount", "tblBdStudentXLeistung", "\"lngSdSeminarID\"=" + this.m_lSdSeminarID + " AND "  +
-								"\"strMatrikelnummer\"='" + this.m_sMatrikelnummer + "' AND "  +
-								"\"lngLeistungsID\"=" + lngLeistungIdNew);
+                    PreparedStatement pstm = this.prepareStatement("select \"lngStudentLeistungCount\" "
+                            + "from \"tblBdStudentXLeistung\" where "
+                            + "\"lngSdSeminarID\"=? AND "  +
+                            "\"strMatrikelnummer\"=? AND "  +
+                            "\"lngLeistungsID\"=?");
+                    
+                    pstm.setLong(1, m_lSdSeminarID);
+                    pstm.setString(2, this.m_sMatrikelnummer);
+                    pstm.setLong(3, lngLeistungIdNew);
+                    ResultSet rN = pstm.executeQuery();
+                    rN.next();
+                    lngNewLeistungNextCount = rN.getLong("lngStudentLeistungCount")+1;
 		}catch(Exception eNoLeistungOfThatIdFound){}		
 		
 		boolean bReturn = sqlExe("update \"tblBdStudentXLeistung\" set " +
@@ -2040,15 +1989,6 @@ public class StudentXLeistung extends shjCore{
 	 **/
 	public StudentXLeistung(ResultSet rst) throws SQLException{
 		this.initByRst(rst);
-		this.m_bIsDirty = false;
-	}
-
-	/**
-	 * Konstruktor per XML-Darstellung des Objekts.
-	 * @throws ParseException, if a date can't be read.
-	 **/
-	public StudentXLeistung(Node node) throws ParseException{
-		this.initByNode(node);
 		this.m_bIsDirty = false;
 	}
 

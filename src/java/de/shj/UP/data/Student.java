@@ -1561,66 +1561,7 @@ public class Student extends shjCore{
 		this.m_bStudentSelected=rst.getBoolean("blnStudentSelected");
 		this.m_sStudentUrlaub=rst.getString("strStudentUrlaub");	
 	}	
-	
-	/**
-	 * Lade die Objekteigenschaften aus einer XML-Node.
-	 * param node XML-Node mit allen Eigenschaften als Tags.
-	 * @throws ParseException (Datum muss im ISO-Format yyyy-MM-dd übergeben werden).
-	 **/
-	private void initByNode(Node node) throws ParseException{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-		this.m_lStudentPID=Long.parseLong(shjNodeValue(node, "StudentPID"));
-		this.m_sMatrikelnummer=(shjNodeValue(node, "Matrikelnummer"));
-		this.m_sStudentVorname=(shjNodeValue(node, "StudentVorname"));
-		this.m_sStudentNachname=(shjNodeValue(node, "StudentNachname"));
-		this.m_sStudentGeburtsname=(shjNodeValue(node, "StudentGeburtsname"));
-		this.m_iStudentSemester=Integer.parseInt(shjNodeValue(node, "StudentSemester"));
-		this.m_sStudentPasswort=(shjNodeValue(node, "StudentPasswort"));
-		this.m_bStudentLoggedIn=Boolean.valueOf(shjNodeValue(node, "StudentLoggedIn")).booleanValue();
-		this.m_dStudentGeburtstag=(Date) (sdf.parse(shjNodeValue(node, "StudentGeburtstag")));
-		this.m_sStudentGeburtsort=(shjNodeValue(node, "StudentGeburtsort"));
-		this.m_sStudentStaat=(shjNodeValue(node, "StudentStaat"));
-		this.m_lStudentZUVZiel=Long.parseLong(shjNodeValue(node, "StudentZUVZiel"));
-		this.m_sStudentStrasse=(shjNodeValue(node, "StudentStrasse"));
-		this.m_sStudentPLZ=(shjNodeValue(node, "StudentPLZ"));
-		this.m_sStudentOrt=(shjNodeValue(node, "StudentOrt"));
-		this.m_sStudentEmail=(shjNodeValue(node, "StudentEmail"));
-		this.m_bStudentPublishEmail=Boolean.valueOf(shjNodeValue(node, "StudentPublishEmail")).booleanValue();
-		this.m_sStudentTelefon=(shjNodeValue(node, "StudentTelefon"));
-		this.m_sStudentHandy=(shjNodeValue(node, "StudentHandy"));
-		this.m_bStudentPublishHandy=Boolean.valueOf(shjNodeValue(node, "StudentPublishHandy")).booleanValue();
-		this.m_sStudentHomepage=(shjNodeValue(node, "StudentHomepage"));
-		this.m_bStudentPublishHomepage=Boolean.valueOf(shjNodeValue(node, "StudentPublishHomepage")).booleanValue();
-		this.m_sStudentInterests=(shjNodeValue(node, "StudentInterests"));
-		this.m_bStudentVisible=Boolean.valueOf(shjNodeValue(node, "StudentVisible")).booleanValue();
-		this.m_tStudentLastLogin=(shjNodeValue(node, "StudentLastLogin"));
-		this.m_tStudentLastLogout=(shjNodeValue(node, "StudentLastLogout"));
-		this.m_dStudentZUVAdd=(Date) (sdf.parse(shjNodeValue(node, "StudentZUVAdd")));
-		this.m_dStudentZUVUpdate=(Date) (sdf.parse(shjNodeValue(node, "StudentZUVUpdate")));
-		this.m_dStudentZUVImmatrikuliert=(Date) (sdf.parse(shjNodeValue(node, "StudentZUVImmatrikuliert")));
-		this.m_sStudentHf1=(shjNodeValue(node, "StudentHf1"));
-		this.m_sStudentHf2=(shjNodeValue(node, "StudentHf2"));
-		this.m_bStudentFemale=Boolean.valueOf(shjNodeValue(node, "StudentFemale")).booleanValue();
-		this.m_lStudentRandom=Long.parseLong(shjNodeValue(node, "StudentRandom"));
-		this.m_sStudentZUVFach=(shjNodeValue(node, "StudentZUVFach"));
-		this.m_iStudentFach1=Integer.parseInt(shjNodeValue(node, "StudentFach1"));
-		this.m_iStudentFach2=Integer.parseInt(shjNodeValue(node, "StudentFach2"));
-		this.m_iStudentFach3=Integer.parseInt(shjNodeValue(node, "StudentFach3"));
-		this.m_iStudentFach4=Integer.parseInt(shjNodeValue(node, "StudentFach4"));
-		this.m_iStudentFach5=Integer.parseInt(shjNodeValue(node, "StudentFach5"));
-		this.m_iStudentFach6=Integer.parseInt(shjNodeValue(node, "StudentFach6"));
-		this.m_iStudentFachsemester1=Integer.parseInt(shjNodeValue(node, "StudentFachsemester1"));
-		this.m_iStudentFachsemester2=Integer.parseInt(shjNodeValue(node, "StudentFachsemester2"));
-		this.m_iStudentFachsemester3=Integer.parseInt(shjNodeValue(node, "StudentFachsemester3"));
-		this.m_iStudentFachsemester4=Integer.parseInt(shjNodeValue(node, "StudentFachsemester4"));
-		this.m_iStudentFachsemester5=Integer.parseInt(shjNodeValue(node, "StudentFachsemester5"));
-		this.m_iStudentFachsemester6=Integer.parseInt(shjNodeValue(node, "StudentFachsemester6"));
-		this.m_sStudentBemerkung=(shjNodeValue(node, "StudentBemerkung"));
-		this.m_bStudentSelected=Boolean.valueOf(shjNodeValue(node, "StudentSelected")).booleanValue();
-		this.m_sStudentUrlaub=(shjNodeValue(node, "StudentUrlaub"));
-	}		
-	
 ////////////////////////////////////////////////////////////////
 // 6.   S Q L  U T I L I T I E S
 ////////////////////////////////////////////////////////////////
@@ -1740,23 +1681,18 @@ public class Student extends shjCore{
 	}
 
 	/**
-	 * Konstruktor per XML-Darstellung des Objekts.
-	 * @throws ParseException, if a date can't be read.
-	 **/
-	public Student(Node node) throws ParseException{
-		this.initByNode(node);
-		this.m_bIsDirty = false;
-	}
-
-	/**
-	 * Try to construct from Matrikelnummer only (costly).
-	 * New on Feb 2008
+	 * Überarbeitet 2016 (Statement statt Query)
 	 * @param matrikelnummer
 	 * @throws Exception 
 	 * @throws NumberFormatException 
 	 */
 	public Student(String matrikelnummer) throws NumberFormatException, Exception {
-		this.init(Long.parseLong(lookUp("lngStudentPID", "tblBdStudent", "\"strMatrikelnummer\"='" +
-				matrikelnummer + "'")), matrikelnummer);
+            PreparedStatement pstm = this.prepareStatement("select \"lngStudentPID\" from \"tblBdStudent\" where \"strMatrikelnummer\"=?;");
+            pstm.setString(1, matrikelnummer);
+            ResultSet rs = pstm.executeQuery();
+            if(rs.next()){
+                this.init(rs.getLong("lngStudentPID"), matrikelnummer);
+            }
+            try{rs.close();}catch(Exception e){}
 	}
   }//Klassenende

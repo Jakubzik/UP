@@ -17,7 +17,7 @@ import java.sql.ResultSet;
  */
 public class Sprechstunde extends shjCore {
     private String m_sEmailErr="";
-    private static final String g_SERVER = "extmail.urz.uni-heidelberg.de";
+    private static final String g_SERVER = "ausganggserver@host.domain";
     private int iCount=0;
     private int iCountErr=0;
     

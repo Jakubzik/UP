@@ -69,6 +69,8 @@
 package de.shj.UP.logic;
 
 
+import de.shj.UP.data.shjCore;
+import java.util.Calendar;
 import java.util.Locale;
 
 /**
@@ -88,7 +90,7 @@ public class SemesterUtil{
 
 	public String m_strDebug;
 
-	private de.shj.UP.HTML.HtmlDate	m_Date;
+	private java.util.Date	m_Date;
 
 
 	// ------------------------------ ------------------------------
@@ -103,35 +105,49 @@ public class SemesterUtil{
 	// ------------------------------ ------------------------------
 	// ------------------------------ ------------------------------
 	/**
+         * UNGETESTET!
 	 * @return semester start (for use in SQL query), in ISO format.
 	 **/
 	public String getSemesterStart(){
-		return m_Date.getSemesterStart();
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(m_Date);
+            int iMonth = cal.get(Calendar.MONTH);
+            String sReturn = "";
+            
+            // April(=3) bis Oktober(=9) ist Sommer
+            if(iMonth > 2 && iMonth < 10)
+                sReturn = cal.get(Calendar.YEAR) + "-4-1";
+            else{
+                if (iMonth <=2)
+                    sReturn = (cal.get(Calendar.YEAR)-1) + "-10-1";
+                else
+                    sReturn = (cal.get(Calendar.YEAR)) + "-10-1";
+            }
+            return sReturn;
 	}
 
 	/**
+         * UNGETESTET!
 	 * @return semester end (for use in SQL query), in ISO format.
 	 **/
 	public String getSemesterEnd(){
-		return m_Date.getSemesterEnd();
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(m_Date);
+            int iMonth = cal.get(Calendar.MONTH);
+            String sReturn = "";
+            
+            // April(=3) bis Oktober(=9) ist Sommer
+            if(iMonth > 2 && iMonth < 10)
+                sReturn = cal.get(Calendar.YEAR) + "-9-30";
+            else{
+                if (iMonth <=2)
+                    sReturn = (cal.get(Calendar.YEAR)) + "-3-31";
+                else
+                    sReturn = (cal.get(Calendar.YEAR)+1) + "-3-31";
+            }
+            return sReturn;
 	}
 
-	/**
-	 * Utility to get semester name of date in UnivIS-format.
-	 * @return String representing the semester, like '2004s' (summer term 2004), 2004w (winter termin 2004/2005) etc.
-	 **/
-	public String getSemesterNameUnivIS(){
-		return m_Date.getSemesterNameUnivIS();
-	}
-
-	/**
-	 * @return String with a representation of the semester name in one of the following
-	 * languages: German and English. (Only options right now)
-	 * @param strLanguage: "de" for German, "en" for English. Default is English.
-	 **/
-	public String getSemesterNameTranscript(String strLanguage){
-		return m_Date.getSemesterNameTranscript(strLanguage);
-	}
 
 	// ------------------------------ ------------------------------
 	// ------------------------------ ------------------------------
@@ -157,16 +173,15 @@ public class SemesterUtil{
 	 **/
 	public SemesterUtil(String strSemesterName, Locale loc) throws Exception{
 
-		String strDate		= "";
+            String strDate		= "";
 
-		if(strSemesterName.startsWith("ss")){
-			strDate = strSemesterName.substring(2) + "-4-2";
-		}else{
-		    if(strSemesterName.startsWith("ws")){
-				strDate = strSemesterName.substring(2, 6) + "-10-2";
-			}
-		}
-
-		m_Date = new de.shj.UP.HTML.HtmlDate(strDate, loc);
+            if(strSemesterName.startsWith("ss")){
+                    strDate = strSemesterName.substring(2) + "-4-2";
+            }else{
+                if(strSemesterName.startsWith("ws")){
+                            strDate = strSemesterName.substring(2, 6) + "-10-2";
+                    }
+            }
+            m_Date = shjCore.g_ISO_DATE_FORMAT.parse(strDate);
 	}
 }

@@ -159,11 +159,10 @@ public class HtmlSeminar extends de.shj.UP.logic.SeminarData{
 	private long m_lngCourseTypePreselect=-1;
 	private String m_strErr;
 	private Locale m_Locale;
-	private HtmlDate m_HtmlDate;
 	private String m_sLastZUVUpdate=null;
 	
-	private String m_sAutoSuggestLeistungArray = g_STRING_UNINITIALIZED;
-	private String m_sAutoSuggestDozentArray   = g_STRING_UNINITIALIZED;
+	private String m_sAutoSuggestLeistungArray = "#";
+	private String m_sAutoSuggestDozentArray   = "#";
 
 	private Date m_dLastZUVUpdate;
 
@@ -179,44 +178,15 @@ public class HtmlSeminar extends de.shj.UP.logic.SeminarData{
 	 */
 	public Date getLastZUVUpdate() throws Exception{
 		if(m_sLastZUVUpdate == null) {
-			m_sLastZUVUpdate = dbMax("dtmStudentZUVUpdate", "tblBdStudent", "");
+                    ResultSet rTmp = sqlQuery("select max(\"dtmStudentZUVUpdate\") as \"datum\" from \"tblBdStudent\";");
+                    rTmp.next();
+		    m_sLastZUVUpdate = rTmp.getString("datum");
 		}
 		if(m_dLastZUVUpdate==null) m_dLastZUVUpdate = new java.sql.Date(g_ISO_DATE_FORMAT.parse(m_sLastZUVUpdate).getTime());
 		return m_dLastZUVUpdate;
 	}
 
-	/**
-	 * @return current date
-	 * @throws Exception
-	 */
-	public HtmlDate getToday() throws Exception{
-		if(m_HtmlDate==null) m_HtmlDate=new HtmlDate(Locale.GERMANY);
-		return m_HtmlDate;
-	}
-	
-	
-	/**
-	 * Try in 6.18.5 (October 2007) to use more IntelliSense 
-	 * for a better WEB 2.0. feeling. This is a first try.
-	 */
-	public String getAutoSuggestLeistungArray() throws Exception{
-		if(isUninitialized(m_sAutoSuggestLeistungArray)){
-			getLeistungCbo();
-		}
-		return m_sAutoSuggestLeistungArray;
-	}
-	
-	/**
-	 * Try in 6.18.5 (Januar 2008) to use more IntelliSense 
-	 * for a better WEB 2.0. feeling. This is the second try.
-	 */
-	public String getAutoSuggestDozentArray() throws Exception{
-		if(isUninitialized(m_sAutoSuggestDozentArray)){
-			getDozentCbo();
-		}
-		return m_sAutoSuggestDozentArray;
-	}	
-	
+
 	/**
 	 * <pre>
 	 * If CourseTypeCboPreselect is 
@@ -818,47 +788,6 @@ public class HtmlSeminar extends de.shj.UP.logic.SeminarData{
 		return strReturn;
 	}
 
-	/**
-	 * Utility to get a table of courses of a given type, that (will) allow for online-exam registration.
-	 * @return An Html-Table (just <tr>Course-Description (teacher, time)<td></td><td>ApplicationDate-LINK</td></tr>) with courses of given type that allow online exam-registration now or in the future.
-	 * 'ApplicationDate-LINK' here signifies application period, and href is 'Confirm.jsp' with parameter ?txtKurstypID=ID plus everything that is handed over in 'strRequestQuery_IN.'
-	 * @param strRequestQuery_IN: a Http query addition in the usual form of 'param=value&param2=value2' etc. It is appended to the link.
-	 * @param lngKurstypID: ID of coursetype that all the courses should belong to.
- 	 * @return String containing rows of a table.
- 	 * @throws Exceptions when connection to database does not work out.
-	 **/
-	public String getCoursesExamRegHtml(long lngKurstypID, String strRequestQuery_IN) throws Exception{
-
-		ResultSet rst=this.getCoursesExamRegRST(lngKurstypID);
-		String strReturn="";
-		String strLink="";
-		String strApplicationPeriod="";
-		String strTime="";
-		String strDozent="";
-		String strTitel = "";
-
-		while(rst.next()){
-
-			strApplicationPeriod =  this.shjGetLocalDate(rst.getDate("dtmKursScheinanmeldungVon"),m_Locale) + " - " +  this.shjGetLocalDate(rst.getDate("dtmKursScheinanmeldungBis"), m_Locale);
-
-			try{
-			  strTime=rst.getString("strKursTag") + ", " + rst.getString("dtmKursBeginn").substring(0,5) + " - " + rst.getString("dtmKursEnde").substring(0,5);
-			}catch(Exception eTerminFreitext){strTime = rst.getString("strKursTerminFreitext");}
-
-			strDozent=normalize(rst.getString("strDozentNachname"));
-			if(strDozent.equals("")) strDozent = "N.N.";
-
-			strTitel =normalize(rst.getString("strKursTitel"));
-
-			strLink=(rst.getBoolean("blnAllowChanges")) ? "<a href=\"Confirm.jsp?cmdAct=Apply&txtKursID=" + rst.getString("lngKursID") + "&txtDozentNachname=" + strDozent + "&txtTime=" + strTime + "&" + strRequestQuery_IN + "\">" + strApplicationPeriod + "</a>" : strApplicationPeriod;
-
-			strReturn+="<tr><td class=\"tcellstyle\">" + strDozent + ": &quot;" + strTitel + "&quot;,<br /> " + strTime + "</td>" +
-			"<td class=\"tcellstyle\">" + strLink + "</td></tr>";
-		}
-
-		rst.close();
-		return strReturn;
-	}
 
 	/**
 	 *	Utility to get a table with exams (relative only to seminar).

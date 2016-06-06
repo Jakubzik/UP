@@ -547,31 +547,6 @@ public class PruefungXModul extends shjCore{
 		this.m_sCustom2_en=rst.getString("strCustom2_en");
 		this.m_sCustom3_en=rst.getString("strCustom3_en");	
 	}	
-	
-	/**
-	 * Lade die Objekteigenschaften aus einer XML-Node.
-	 * param node XML-Node mit allen Eigenschaften als Tags.
-	 * @throws ParseException (Datum muss im ISO-Format yyyy-MM-dd übergeben werden).
-	 **/
-	private void initByNode(Node node) throws ParseException{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-		this.m_lSdSeminarID=Long.parseLong(shjNodeValue(node, "SdSeminarID"));
-		this.m_lPruefungID=Long.parseLong(shjNodeValue(node, "PruefungID"));
-		this.m_lModulID=Long.parseLong(shjNodeValue(node, "ModulID"));
-		this.m_sPruefungLeistungGewichtung=Float.valueOf(shjNodeValue(node, "PruefungLeistungGewichtung")).floatValue();
-		this.m_sMinCreditPts=Float.valueOf(shjNodeValue(node, "MinCreditPts")).floatValue();
-		this.m_sMinCreditPtsPLeistung=Float.valueOf(shjNodeValue(node, "MinCreditPtsPLeistung")).floatValue();
-		this.m_sMinCreditPtsSLeistung=Float.valueOf(shjNodeValue(node, "MinCreditPtsSLeistung")).floatValue();
-		this.m_bZulassungsvoraussetzung=Boolean.valueOf(shjNodeValue(node, "Zulassungsvoraussetzung")).booleanValue();
-		this.m_sCustom1=(shjNodeValue(node, "Custom1"));
-		this.m_sCustom2=(shjNodeValue(node, "Custom2"));
-		this.m_sCustom3=(shjNodeValue(node, "Custom3"));
-		this.m_sCustom1_en=(shjNodeValue(node, "Custom1_en"));
-		this.m_sCustom2_en=(shjNodeValue(node, "Custom2_en"));
-		this.m_sCustom3_en=(shjNodeValue(node, "Custom3_en"));
-	}		
-	
 ////////////////////////////////////////////////////////////////
 // 6.   S Q L  U T I L I T I E S
 ////////////////////////////////////////////////////////////////
@@ -687,14 +662,4 @@ public class PruefungXModul extends shjCore{
 		this.initByRst(rst);
 		this.m_bIsDirty = false;
 	}
-
-	/**
-	 * Konstruktor per XML-Darstellung des Objekts.
-	 * @throws ParseException, if a date can't be read.
-	 **/
-	public PruefungXModul(Node node) throws ParseException{
-		this.initByNode(node);
-		this.m_bIsDirty = false;
-	}
-
   }//Klassenende

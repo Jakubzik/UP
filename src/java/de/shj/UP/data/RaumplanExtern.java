@@ -423,24 +423,6 @@ public class RaumplanExtern extends shjCore{
 		this.m_bPlanung=rst.getBoolean("blnPlanung");	
 	}	
 	
-	/**
-	 * Lade die Objekteigenschaften aus einer XML-Node.
-	 * param node XML-Node mit allen Eigenschaften als Tags.
-	 * @throws ParseException (Datum muss im ISO-Format yyyy-MM-dd übergeben werden).
-	 **/
-	private void initByNode(Node node) throws ParseException{
-
-		this.m_lSdSeminarID=Long.parseLong(shjNodeValue(node, "SdSeminarID"));
-		this.m_lLfdNr=Long.parseLong(shjNodeValue(node, "LfdNr"));
-		this.m_sRaum=(shjNodeValue(node, "Raum"));
-		this.m_sTag=(shjNodeValue(node, "Tag"));
-		this.m_tBeginn=(shjNodeValue(node, "Beginn"));
-		this.m_tEnde=(shjNodeValue(node, "Ende"));
-		this.m_sName=(shjNodeValue(node, "Name"));
-		this.m_sKurstypBezeichnung=(shjNodeValue(node, "KurstypBezeichnung"));
-		this.m_bPlanung=Boolean.valueOf(shjNodeValue(node, "Planung")).booleanValue();
-	}		
-	
 ////////////////////////////////////////////////////////////////
 // 6.   S Q L  U T I L I T I E S
 ////////////////////////////////////////////////////////////////
@@ -556,14 +538,4 @@ public class RaumplanExtern extends shjCore{
 		this.initByRst(rst);
 		this.m_bIsDirty = false;
 	}
-
-	/**
-	 * Konstruktor per XML-Darstellung des Objekts.
-	 * @throws ParseException, if a date can't be read.
-	 **/
-	public RaumplanExtern(Node node) throws ParseException{
-		this.initByNode(node);
-		this.m_bIsDirty = false;
-	}
-
   }//Klassenende

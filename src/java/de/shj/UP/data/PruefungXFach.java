@@ -330,22 +330,6 @@ public class PruefungXFach extends shjCore{
 		this.m_bPruefungFachAbschluss=rst.getBoolean("blnPruefungFachAbschluss");
 		this.m_sBemerkung=rst.getString("strBemerkung");	
 	}	
-	
-	/**
-	 * Lade die Objekteigenschaften aus einer XML-Node.
-	 * param node XML-Node mit allen Eigenschaften als Tags.
-	 * @throws ParseException (Datum muss im ISO-Format yyyy-MM-dd übergeben werden).
-	 **/
-	private void initByNode(Node node) throws ParseException{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-		this.m_lSdSeminarID=Long.parseLong(shjNodeValue(node, "SdSeminarID"));
-		this.m_lPruefungID=Long.parseLong(shjNodeValue(node, "PruefungID"));
-		this.m_iFachID=Integer.parseInt(shjNodeValue(node, "FachID"));
-		this.m_bPruefungFachAbschluss=Boolean.valueOf(shjNodeValue(node, "PruefungFachAbschluss")).booleanValue();
-		this.m_sBemerkung=(shjNodeValue(node, "Bemerkung"));
-	}		
-	
 ////////////////////////////////////////////////////////////////
 // 6.   S Q L  U T I L I T I E S
 ////////////////////////////////////////////////////////////////
@@ -459,15 +443,6 @@ public class PruefungXFach extends shjCore{
 	 **/
 	public PruefungXFach(ResultSet rst) throws SQLException{
 		this.initByRst(rst);
-		this.m_bIsDirty = false;
-	}
-
-	/**
-	 * Konstruktor per XML-Darstellung des Objekts.
-	 * @throws ParseException, if a date can't be read.
-	 **/
-	public PruefungXFach(Node node) throws ParseException{
-		this.initByNode(node);
 		this.m_bIsDirty = false;
 	}
 

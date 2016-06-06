@@ -596,33 +596,6 @@ public class StudentXPruefung extends shjCore{
 	}
 
 	/**
-	 * @deprecated
-	 * SQL-Befehl zum Speichern der Objekteigenschaften in die Datenbank (Tabelle 'tblBdStudentXPruefung.')
-	 **/
-	protected String toDBUpdateStringOld(){
-			return "update \"tblBdStudentXPruefung\" set " +
-				"\"lngSdSeminarID\"=" + this.m_lSdSeminarID +  ", " +
-				"\"lngSdPruefungsID\"=" + this.m_lSdPruefungsID +  ", " +
-				"\"strMatrikelnummer\"=" + dbNormal(this.m_sMatrikelnummer) +  ", " +
-				"\"intStudentPruefungCount\"=" + this.m_iStudentPruefungCount +  ", " +
-				"\"intNoteID\"=" + this.m_iNoteID +  ", " +
-				"\"strStudentPruefungNote\"=" + dbNormal(this.m_sStudentPruefungNote) +  ", " +
-				"\"strStudentPruefungSemester\"=" + dbNormal(this.m_sStudentPruefungSemester) +  ", " +
-				"\"blnStudentPruefungZUVInformiert\"=" + getDBBoolRepresentation(this.m_bStudentPruefungZUVInformiert) +  ", " +
-				"\"blnStudentPruefungValidiert\"=" + getDBBoolRepresentation(this.m_bStudentPruefungValidiert) +  ", " +
-				"\"blnStudentPruefungAnmeldung\"=" + getDBBoolRepresentation(this.m_bStudentPruefungAnmeldung) +  ", " +
-				"\"blnStudentPruefungGesiegelt\"=" + getDBBoolRepresentation(this.m_bStudentPruefungGesiegelt) +  ", " +
-				"\"blnStudentPruefungBestanden\"=" + getDBBoolRepresentation(this.m_bStudentPruefungBestanden) +  ", " +
-				"\"dtmStudentPruefungAusstellungsd\"=" + dbNormal(g_ISO_DATE_FORMAT.format(this.m_dStudentPruefungAusstellungsd)) +  ", " +
-				"\"strStudentPruefungAussteller\"=" + dbNormal(this.m_sStudentPruefungAussteller) +  ", " +
-				"\"strStudentPruefungRowIP\"=" + dbNormal(this.m_sStudentPruefungRowIP) +  ", " +
-				"\"strStudentPruefungCustom1\"=" + dbNormal(this.m_sStudentPruefungCustom1) +  ", " +
-				"\"strStudentPruefungCustom2\"=" + dbNormal(this.m_sStudentPruefungCustom2) +  ", " +
-				"\"strStudentPruefungCustom3\"=" + dbNormal(this.m_sStudentPruefungCustom3) +  "" +
-				" where (" + this.getSQLWhereClauseOld() + ");";
-		}
-	
-	/**
 	 * SQL-Befehl zum Hinzufügen des Objekts in die Datenbank (Tabelle 'tblBdStudentXPruefung.')
 	 * @return SQL-String "insert into...".
 	 **/
@@ -687,35 +660,6 @@ public class StudentXPruefung extends shjCore{
 		this.m_sStudentPruefungCustom2=rst.getString("strStudentPruefungCustom2");
 		this.m_sStudentPruefungCustom3=rst.getString("strStudentPruefungCustom3");	
 	}	
-	
-	/**
-	 * Lade die Objekteigenschaften aus einer XML-Node.
-	 * param node XML-Node mit allen Eigenschaften als Tags.
-	 * @throws ParseException (Datum muss im ISO-Format yyyy-MM-dd übergeben werden).
-	 **/
-	private void initByNode(Node node) throws ParseException{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-		this.m_lSdSeminarID=Long.parseLong(shjNodeValue(node, "SdSeminarID"));
-		this.m_lSdPruefungsID=Long.parseLong(shjNodeValue(node, "SdPruefungsID"));
-		this.m_sMatrikelnummer=(shjNodeValue(node, "Matrikelnummer"));
-		this.m_iStudentPruefungCount=Integer.parseInt(shjNodeValue(node, "StudentPruefungCount"));
-		this.m_iNoteID=Integer.parseInt(shjNodeValue(node, "NoteID"));
-		this.m_sStudentPruefungNote=(shjNodeValue(node, "StudentPruefungNote"));
-		this.m_sStudentPruefungSemester=(shjNodeValue(node, "StudentPruefungSemester"));
-		this.m_bStudentPruefungZUVInformiert=Boolean.valueOf(shjNodeValue(node, "StudentPruefungZUVInformiert")).booleanValue();
-		this.m_bStudentPruefungValidiert=Boolean.valueOf(shjNodeValue(node, "StudentPruefungValidiert")).booleanValue();
-		this.m_bStudentPruefungAnmeldung=Boolean.valueOf(shjNodeValue(node, "StudentPruefungAnmeldung")).booleanValue();
-		this.m_bStudentPruefungGesiegelt=Boolean.valueOf(shjNodeValue(node, "StudentPruefungGesiegelt")).booleanValue();
-		this.m_bStudentPruefungBestanden=Boolean.valueOf(shjNodeValue(node, "StudentPruefungBestanden")).booleanValue();
-		this.m_dStudentPruefungAusstellungsd=(Date) (sdf.parse(shjNodeValue(node, "StudentPruefungAusstellungsd")));
-		this.m_sStudentPruefungAussteller=(shjNodeValue(node, "StudentPruefungAussteller"));
-		this.m_sStudentPruefungRowIP=(shjNodeValue(node, "StudentPruefungRowIP"));
-		this.m_sStudentPruefungCustom1=(shjNodeValue(node, "StudentPruefungCustom1"));
-		this.m_sStudentPruefungCustom2=(shjNodeValue(node, "StudentPruefungCustom2"));
-		this.m_sStudentPruefungCustom3=(shjNodeValue(node, "StudentPruefungCustom3"));
-	}		
-	
 ////////////////////////////////////////////////////////////////
 // 6.   S Q L  U T I L I T I E S
 ////////////////////////////////////////////////////////////////
@@ -829,15 +773,6 @@ public class StudentXPruefung extends shjCore{
 	 **/
 	public StudentXPruefung(ResultSet rst) throws SQLException{
 		this.initByRst(rst);
-		this.m_bIsDirty = false;
-	}
-
-	/**
-	 * Konstruktor per XML-Darstellung des Objekts.
-	 * @throws ParseException, if a date can't be read.
-	 **/
-	public StudentXPruefung(Node node) throws ParseException{
-		this.initByNode(node);
 		this.m_bIsDirty = false;
 	}
 

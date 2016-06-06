@@ -29,7 +29,7 @@ public class StudentBean extends StudentData {
 	private	HtmlSeminar 	m_seminar		=null;
 	private Locale 			m_locale		=null;
 	private Fach			m_Fach			=null;
-	private long			m_lngFachsemester= g_ID_UNINITIALIZED;
+	private long			m_lngFachsemester= -4711;
 	private ExamIterator	m_ExamIterator	=null;
 	
 	/**

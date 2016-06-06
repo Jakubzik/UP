@@ -515,30 +515,7 @@ public class GruppenHistory extends shjCore{
 		this.m_sDozentOD=rst.getString("txtDozentOD");
 		this.m_sBdZusatzInfo=rst.getString("strBdZusatzInfo");
 		this.m_lCount=rst.getLong("lngCount");	
-	}	
-	
-	/**
-	 * Lade die Objekteigenschaften aus einer XML-Node.
-	 * param node XML-Node mit allen Eigenschaften als Tags.
-	 * @throws ParseException (Datum muss im ISO-Format yyyy-MM-dd übergeben werden).
-	 **/
-	private void initByNode(Node node) throws ParseException{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-		this.m_lSdSeminarID=Long.parseLong(shjNodeValue(node, "SdSeminarID"));
-		this.m_sBdSemestername=(shjNodeValue(node, "BdSemestername"));
-		this.m_lSdDozentID=Long.parseLong(shjNodeValue(node, "SdDozentID"));
-		this.m_lSdGruppenID=Long.parseLong(shjNodeValue(node, "SdGruppenID"));
-		this.m_sDozentBereich=(shjNodeValue(node, "DozentBereich"));
-		this.m_sDozentBemerkung=(shjNodeValue(node, "DozentBemerkung"));
-		this.m_sDozentDeputat=(shjNodeValue(node, "DozentDeputat"));
-		this.m_sDozentMittelherkunft=(shjNodeValue(node, "DozentMittelherkunft"));
-		this.m_sGruppenTyp=(shjNodeValue(node, "GruppenTyp"));
-		this.m_iLfdNr=Integer.parseInt(shjNodeValue(node, "LfdNr"));
-		this.m_sDozentOD=(shjNodeValue(node, "DozentOD"));
-		this.m_sBdZusatzInfo=(shjNodeValue(node, "BdZusatzInfo"));
-		this.m_lCount=Long.parseLong(shjNodeValue(node, "Count"));
-	}		
+	}			
 	
 ////////////////////////////////////////////////////////////////
 // 6.   S Q L  U T I L I T I E S
@@ -653,15 +630,6 @@ public class GruppenHistory extends shjCore{
 	 **/
 	public GruppenHistory(ResultSet rst) throws SQLException{
 		this.initByRst(rst);
-		this.m_bIsDirty = false;
-	}
-
-	/**
-	 * Konstruktor per XML-Darstellung des Objekts.
-	 * @throws ParseException, if a date can't be read.
-	 **/
-	public GruppenHistory(Node node) throws ParseException{
-		this.initByNode(node);
 		this.m_bIsDirty = false;
 	}
 

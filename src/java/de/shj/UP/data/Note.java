@@ -473,28 +473,6 @@ public class Note extends shjCore{
 		this.m_sNoteCustom2=rst.getString("strNoteCustom2");
 		this.m_sNoteCustom3=rst.getString("strNoteCustom3");	
 	}	
-	
-	/**
-	 * Lade die Objekteigenschaften aus einer XML-Node.
-	 * param node XML-Node mit allen Eigenschaften als Tags.
-	 * @throws ParseException (Datum muss im ISO-Format yyyy-MM-dd übergeben werden).
-	 **/
-	private void initByNode(Node node) throws ParseException{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-		this.m_lSdSeminarID=Long.parseLong(shjNodeValue(node, "SdSeminarID"));
-		this.m_iNoteID=Integer.parseInt(shjNodeValue(node, "NoteID"));
-		this.m_sNoteNameDE=(shjNodeValue(node, "NoteNameDE"));
-		this.m_sNoteWertDE=Float.valueOf(shjNodeValue(node, "NoteWertDE")).floatValue();
-		this.m_sNoteECTSGrade=(shjNodeValue(node, "NoteECTSGrade"));
-		this.m_sNoteECTSDefinition=(shjNodeValue(node, "NoteECTSDefinition"));
-		this.m_sNoteECTSCalc=Float.valueOf(shjNodeValue(node, "NoteECTSCalc")).floatValue();
-		this.m_bNoteBestanden=Boolean.valueOf(shjNodeValue(node, "NoteBestanden")).booleanValue();
-		this.m_sNoteCustom1=(shjNodeValue(node, "NoteCustom1"));
-		this.m_sNoteCustom2=(shjNodeValue(node, "NoteCustom2"));
-		this.m_sNoteCustom3=(shjNodeValue(node, "NoteCustom3"));
-	}		
-	
 ////////////////////////////////////////////////////////////////
 // 6.   S Q L  U T I L I T I E S
 ////////////////////////////////////////////////////////////////
@@ -610,14 +588,4 @@ public class Note extends shjCore{
 		this.initByRst(rst);
 		this.m_bIsDirty = false;
 	}
-
-	/**
-	 * Konstruktor per XML-Darstellung des Objekts.
-	 * @throws ParseException, if a date can't be read.
-	 **/
-	public Note(Node node) throws ParseException{
-		this.initByNode(node);
-		this.m_bIsDirty = false;
-	}
-
   }//Klassenende

@@ -149,8 +149,11 @@ public class Fachnote extends shjCore {
 		// Welche Prüfung ist für das Fach als "Abschlussprüfung"
 		// registriert?
 		try{
-			m_lPruefungID = Long.parseLong(lookUp("lngPruefungID", "tblSdPruefungXFach", "\"lngSdSeminarID\"=" + m_lSeminarID + 
-					" and \"intFachID\"=" + m_iFachID + " and \"blnPruefungFachAbschluss\"=true"));
+                    ResultSet rPrfg = sqlQuery("select \"lngPruefungID\" from \"tblSdPruefungXFach\" where " +
+                        "\"lngSdSeminarID\"=" + m_lSeminarID + 
+			" and \"intFachID\"=" + m_iFachID + " and \"blnPruefungFachAbschluss\"=true");
+                    rPrfg.next();
+                    m_lPruefungID = rPrfg.getLong("lngPruefungID");
 		}catch(Exception e){
 			m_sErr += "Fehler beim Berechnen der Fachnote: zu Fach '" + m_iFachID + "' (Seminar '" + m_lSeminarID + "') kann keine Prüfung gefunden werden, die als Abschlussprüfung " +
 						"gekennzeichnet wäre (für die also tblSdPruefungXFach.blnPruefungFachAbschluss==true gälte).";

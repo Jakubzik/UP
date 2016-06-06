@@ -36,7 +36,7 @@
     ============
 
     
---%><%@page contentType="text/json" pageEncoding="UTF-8" import="java.sql.ResultSet,de.shj.UP.logic.AktuellesIterator,java.text.SimpleDateFormat, de.shj.UP.data.Dozent,de.shj.UP.data.shjCore" session="true" isThreadSafe="false"  errorPage="../../error.jsp" %>
+--%><%@page contentType="text/json" pageEncoding="UTF-8" import="java.sql.ResultSet,java.text.SimpleDateFormat, de.shj.UP.data.Dozent,de.shj.UP.data.shjCore" session="true" isThreadSafe="false"  errorPage="../../error.jsp" %>
 <jsp:useBean id="seminar" scope="session" class="de.shj.UP.HTML.HtmlSeminar" />
 <%@include file="../../../fragments/checkVersion.jsp" %>
 {"leistungen":[

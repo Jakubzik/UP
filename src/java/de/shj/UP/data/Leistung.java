@@ -542,27 +542,6 @@ public class Leistung extends shjCore{
 		this.m_sLeistungCustom2=rst.getString("strLeistungCustom2");
 		this.m_sLeistungCustom3=rst.getString("strLeistungCustom3");	
 	}	
-	
-	/**
-	 * Lade die Objekteigenschaften aus einer XML-Node.
-	 * param node XML-Node mit allen Eigenschaften als Tags.
-	 * @throws ParseException (Datum muss im ISO-Format yyyy-MM-dd übergeben werden).
-	 **/
-	private void initByNode(Node node) throws ParseException{
-		this.m_lSdSeminarID=Long.parseLong(shjNodeValue(node, "SdSeminarID"));
-		this.m_lLeistungID=Long.parseLong(shjNodeValue(node, "LeistungID"));
-		this.m_sLeistungBezeichnung=(shjNodeValue(node, "LeistungBezeichnung"));
-		this.m_sLeistungBezeichnung_en=(shjNodeValue(node, "LeistungBezeichnung_en"));
-		this.m_sLeistungBeschreibung=(shjNodeValue(node, "LeistungBeschreibung"));
-		this.m_sLeistungBeschreibung_en=(shjNodeValue(node, "LeistungBeschreibung_en"));
-		this.m_sLeistungZuordnung=(shjNodeValue(node, "LeistungZuordnung"));
-		this.m_sLeistungCreditPts=Float.valueOf(shjNodeValue(node, "LeistungCreditPts")).floatValue();
-		this.m_iLeistungCommitmentMode=Integer.parseInt(shjNodeValue(node, "LeistungCommitmentMode"));
-		this.m_sLeistungCustom1=(shjNodeValue(node, "LeistungCustom1"));
-		this.m_sLeistungCustom2=(shjNodeValue(node, "LeistungCustom2"));
-		this.m_sLeistungCustom3=(shjNodeValue(node, "LeistungCustom3"));
-	}		
-	
 ////////////////////////////////////////////////////////////////
 // 6.   S Q L  U T I L I T I E S
 ////////////////////////////////////////////////////////////////
@@ -678,14 +657,4 @@ public class Leistung extends shjCore{
 		this.initByRst(rst);
 		this.m_bIsDirty = false;
 	}
-
-	/**
-	 * Konstruktor per XML-Darstellung des Objekts.
-	 * @throws ParseException, if a date can't be read.
-	 **/
-	public Leistung(Node node) throws ParseException{
-		this.initByNode(node);
-		this.m_bIsDirty = false;
-	}
-
   }//Klassenende

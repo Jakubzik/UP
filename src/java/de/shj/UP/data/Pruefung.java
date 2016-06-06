@@ -712,38 +712,6 @@ public class Pruefung extends shjCore{
 		this.m_sPruefungCustom3=rst.getString("strPruefungCustom3");
 		this.m_bPruefungTriggered=rst.getBoolean("blnPruefungTriggered");	
 	}	
-	
-	/**
-	 * Lade die Objekteigenschaften aus einer XML-Node.
-	 * param node XML-Node mit allen Eigenschaften als Tags.
-	 * @throws ParseException (Datum muss im ISO-Format yyyy-MM-dd übergeben werden).
-	 **/
-	private void initByNode(Node node) throws ParseException{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-		this.m_lSdSeminarID=Long.parseLong(shjNodeValue(node, "SdSeminarID"));
-		this.m_lPruefungID=Long.parseLong(shjNodeValue(node, "PruefungID"));
-		this.m_sPruefungBezeichnung=(shjNodeValue(node, "PruefungBezeichnung"));
-		this.m_sPruefungBeschreibung=(shjNodeValue(node, "PruefungBeschreibung"));
-		this.m_sPruefungFach=(shjNodeValue(node, "PruefungFach"));
-		this.m_sPruefungAbschluss=(shjNodeValue(node, "PruefungAbschluss"));
-		this.m_sPruefungsordnung=(shjNodeValue(node, "Pruefungsordnung"));
-		this.m_bPruefungHauptfach=Boolean.valueOf(shjNodeValue(node, "PruefungHauptfach")).booleanValue();
-		this.m_sPruefungZUVAmt=(shjNodeValue(node, "PruefungZUVAmt"));
-		this.m_sPruefungZUVFach=(shjNodeValue(node, "PruefungZUVFach"));
-		this.m_sPruefungZUVTyp=(shjNodeValue(node, "PruefungZUVTyp"));
-		this.m_sPruefungMinCreditPts=Float.valueOf(shjNodeValue(node, "PruefungMinCreditPts")).floatValue();
-		this.m_bPruefungECTSGewicht=Boolean.valueOf(shjNodeValue(node, "PruefungECTSGewicht")).booleanValue();
-		this.m_sPruefungBezeichnung_en=(shjNodeValue(node, "PruefungBezeichnung_en"));
-		this.m_sPruefungBeschreibung_en=(shjNodeValue(node, "PruefungBeschreibung_en"));
-		this.m_sPruefungFach_en=(shjNodeValue(node, "PruefungFach_en"));
-		this.m_sPruefungAbschluss_en=(shjNodeValue(node, "PruefungAbschluss_en"));
-		this.m_sPruefungCustom1=(shjNodeValue(node, "PruefungCustom1"));
-		this.m_sPruefungCustom2=(shjNodeValue(node, "PruefungCustom2"));
-		this.m_sPruefungCustom3=(shjNodeValue(node, "PruefungCustom3"));
-		this.m_bPruefungTriggered=Boolean.valueOf(shjNodeValue(node, "PruefungTriggered")).booleanValue();
-	}		
-	
 ////////////////////////////////////////////////////////////////
 // 6.   S Q L  U T I L I T I E S
 ////////////////////////////////////////////////////////////////
@@ -859,14 +827,4 @@ public class Pruefung extends shjCore{
 		this.initByRst(rst);
 		this.m_bIsDirty = false;
 	}
-
-	/**
-	 * Konstruktor per XML-Darstellung des Objekts.
-	 * @throws ParseException, if a date can't be read.
-	 **/
-	public Pruefung(Node node) throws ParseException{
-		this.initByNode(node);
-		this.m_bIsDirty = false;
-	}
-
   }//Klassenende

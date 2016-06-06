@@ -107,22 +107,6 @@ public class StudentLeistungBean extends StudentXLeistung {
 		}
 		return bReturn;
 	}
-	
-	/**
-	 * @param r Contains these params:<br />
-	 * #requestparam 's' or 'idxs' specifying seminar,<br />
-	 * #requestparam 'txtStudentPID' and <br />
-	 * #requestparam 'strMatrikelnummer' to identify student,
-	 * #requestparam 'cmdCommitment' (optional, not null or null).<br />
-	 * #requestparam 'order' (optional, order by name or date; ='Bezeichnung' means order by name).<br />
-	 * @throws Exception (parameters missing, or database-problems.
-	 * @see com.shj.signUp.logic.StudentData#StudentExamApplications()
-	 * @see com.shj.signUp.logic.StudentData#StudentCredits(boolean, byte)
-	 * @deprecated please use empty constructor and init(lngSeminarID, reqR) instead.
-	 */
-	public StudentLeistungBean(HttpServletRequest r) throws Exception{
-		init(r);
-	}
 
 	/**
 	 * Empty constructor for Bean usage; must call init(lngSeminarID, reqR) then to initialize
@@ -193,26 +177,6 @@ public class StudentLeistungBean extends StudentXLeistung {
 			return (r.getParameter("cmdCommitment")==null);
 		}
 		return (r.getParameter("cmdCommitment")!=null);
-	}
-		
-	/**
-	 * @param r
-	 * @throws Exception
-	 */
-	private void init(HttpServletRequest r) throws Exception {
-		StudentData student	= new StudentData();
-		long lngSeminarID	= getSeminarID(r);
-		
-		byte bytOrderBy	= (byte) ( (normalize(r.getParameter("order")).equals("Bezeichnung")) ? 1 : 0 );
-		student.init 				(lngSeminarID, 
-									 Long.parseLong(r.getParameter("txtStudentPID")), 
-									 r.getParameter("txtMatrikelnummer"));
-		
-		if(r.getParameter("cmdCommitment")==null){
-			m_rstLeistungen	= student.StudentCredits(false,bytOrderBy);
-		}else{
-			m_rstLeistungen	= student.StudentExamApplications();
-		}
 	}
 
 	/**

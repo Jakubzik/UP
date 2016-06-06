@@ -216,15 +216,14 @@ package de.shj.UP.logic;
 
 import java.sql.ResultSet;
 import java.util.Locale;//
-import java.util.Vector;
 
 import de.shj.UP.beans.student.BemerkungIterator;
-import de.shj.UP.data.StudGruppe;
-import de.shj.UP.HTML.HtmlDate;
 import de.shj.UP.data.Fach;
 import de.shj.UP.data.KursXKurstyp;
 import de.shj.UP.data.ModulXLeistung;
 import de.shj.UP.data.StudentXLeistung;
+import java.sql.PreparedStatement;
+import java.util.Vector;
 
 /**
  * This class is the first layer above the raw data.Student wrapper around that
@@ -243,7 +242,6 @@ public class StudentData extends de.shj.UP.data.Student{
 	// ------------------------------ ------------------------------
 
 	private static final long serialVersionUID = -6944592890299102777L;
-	public String m_strDebug;
 	private long m_lngSeminarID;
 	public static 	int 	m_ZUV_ZIEL_BACHELOR1=182;
 	public static 	int 	m_ZUV_ZIEL_BACHELOR2=282;
@@ -253,11 +251,11 @@ public class StudentData extends de.shj.UP.data.Student{
 	public static 	int 	m_ZUV_ZIEL_PROMOTION=506;
 	public static 	int 	m_ZUV_ZIEL_ERASMUS=2;
 	
+        private static final int g_ID_UNINITIALIZED = -4711; // Magic number: sorry.
 	private			int		m_iStudentFachID	= -1;	// uninitialized integer
 	
 	private 		boolean	m_blnOverrideCommitmentDoubletteCheck = false;
 	private 		String  m_strBAMANebenfach	="#";
-	private			StudGruppe m_objStudGruppe	= null;
 	private			BemerkungIterator m_Bemerkungen=null;
 	
 	private 		String	m_strURZPassword			= "";
@@ -283,39 +281,6 @@ public class StudentData extends de.shj.UP.data.Student{
 	public void resetBemerkungenIterator(){
 		m_Bemerkungen=null;
 	}
-	
-	
-	/**<pre>
-	 * Method returns the group that this student is mapped to,
-	 * * in the current semester (!),
-	 * * in the StudienSemester that is ths student's .StudentSemester().
-	 * </pre>
-	 * @see #getStudentGruppeID()
-	 * @return Group that this student is mapped to
-	 * @throws Exception
-	 */
-	public StudGruppe getStudGruppe() throws Exception{
-		if(m_objStudGruppe==null){
-			long lngGruppeID=Long.parseLong(lookUp("lngStudGruppeID", "tblBdStudentXStudGruppe", 
-					"\"lngSeminarID\"=" + m_lngSeminarID + " and " + 
-					"\"strMatrikelnummer\"='" + getMatrikelnummer() + "' and " + 
-					"\"lngStudentStudGruppeStudiensem\"=" + getStudentSemester() + " and " +
-					"\"strStudentStudGruppeSemester\"='" + getSemester() + "'"));
-			m_objStudGruppe = new StudGruppe(m_lngSeminarID, lngGruppeID);
-		}
-		return m_objStudGruppe;
-	}
-	
-	
-	/**
-	 * Returns current term in this format: ws2006/2007, or ss2007
-	 * @return the current semester name, if none other is set.
-	 * @throws Exception
-	 */
-	private String getSemester() throws Exception{
-		if(m_strSemester.equals("#")) m_strSemester = new HtmlDate(Locale.GERMAN).getSemesterName();
-		return m_strSemester;
-	}	
 
 	/**
 	 * <pre>
@@ -561,30 +526,7 @@ public class StudentData extends de.shj.UP.data.Student{
 		  "(l.\"lngSdSeminarID\" 			= x.\"lngSdSeminarID\")		    " +
 		 ") order by \"lngLeistungID\";");
 	}
-	
-	public void unsetGruppeID(){
-		m_blnGroupIDSet = false;
-		m_objStudGruppe=null;
-	}
-	
-	/**
-	 * @see #getStudGruppe()
-	 * @param lngSeminarID
-	 * @return Id of the group that this student is mapped 
-	 * to in the current semester, relative to his/her current 
-	 * "StudentSemester".
-	 */
-	public long getStudentGruppeID() {
-		try {
-			if(!m_blnGroupIDSet) m_lngGroupID = getStudGruppe().getStudGruppeID();
-			m_blnGroupIDSet=true;
-		} catch (Exception e) {
-			m_lngGroupID = -1;
-			m_blnGroupIDSet=false;
-		}
-		return m_lngGroupID;
-	}
-	
+		
 	
 	/**
 	 * If this is a bachelor or master student, ZUV should have intFach2=0.<br />
@@ -610,85 +552,52 @@ public class StudentData extends de.shj.UP.data.Student{
 	}
 	
 	/**<pre>
-	 * Executes update in database of fields that can be 
-	 * changed through web-interface by student or Config-administration. 
-	 * These are:
-	 * password, email (and publish or no), cell-phone number (and publish or no), homepage (and publish or no),
-	 * interests (and publish or no), ZUVZiel, remarks, "StudienSemester" (==StudentSemester).
+	 * Untermenge des Updates. Möglicherweise verzichtbar?
 	 * </pre>
 	 * @return 'true' on success, 'false' on failure.
 	 * @throws Exception when connection to database erroneous.
 	 **/
 	public boolean update() throws Exception{
-		return sqlExe("update \"tblBdStudent\" set " +
-			"\"strStudentPasswort\"='" + getDBCleanString(this.getStudentPasswort()) +  "', " +
-			"\"strStudentEmail\"='" + getDBCleanString(this.getStudentEmail()) +  "', " +
-			"\"blnStudentPublishEmail\"=" + getDBBoolRepresentation(this.getStudentPublishEmail()) +  ", " +
-			"\"strStudentHandy\"='" + getDBCleanString(this.getStudentHandy()) +  "', " +
-			"\"strStudentBemerkung\"=" + dbNormal(this.getStudentBemerkung()) + ", " +
-			"\"blnStudentPublishHandy\"=" + getDBBoolRepresentation(this.getStudentPublishHandy()) +  ", " +
-			"\"strStudentHomepage\"='" + getDBCleanString(this.getStudentHomepage()) +  "', " +
-			"\"blnStudentPublishHomepage\"=" + getDBBoolRepresentation(this.getStudentPublishHomepage()) +  ", " +
-			"\"strStudentInterests\"='" + getDBCleanString(this.getStudentInterests()) +  "', " +
-			"\"lngStudentZUVZiel\"=" + getStudentZUVZiel() + "," +
-			"\"intStudentFach2\"=" + getStudentFach2() + "," +
-			"\"intStudentSemester\"=" + getStudentSemester() + ", " +
-			"\"blnStudentVisible\"=" + getDBBoolRepresentation(getStudentVisible()) +
-			" where (" + this.getSQLWhereClauseOld() + ");");
+            PreparedStatement pstm = prepareStatement("update \"tblBdStudent\" set " +
+			"\"strStudentPasswort\"=?, " +
+			"\"strStudentEmail\"=?, " +
+			"\"blnStudentPublishEmail?, " +
+			"\"strStudentHandy\"=?, " +
+			"\"strStudentBemerkung\"=?, " +
+			"\"blnStudentPublishHandy\"=?, " +
+			"\"strStudentHomepage\"=?, " +
+			"\"blnStudentPublishHomepage\"=?, " +
+			"\"strStudentInterests\"=?, " +
+			"\"lngStudentZUVZiel\"=?," +
+			"\"intStudentFach2\"=?," +
+			"\"intStudentSemester\"=?, " +
+			"\"blnStudentVisible\"=? " +
+                    "where (\"lngStudentPID\"=?  AND "  +
+				"\"strMatrikelnummer\"=?);");
+             int ii=1;
+             pstm.setString(ii++, this.getStudentPasswort());
+             pstm.setString(ii++, this.getStudentEmail());
+             pstm.setBoolean(ii++, this.getStudentPublishEmail());
+             pstm.setString(ii++, this.getStudentHandy());
+             pstm.setString(ii++, this.getStudentBemerkung());
+             pstm.setBoolean(ii++, this.getStudentPublishHandy());
+             pstm.setString(ii++, this.getStudentHomepage());
+             pstm.setBoolean(ii++, this.getStudentPublishHomepage());
+             pstm.setString(ii++, this.getStudentInterests());
+             pstm.setLong(ii++, this.getStudentZUVZiel());
+             pstm.setLong(ii++, this.getStudentFach2());
+             pstm.setInt(ii++, getStudentSemester());
+             pstm.setBoolean(ii++, getStudentVisible());
+             pstm.setLong(ii++, this.getStudentPID());
+             pstm.setString(ii++, this.getMatrikelnummer());
+
+             return (pstm.executeUpdate() == 1);
+           
 	}
 
 
 	/**
-	 * Adds a student to database. Data is taken from underlying object com.shj.data.Student.
-	 * @return 'true' on success, 'false' on failure.
-	 * @throws Exception when connection to database erroneous.
-	 **/
-	public boolean add() throws Exception{
-		return sqlExe("insert into \"tblBdStudent\" ( " +
-			"\"lngStudentPID\", \"strMatrikelnummer\", \"strStudentVorname\", \"strStudentNachname\", \"intStudentSemester\", \"strStudentPasswort\", \"dtmStudentGeburtstag\", \"strStudentGeburtsort\", \"strStudentStrasse\", \"strStudentPLZ\", \"strStudentOrt\", \"strStudentEmail\", \"blnStudentPublishEmail\", \"strStudentHandy\", \"blnStudentPublishHandy\", \"blnStudentFemale\", \"intStudentFach1\", \"intStudentFach2\", \"intStudentFach3\", \"intStudentFach4\", \"intStudentFach5\", \"intStudentFach6\", \"intStudentFachsemester1\", \"intStudentFachsemester2\", \"intStudentFachsemester3\", \"intStudentFachsemester4\", \"intStudentFachsemester5\", \"intStudentFachsemester6\" ) VALUES ( " +
-			"" + this.getNextPID() + ", " +
-			"'" + getDBCleanString(this.getMatrikelnummer()) + "', " +
-			"'" + getDBCleanString(this.getStudentVorname()) + "', " +
-			"'" + getDBCleanString(this.getStudentNachname()) + "', " +
-			"" + this.getStudentSemester() + ", " +
-			"'" + getDBCleanString(this.getMatrikelnummer()) + "', " +
-			"'" + g_ISO_DATE_FORMAT.format(this.getStudentGeburtstag()) + "', " +
-			"'" + getDBCleanString(this.getStudentGeburtsort()) + "', " +
-			"'" + getDBCleanString(this.getStudentStrasse()) + "', " +
-			"'" + getDBCleanString(this.getStudentPLZ()) + "', " +
-			"'" + getDBCleanString(this.getStudentOrt()) + "', " +
-			"'" + getDBCleanString(this.getStudentEmail()) + "', " +
-			getDBBoolRepresentation( this.getStudentPublishEmail() ) + ", " +
-			"'" + getDBCleanString( this.getStudentHandy()) + "', " +
-			getDBBoolRepresentation(this.getStudentPublishHandy()) + ", " +
-			getDBBoolRepresentation(this.getStudentFemale()) + ", " +
-			"" + this.getStudentFach1() + ", " +
-			"" + this.getStudentFach2() + ", " +
-			"" + this.getStudentFach3() + ", " +
-			"" + this.getStudentFach4() + ", " +
-			"" + this.getStudentFach5() + ", " +
-			"" + this.getStudentFach6() + ", " +
-			"" + this.getStudentFachsemester1() + ", " +
-			"" + this.getStudentFachsemester2() + ", " +
-			"" + this.getStudentFachsemester3() + ", " +
-			"" + this.getStudentFachsemester4() + ", " +
-			"" + this.getStudentFachsemester5() + ", " +
-			"" + this.getStudentFachsemester6() + ");");
-	}
-
-	/**<pre>
-	 * Is this a new matriculation number?
-	 * </pre>
-	 * @return true if current matriculation number is nonexistent in database,
-	 * false otherwise.
-	 * @throws Exception if connection to db is erroneous.
-	 */
-	public boolean isNewStudent() throws Exception{
-		return (lookUp("lngStudentPID", "tblBdStudent", "\"strMatrikelnummer\"='" + this.getMatrikelnummer() + "'").equals("#NO_RESULT"));
-	}
-
-	/**
-	 * Sucht in allen konfigurierten Pr�fungen des Fachs, f�r
+	 * Sucht in allen konfigurierten Prüfungen des Fachs, für
 	 * das der aktuelle Student eingeschrieben ist, nach Modulen, 
 	 * die die angegebene Leistung enthalten.
 	 * @version 6-22: filter blnModulWaehlbar=true
@@ -786,7 +695,7 @@ public class StudentData extends de.shj.UP.data.Student{
 			  "(sx.\"lngSdSeminarID\"  = n.\"lngSdSeminarID\") AND " + 
 			  "(n.\"blnNoteBestanden\" ='t'::bool) AND " + 
 			  "(sx.\"lngSdSeminarID\"	= m.\"lngSdSeminarID\") AND " + 
-			  "(sx.\"strMatrikelnummer\"= '" + this.getMatrikelnummer() + "') AND " + 
+			  "(sx.\"strMatrikelnummer\"= '" + Long.parseLong(this.getMatrikelnummer()) + "') AND " + // Long.parseLong wg. Injection.
 			  "(sx.\"lngLeistungsID\"	= l.\"lngLeistungID\")" + 
 			")" + 
 		  ")" + 
@@ -921,28 +830,28 @@ public class StudentData extends de.shj.UP.data.Student{
 	 **/
 	public void addKlausuranmeldung(long lngSeminarID, long lngKurstypID, long lngKursID, long lModulID, boolean blnPruefung, String strCustom1, String strCustom2, String strStudentXLeistungBemerkung) throws Exception{
 
-		String 		strMatrikelnummer	= 	getDBCleanString( this.getMatrikelnummer() );
-		long 		lngLeistungsID		=   -1;
-		float		fltCreditPoints		=	0;
+		String 		strMatrikelnummer	= String.valueOf(Long.parseLong( this.getMatrikelnummer() ));
+		long 		lngLeistungsID		= -1;
+		float		fltCreditPoints		= 0;
 
 		// 0. gather data: what's this coursetype's LeistungsID? What's this LeistungID's next LeistungsCount?
 		//	  what's this LeistungID's usual CreditPoint number?
 		ResultSet rst=this.sqlQuery("SELECT " +
-									  "t.\"lngSdSeminarID\", " +
-									  "t.\"lngKurstypLeistungsID\", " +
-									  "t.\"lngKurstypID\", " +
-									  "l.\"sngLeistungCreditPts\"  " +
-									"FROM \"tblSdKurstyp\" t, \"tblSdLeistung\" l " +
-									"WHERE " +
-									 "(" +
-									  "(t.\"lngSdSeminarID\"=" + lngSeminarID + ") AND " +
-									  "(t.\"lngKurstypID\"=" + lngKurstypID + ") AND " +
-									  "(t.\"lngKurstypLeistungsID\" = l.\"lngLeistungID\") AND " +
-									  "(t.\"lngSdSeminarID\" = l.\"lngSdSeminarID\")" +
-									 ");");
+                            "t.\"lngSdSeminarID\", " +
+                            "t.\"lngKurstypLeistungsID\", " +
+                            "t.\"lngKurstypID\", " +
+                            "l.\"sngLeistungCreditPts\"  " +
+                          "FROM \"tblSdKurstyp\" t, \"tblSdLeistung\" l " +
+                          "WHERE " +
+                           "(" +
+                            "(t.\"lngSdSeminarID\"=" + lngSeminarID + ") AND " +
+                            "(t.\"lngKurstypID\"=" + lngKurstypID + ") AND " +
+                            "(t.\"lngKurstypLeistungsID\" = l.\"lngLeistungID\") AND " +
+                            "(t.\"lngSdSeminarID\" = l.\"lngSdSeminarID\")" +
+                           ");");
 		if(rst.next()){
-					lngLeistungsID		=	rst.getLong("lngKurstypLeistungsID");
-					fltCreditPoints		=	rst.getFloat("sngLeistungCreditPts");
+                    lngLeistungsID = rst.getLong("lngKurstypLeistungsID");
+                    fltCreditPoints = rst.getFloat("sngLeistungCreditPts");
 		}
 
 		long 		lngLeistungCount	=	this.getNextLeistungCount(lngSeminarID, lngLeistungsID);
@@ -974,39 +883,7 @@ public class StudentData extends de.shj.UP.data.Student{
 		}
 		
 		rst.close();
-		System.out.println("INSERT INTO " +
-			  "\"tblBdStudentXLeistung\" " +
-				"( \"lngSdSeminarID\", \"lngKlausuranmeldungKursID\", \"lngModulID\", \"strSLKursDetails\", \"lngKlausuranmeldungKurstypID\", \"strMatrikelnummer\", \"lngLeistungsID\", \"lngStudentLeistungCount\", \"sngStudentLeistungCreditPts\", \"strStudentLeistungAussteller\", \"strStudentLeistungAusstellerVor\", \"strStudentLeistungAusstellerTit\", \"lngDozentID\", \"blnStudentLeistungValidiert\", \"dtmStudentLeistungAntragdatum\", \"blnStudentLeistungKlausuranmeldung\", \"strSLKursUnivISID\", \"strSLKursTag\", \"dtmSLKursBeginn\", \"dtmSLKursEnde\", \"strSLKursRaum\", \"strSLKursTag2\", \"dtmSLKursBeginn2\", \"dtmSLKursEnde2\", \"strSLKursRaum2\", \"strSLKursTitel\", \"strSLKursTitel_en\", \"strSLKursBeschreibung\", \"strSLKursBeschreibung_en\", \"strSLKursLiteratur\", \"strSLKursZusatz\", \"strSLKursAnmeldung\", \"strSLKursVoraussetzung\", \"blnSLKursSchein\", \"strSLKursEinordnung\", \"intSLKursStunden\", \"dtmSLKursLastChange\", \"dtmSLKursScheinanmeldungBis\", \"dtmSLKursScheinanmeldungVon\", \"blnSLKursScheinanmeldungErlaubt\", \"strSLKursTerminFreitext\", \"intSLKursTeilnehmer\", \"strSLKursRaumExtern1\", \"strSLKursRaumExtern2\", \"blnStudentLeistungPruefung\", \"strStudentLeistungCustom1\", \"strStudentLeistungCustom2\", \"strStudentLeistungBemerkung\" ) " +
-			"SELECT " +
-			  "k.\"lngSdSeminarID\", " +
-			  "k.\"lngKursID\", " +
-			  ((lModulID==g_ID_UNINITIALIZED) ? "null, " : lModulID + ", ") +
-			  "k.\"strKursTitel\", " +
-			  lngKurstypID + " AS KurstypID, " +
-			  "'" + strMatrikelnummer + "' AS strMatrikelnummaer, " +
-			  lngLeistungsID + " AS lngLeistungsID, " +
-			  lngLeistungCount + " AS lngStudentLeistungCount, " +
-			  fltCreditPoints + " AS sngCreditPts, " +
-			  "d.\"strDozentNachname\", " +
-			  "d.\"strDozentVorname\", " +
-			  "d.\"strDozentTitel\", " +
-			  "d.\"lngDozentID\", " +
-			  "'f'::bool AS LeistungValidiert, " +
-			  "CURRENT_DATE AS Antragdatum, " +
-			  "'t'::bool AS blnKlausuranmeldung, " +
-			  "k.\"strKursUnivISID\", k.\"strKursTag\", k.\"dtmKursBeginn\", k.\"dtmKursEnde\", k.\"strKursRaum\", k.\"strKursTag2\", k.\"dtmKursBeginn2\", k.\"dtmKursEnde2\", k.\"strKursRaum2\", k.\"strKursTitel\", k.\"strKursTitel_en\", k.\"strKursBeschreibung\", k.\"strKursBeschreibung_en\", k.\"strKursLiteratur\", k.\"strKursZusatz\", k.\"strKursAnmeldung\", k.\"strKursVoraussetzung\", k.\"blnKursSchein\", k.\"strKursEinordnung\", k.\"intKursStunden\", k.\"dtmKursLastChange\", k.\"dtmKursScheinanmeldungBis\", k.\"dtmKursScheinanmeldungVon\", k.\"blnKursScheinanmeldungErlaubt\", k.\"strKursTerminFreitext\", k.\"intKursTeilnehmer\", k.\"strKursRaumExtern1\", k.\"strKursRaumExtern2\", " + (blnPruefung ? "'t'::bool" : "'f'::bool") + ", '" + getDBCleanString(strCustom1) + "', '" + getDBCleanString(strCustom2) + "', '" + getDBCleanString(strStudentXLeistungBemerkung) + "' " +
-			"FROM \"tblSdDozent\" d, \"tblBdKurs\" k " +
-			"WHERE " +
-			  "(" +
-			   "(d.\"lngDozentID\" = k.\"lngDozentID\") AND " +
-			   "(d.\"lngSdSeminarID\" = k.\"lngSdSeminarID\") AND " +
-			   "(k.\"lngSdSeminarID\"=" + lngSeminarID + ") AND " +
-			   "(k.\"lngKursID\"=" + lngKursID + ") AND " +
-			   "(k.\"blnKursPlanungssemester\"='f'::bool) AND " +
-			   "(k.\"blnKursScheinanmeldungErlaubt\"='t'::bool) AND " +
-			   "(k.\"dtmKursScheinanmeldungVon\"<=CURRENT_DATE) AND " +
-			   "(k.\"dtmKursScheinanmeldungBis\">=CURRENT_DATE)" +
-			  ");");
+
 		// 2. add this one credit application
 		// (new in January 2008 or 6-19: with ModulID
 		if(sqlExeCount("INSERT INTO " +
@@ -1029,7 +906,20 @@ public class StudentData extends de.shj.UP.data.Student{
 			  "'f'::bool AS LeistungValidiert, " +
 			  "CURRENT_DATE AS Antragdatum, " +
 			  "'t'::bool AS blnKlausuranmeldung, " +
-			  "k.\"strKursUnivISID\", k.\"strKursTag\", k.\"dtmKursBeginn\", k.\"dtmKursEnde\", k.\"strKursRaum\", k.\"strKursTag2\", k.\"dtmKursBeginn2\", k.\"dtmKursEnde2\", k.\"strKursRaum2\", k.\"strKursTitel\", k.\"strKursTitel_en\", k.\"strKursBeschreibung\", k.\"strKursBeschreibung_en\", k.\"strKursLiteratur\", k.\"strKursZusatz\", k.\"strKursAnmeldung\", k.\"strKursVoraussetzung\", k.\"blnKursSchein\", k.\"strKursEinordnung\", k.\"intKursStunden\", k.\"dtmKursLastChange\", k.\"dtmKursScheinanmeldungBis\", k.\"dtmKursScheinanmeldungVon\", k.\"blnKursScheinanmeldungErlaubt\", k.\"strKursTerminFreitext\", k.\"intKursTeilnehmer\", k.\"strKursRaumExtern1\", k.\"strKursRaumExtern2\", " + (blnPruefung ? "'t'::bool" : "'f'::bool") + ", '" + getDBCleanString(strCustom1) + "', '" + getDBCleanString(strCustom2) + "', '" + getDBCleanString(strStudentXLeistungBemerkung) + "' " +
+			  "k.\"strKursUnivISID\", k.\"strKursTag\", k.\"dtmKursBeginn\", "
+                        + "k.\"dtmKursEnde\", k.\"strKursRaum\", k.\"strKursTag2\", "
+                        + "k.\"dtmKursBeginn2\", k.\"dtmKursEnde2\", k.\"strKursRaum2\", "
+                        + "k.\"strKursTitel\", k.\"strKursTitel_en\", "
+                        + "k.\"strKursBeschreibung\", k.\"strKursBeschreibung_en\", "
+                        + "k.\"strKursLiteratur\", k.\"strKursZusatz\", k.\"strKursAnmeldung\", "
+                        + "k.\"strKursVoraussetzung\", k.\"blnKursSchein\", "
+                        + "k.\"strKursEinordnung\", k.\"intKursStunden\", k.\"dtmKursLastChange\", "
+                        + "k.\"dtmKursScheinanmeldungBis\", k.\"dtmKursScheinanmeldungVon\", "
+                        + "k.\"blnKursScheinanmeldungErlaubt\", k.\"strKursTerminFreitext\", "
+                        + "k.\"intKursTeilnehmer\", k.\"strKursRaumExtern1\", "
+                        + "k.\"strKursRaumExtern2\", " + (blnPruefung ? "true" : "false") 
+                        + ", '" + strCustom1.replaceAll("'", "\\") + "', '" + strCustom2.replaceAll("'", "\\") + 
+                        "', '" + strStudentXLeistungBemerkung.replaceAll("'", "\\") + "' " +
 			"FROM \"tblSdDozent\" d, \"tblBdKurs\" k " +
 			"WHERE " +
 			  "(" +
@@ -1052,7 +942,17 @@ public class StudentData extends de.shj.UP.data.Student{
 	 * @return
 	 */
 	public boolean isUniqueKlausuranmeldung(long lngSeminarID, long lngKursID, String strMatrikelnummer, long lngLeistungsID) {
-		return (lookUp("lngSdSeminarID", "tblBdStudentXLeistung", "\"lngSdSeminarID\"=" + lngSeminarID + " AND \"strMatrikelnummer\"='" + strMatrikelnummer + "' AND \"lngLeistungsID\"=" + lngLeistungsID + " AND \"blnStudentLeistungKlausuranmeldung\"='t'::bool AND \"blnStudentLeistungValidiert\"='f'::bool AND \"lngKlausuranmeldungKursID\"=" + lngKursID)).equals("#NO_RESULT");
+            boolean bReturn = false;
+            try{
+                ResultSet rst = sqlQuery("select \"lngSdSeminarID\" from \"tblBdStudentXLeistung\" where " +
+                        "\"lngSdSeminarID\"=" + lngSeminarID + " AND \"strMatrikelnummer\"='" + 
+                        Long.parseLong(strMatrikelnummer) + "' AND \"lngLeistungsID\"=" + 
+                        lngLeistungsID + " AND \"blnStudentLeistungKlausuranmeldung\"=true "
+                        + "AND \"blnStudentLeistungValidiert\"=false AND \"lngKlausuranmeldungKursID\"=" + lngKursID);
+                bReturn = rst.next();
+                rst.close();
+            }catch(Exception eErr){}
+            return (!bReturn);
 	}
 
 	/**
@@ -1077,16 +977,16 @@ public class StudentData extends de.shj.UP.data.Student{
 		String sError = "";
 		boolean blnNext=false;
 		ResultSet rst = sqlQuery("select * from \"tblBdStudentXLeistung\" x, \"tblSdNote\" n " + 
-						"where " +
-							"x.\"lngSdSeminarID\"=" + lngSeminarID + " AND " +
-							"x.\"strMatrikelnummer\"='" + strMatrikelnummer + "' AND " +
-							"x.\"lngLeistungsID\"=" + lngLeistungsID + " AND (" +
-								"(n.\"lngSdSeminarID\"=x.\"lngSdSeminarID\" AND " +
-								"n.\"intNoteID\"=x.\"intNoteID\" and " +
-								"n.\"blnNoteBestanden\"='t' AND x.\"blnStudentLeistungValidiert\"='t'::bool) " +
-							"OR " +	
-							"(x.\"blnStudentLeistungKlausuranmeldung\"='t'::bool AND " +
-							"x.\"blnStudentLeistungValidiert\"='f'::bool));");
+                        "where " +
+                        "x.\"lngSdSeminarID\"=" + lngSeminarID + " AND " +
+                        "x.\"strMatrikelnummer\"='" + strMatrikelnummer + "' AND " +
+                        "x.\"lngLeistungsID\"=" + lngLeistungsID + " AND (" +
+                                "(n.\"lngSdSeminarID\"=x.\"lngSdSeminarID\" AND " +
+                                "n.\"intNoteID\"=x.\"intNoteID\" and " +
+                                "n.\"blnNoteBestanden\"='t' AND x.\"blnStudentLeistungValidiert\"='t'::bool) " +
+                        "OR " +	
+                        "(x.\"blnStudentLeistungKlausuranmeldung\"='t'::bool AND " +
+                        "x.\"blnStudentLeistungValidiert\"='f'::bool));");
 		
 		if(rst.next()){
 			blnNext=true;
@@ -1095,20 +995,6 @@ public class StudentData extends de.shj.UP.data.Student{
 		rst.close();
 	
 		if(blnNext) throw new Exception(sError);
-	}
-
-	/**
-	 * Checks if there is a record with the given SeminarID and LeistungsID of
-	 * the current student that is _marked as passed_ (blnLeistungBestanden=true).
-	 * <b>Note:</b> I don't see this method working here. Check where it is used.
-	 * Use {@link #hasPassedCredit(long)} instead.
-	 * @return true, if there is _no_ credit marked as passed of this student with this Seminar- and LeistungsID, false otherwise.
-	 * @param lngSeminarID: id of seminar to check,
-	 * @param lngLeistungsID: id of credit to look up.
-	 * @deprecated
-	 **/
-	public boolean CreditExists(long lngSeminarID, long lngLeistungsID){
-		return (!(lookUp("lngSdSeminarID", "tblBdStudentXLeistung", "\"lngSdSeminarID\"=" + lngSeminarID + " AND \"strMatrikelnummer\"='" + getDBCleanString(this.getMatrikelnummer()) + "' AND \"lngLeistungsID\"=" + lngLeistungsID + " AND \"blnStudentLeistungBestanden\"='t'::bool")).equals("#NO_RESULT"));
 	}
 	
 	/**
@@ -1126,7 +1012,7 @@ public class StudentData extends de.shj.UP.data.Student{
 		  "n.\"lngSdSeminarID\" = x.\"lngSdSeminarID\" AND " + 
 		  "n.\"intNoteID\" = x.\"intNoteID\" AND " + 
 		  "x.\"lngSdSeminarID\" = " + getSeminarID() + " AND " + 
-		  "x.\"strMatrikelnummer\" = '" + getMatrikelnummer() + "' AND " + 
+		  "x.\"strMatrikelnummer\" = '" + Long.parseLong(getMatrikelnummer()) + "' AND " + 
 		  "x.\"lngLeistungsID\" = " + lLeistungID + " AND " + 
 		  "n.\"blnNoteBestanden\" = 't';")).next();
 	}
@@ -1147,7 +1033,7 @@ public class StudentData extends de.shj.UP.data.Student{
 			  "HAVING " +
 				"(" +
 				 "(x.\"lngSdSeminarID\"=" + lngSeminarID + ") AND " +
-				 "(x.\"strMatrikelnummer\"='" + this.getMatrikelnummer() + "') AND " +
+				 "(x.\"strMatrikelnummer\"='" + Long.parseLong(this.getMatrikelnummer()) + "') AND " +
 				 "(x.\"lngLeistungsID\"=" + lngLeistungsID + ")" +
 				");");
 
@@ -1170,31 +1056,6 @@ public class StudentData extends de.shj.UP.data.Student{
 	public void deleteKlausuranmeldung(long lngSeminarID, String strMatrikelnummer, long lngLeistungsID, long lngStudentLeistungCount) throws Exception{
 
 		boolean isInTime=false;
-
-//		ResultSet rstInTime=sqlQuery("SELECT " +
-//			  "k.\"dtmKursScheinanmeldungVon\", " +
-//			  "k.\"dtmKursScheinanmeldungBis\", " +
-//			  "x.\"lngSdSeminarID\", " +
-//			  "x.\"strMatrikelnummer\", " +
-//			  "x.\"lngLeistungsID\", " +
-//			  "x.\"blnStudentLeistungValidiert\", " +
-//			  "x.\"blnStudentLeistungKlausuranmeldung\", " +
-//			  "x.\"lngStudentLeistungCount\" " +
-//			"FROM \"tblBdKurs\" k, \"tblBdStudentXLeistung\" x " +
-//			"WHERE " +
-//			 "(" +
-//			   "(x.\"lngKlausuranmeldungKursID\" = k.\"lngKursID\") AND " +
-//			   "(x.\"lngSdSeminarID\" = k.\"lngSdSeminarID\") AND " +
-//			   "(k.\"dtmKursScheinanmeldungVon\"<=CURRENT_DATE) AND " +
-//			   "(k.\"dtmKursScheinanmeldungBis\">=CURRENT_DATE) AND " +
-//			   "(x.\"strMatrikelnummer\"='" + strMatrikelnummer + "') AND " +
-//			   "(x.\"lngSdSeminarID\"=" + lngSeminarID + ") AND " +
-//			   "(k.\"lngSdSeminarID\"=" + lngSeminarID + ") AND " +
-//			   "(x.\"lngLeistungsID\"=" + lngLeistungsID +") AND " +
-//			   "(x.\"blnStudentLeistungValidiert\"='f'::bool) AND " +
-//			   "(x.\"blnStudentLeistungKlausuranmeldung\"='t'::bool) AND " +
-//			   "(x.\"lngStudentLeistungCount\"=" + lngStudentLeistungCount + ")" +
-//			 ");");
                 
                 // Geändert im November 2012 für die Germanistik:
                 // Für die Anmeldung zum Selbststudium wird nicht 
@@ -1220,7 +1081,7 @@ public class StudentData extends de.shj.UP.data.Student{
 			 "(" +
 			   "(x.\"dtmSLKursScheinanmeldungVon\"<=CURRENT_DATE) AND " +
 			   "(x.\"dtmSLKursScheinanmeldungBis\">=CURRENT_DATE) AND " +
-			   "(x.\"strMatrikelnummer\"='" + strMatrikelnummer + "') AND " +
+			   "(x.\"strMatrikelnummer\"='" + Long.parseLong(strMatrikelnummer) + "') AND " +
 			   "(x.\"lngSdSeminarID\"=" + lngSeminarID + ") AND " +
 			   "(x.\"lngLeistungsID\"=" + lngLeistungsID +") AND " +
 			   "(x.\"blnStudentLeistungValidiert\"='f'::bool) AND " +
@@ -1253,7 +1114,7 @@ public class StudentData extends de.shj.UP.data.Student{
 					"(l.\"lngSdSeminarID\"=" + this.getSeminarID()  + ") AND " +
 					"(n.\"lngSdSeminarID\"=" + this.getSeminarID()  + ") AND " +
 					"(x.\"lngDozentID\"=" + lngTeacherPID + ") AND " +
-					"(x.\"strMatrikelnummer\"='" + getDBCleanString( this.getMatrikelnummer() ) + "') AND " +
+					"(x.\"strMatrikelnummer\"='" + Long.parseLong( this.getMatrikelnummer() ) + "') AND " +
 					"(x.\"blnStudentLeistungValidiert\"='t') AND " +
 					"(x.\"blnStudentLeistungKlausuranmeldung\"='f')" +
 					") ORDER BY x.\"dtmStudentLeistungAusstellungsd\" ASC;");
@@ -1275,7 +1136,7 @@ public class StudentData extends de.shj.UP.data.Student{
 					"(x.\"lngSdSeminarID\"=" + this.getSeminarID() + ") AND " +
 					"(l.\"lngSdSeminarID\"=" + this.getSeminarID()  + ") AND " +
 					"(n.\"lngSdSeminarID\"=" + this.getSeminarID()  + ") AND " +
-					"(x.\"strMatrikelnummer\"='" + getDBCleanString( this.getMatrikelnummer() ) + "') AND " +
+					"(x.\"strMatrikelnummer\"='" + Long.parseLong( this.getMatrikelnummer() ) + "') AND " +
 					"(x.\"blnStudentLeistungValidiert\"='t') AND " +
 					"(x.\"blnStudentLeistungKlausuranmeldung\"='f')" +
 					") ORDER BY x.\"dtmStudentLeistungAusstellungsd\" ASC;");
@@ -1323,9 +1184,9 @@ public class StudentData extends de.shj.UP.data.Student{
 				"(x.\"lngSdSeminarID\"=" + this.getSeminarID() + ") AND " +
 				"(l.\"lngSdSeminarID\"=" + this.getSeminarID()  + ") AND " +
 				"(n.\"lngSdSeminarID\"=" + this.getSeminarID()  + ") AND " +
-				"(x.\"strMatrikelnummer\"='" + getDBCleanString( this.getMatrikelnummer() ) + "') AND " +
-				"(x.\"blnStudentLeistungValidiert\"=" + (this.getDBBoolRepresentation(!(blnCommitment))) + ") AND " +
-				"(x.\"blnStudentLeistungKlausuranmeldung\"=" + (this.getDBBoolRepresentation(blnCommitment)) + ")" +
+				"(x.\"strMatrikelnummer\"='" + Long.parseLong( this.getMatrikelnummer() ) + "') AND " +
+				"(x.\"blnStudentLeistungValidiert\"=" + (blnCommitment ? "false" : "true") + ") AND " +
+				"(x.\"blnStudentLeistungKlausuranmeldung\"=" + (blnCommitment ? "true" : "false") + ")" +
 				") ORDER BY " + strOrderBy + " ASC;");
 	}
 
@@ -1349,9 +1210,9 @@ public class StudentData extends de.shj.UP.data.Student{
 				"(p.\"lngPruefungID\" = x.\"lngSdPruefungsID\") AND " +
 				"(p.\"lngSdSeminarID\" = x.\"lngSdSeminarID\") AND " +
 				"(p.\"lngSdSeminarID\" = " + this.getSeminarID() + ") AND " +
-				"(x.\"strMatrikelnummer\"='" + getDBCleanString( this.getMatrikelnummer() ) + "') AND " +
-				"(x.\"blnStudentPruefungValidiert\"=" + getDBBoolRepresentation(!blnApplication) + ") AND " +
-				"(x.\"blnStudentPruefungAnmeldung\"=" + getDBBoolRepresentation(blnApplication) + ") " +
+				"(x.\"strMatrikelnummer\"='" + Long.parseLong( this.getMatrikelnummer() ) + "') AND " +
+				"(x.\"blnStudentPruefungValidiert\"=" + (blnApplication ? "false" : "true") + ") AND " +
+				"(x.\"blnStudentPruefungAnmeldung\"=" + (blnApplication ? "true" : "false") + ") " +
 			  ")" +
 			"ORDER BY p.\"lngPruefungID\" ASC;");
 	}
@@ -1394,7 +1255,7 @@ public class StudentData extends de.shj.UP.data.Student{
 					 "sx.\"blnStudentPruefungBestanden\" " +
 					"FROM \"tblBdStudentXPruefung\" sx " +
 					"WHERE (" +
-					 "(sx.\"strMatrikelnummer\" = '" + getDBCleanString( this.getMatrikelnummer() ) + "') AND " +
+					 "(sx.\"strMatrikelnummer\" = '" + Long.parseLong( this.getMatrikelnummer() ) + "') AND " +
 					 "(sx.\"lngSdSeminarID\" = x.\"lngSdSeminarID\") AND " +
 					 "(sx.\"blnStudentPruefungBestanden\"='t'::bool) AND " +
 					 "(x.\"lngPruefungPrereqID\" = sx.\"lngSdPruefungsID\")" +
@@ -1465,41 +1326,9 @@ public class StudentData extends de.shj.UP.data.Student{
 	 */
 	private void resetThis() {
 		m_blnGroupIDSet=false;
-		m_objStudGruppe=null;
 		m_strBAMANebenfach="#";
 		m_strDebug="";
 		m_iStudentFachID=-1;
-	}
-
-	/**
-	 * Method to load all data from database into this Bean-extension.
-	 * Here, a student is identified by name and birthdate.
-	 * @param lngSeminarID: sets view of this student to a single seminar,
-	 * @param strName: the student's last name,
-	 * @param h: the student's birthdate as com.shj.signUp.HTML.HtmlDate.
-	 * @throws Exception if connection to db is erroneous or, more notably,
-	 *  if there is not exactly one student identified with this name and birthdate.
-	 **/
-	public void init(long lngSeminarID, String strName, de.shj.UP.HTML.HtmlDate h) throws Exception{
-		ResultSet rst	= null;
-		long 	  lngII	= 0;
-
-		rst	= sqlQuery("select * from \"tblBdStudent\" where " +
-					"\"strStudentNachname\"='" + strName + "' AND " +
-					"\"dtmStudentGeburtstag\"='" + h.getIsoDate() + "';");
-
-		while(rst.next()){
-			lngII ++;
-			//this.init(rst.getLong("lngStudentPID"), rst.getString("strMatrikelnummer"));
-			// untested. the original 'init' uses 'getSQLWhereClause' which in turn checks
-			// for lngStudentRandom ... so that this only works for students who have
-			// not ever logged in ...
-			this.initByRst( rst );
-		}
-		resetThis();
-		this.setSeminarID(lngSeminarID);
-		rst.close();
-		if(lngII!=1) throw new Exception("More than one or less than one student with name '" + strName + "' and birthdate '" + h.getIsoDate() + "'");
 	}
 
 	// ------------------------------ ------------------------------
@@ -1593,7 +1422,7 @@ public class StudentData extends de.shj.UP.data.Student{
 			  "(l.\"lngLeistungID\" = sxl.\"lngLeistungsID\") AND " +
 			  (blnNotAlreadyCounted ? "not exists( select * from " +
 			  		"\"tblBdStudentPruefungDetail\" where(" +
-			  		"\"blnStudentLeistungPruefung\"=" + this.getDBBoolRepresentation(true) + " and " +
+			  		"\"blnStudentLeistungPruefung\"=" + "true" + " and " +
 			  		"\"lngLeistungsID\"=sxl.\"lngLeistungsID\" and " +
 			  		"\"lngStudentLeistungCount\"=sxl.\"lngStudentLeistungCount\" and " +
 			  		"\"strMatrikelnummer\"=sxl.\"strMatrikelnummer\")" +
@@ -1608,7 +1437,7 @@ public class StudentData extends de.shj.UP.data.Student{
 			  "(pxm.\"lngSdSeminarID\"=" + this.getSeminarID() + ") AND " +
 			  "(pxm.\"lngPruefungID\"=" + lngExamID + ") AND " +
 			  "(pxm.\"lngModulID\"=" + lngModuleID + ") AND " +
-			  "(sxl.\"strMatrikelnummer\"='" + this.getMatrikelnummer() + "') AND " +
+			  "(sxl.\"strMatrikelnummer\"='" + Long.parseLong(this.getMatrikelnummer()) + "') AND " +
 			  "(sxl.\"blnStudentLeistungValidiert\"='t') AND " +
 			  "(sxl.\"blnStudentLeistungKlausuranmeldung\"='f') AND " +
 			  ((blnOnlyCommittedCredits) ? "(sxl.\"dtmStudentLeistungAntragdatum\" NOTNULL) AND " : "") +
@@ -1646,15 +1475,15 @@ public class StudentData extends de.shj.UP.data.Student{
 		  "(x.\"lngSdSeminarID\"=" + this.getSeminarID() + ") AND " +
 		  "(k.\"lngSdSeminarID\"=" + this.getSeminarID() + ") AND " +
 		  "(d.\"lngSdSeminarID\"=" + this.getSeminarID() + ") AND " +
-		  "(x.\"strMatrikelnummer\"='" + getDBCleanString( this.getMatrikelnummer() ) + "') AND " +
+		  "(x.\"strMatrikelnummer\"='" + Long.parseLong( this.getMatrikelnummer() ) + "') AND " +
 		  "(l.\"lngSdSeminarID\" = x.\"lngSdSeminarID\") AND " +
 		  "(k.\"lngSdSeminarID\" = x.\"lngSdSeminarID\") AND " +
 		  "(l.\"lngLeistungID\" = x.\"lngLeistungsID\") AND " +
 		  "(d.\"lngSdSeminarID\" = k.\"lngSdSeminarID\") AND " +
 		  "(k.\"lngKursID\" = x.\"lngKlausuranmeldungKursID\") AND " +
 		  "(d.\"lngDozentID\" = k.\"lngDozentID\")  AND " +
-		  "(x.\"blnStudentLeistungValidiert\"=" + getDBBoolRepresentation(false) + ") AND " +
-		  "(x.\"blnStudentLeistungKlausuranmeldung\"=" + getDBBoolRepresentation(true) + ") " +
+		  "(x.\"blnStudentLeistungValidiert\"=" + "false" + ") AND " +
+		  "(x.\"blnStudentLeistungKlausuranmeldung\"=" + "true" + ") " +
 		"ORDER BY x.\"lngLeistungsID\" ASC;");
 	}
 
@@ -1692,12 +1521,12 @@ public class StudentData extends de.shj.UP.data.Student{
 		  "(x.\"lngSdSeminarID\"= l.\"lngSdSeminarID\") AND " +
 		  "(k.\"lngSdSeminarID\"= x.\"lngSdSeminarID\") AND " +
 		  "(d.\"lngSdSeminarID\"= k.\"lngSdSeminarID\") AND " +
-		  "(x.\"strMatrikelnummer\"='" + getDBCleanString( this.getMatrikelnummer() ) + "') AND " +
+		  "(x.\"strMatrikelnummer\"='" + Long.parseLong( this.getMatrikelnummer() ) + "') AND " +
 		  "(l.\"lngLeistungID\" = x.\"lngLeistungsID\") AND " +
 		  "(k.\"lngKursID\" = x.\"lngKlausuranmeldungKursID\") AND " +
 		  "(d.\"lngDozentID\" = k.\"lngDozentID\")  AND " +
-		  "(x.\"blnStudentLeistungValidiert\"=" + getDBBoolRepresentation(false) + ") AND " +
-		  "(x.\"blnStudentLeistungKlausuranmeldung\"=" + getDBBoolRepresentation(true) + ") " +
+		  "(x.\"blnStudentLeistungValidiert\"=" + "false" + ") AND " +
+		  "(x.\"blnStudentLeistungKlausuranmeldung\"=" + "true" + ") " +
 		") " +
 		"UNION SELECT " +
 		  "l2.*, " +
@@ -1719,9 +1548,9 @@ public class StudentData extends de.shj.UP.data.Student{
 			"(x2.\"lngSdSeminarID\"= " + getSeminarID() + ") AND " +
 		 	"(x2.\"lngSdSeminarID\"= l2.\"lngSdSeminarID\") AND " +
 			"(x2.\"lngLeistungsID\" = l2.\"lngLeistungID\") AND " +
-			"(x2.\"strMatrikelnummer\"='" + getDBCleanString( this.getMatrikelnummer() ) + "') AND " +
-			"(x2.\"blnStudentLeistungValidiert\"=" + getDBBoolRepresentation(false) + ") AND " +
-			"(x2.\"blnStudentLeistungKlausuranmeldung\"=" + getDBBoolRepresentation(true) + ") AND " +
+			"(x2.\"strMatrikelnummer\"='" + Long.parseLong( this.getMatrikelnummer() ) + "') AND " +
+			"(x2.\"blnStudentLeistungValidiert\"=" + "false" + ") AND " +
+			"(x2.\"blnStudentLeistungKlausuranmeldung\"=" + "true" + ") AND " +
 			"NOT EXISTS (" +
 				"SELECT * FROM \"tblBdKurs\" kurs where (" +
 						"kurs.\"lngSdSeminarID\"=x2.\"lngSdSeminarID\" AND " +
@@ -1804,99 +1633,6 @@ public class StudentData extends de.shj.UP.data.Student{
 		s.add();
 	}	
 	
-	/**
-	 * This student's sensible exam options for exams with a given name at a given seminar.
-	 * @return ResultSet with exam-options of this student. All exams with name 'strPruefungBezeichnung' are displayed,
-	 * if they are the student's 'Fach' (subject) and seminar, and if the student has not yet an exam of this sort (or applied to get one).
-	 * Presupposes that a SeminarID has been set.
-	 * #hack: not quite sure why a seminarID has to be handed over, here.
-	 * @deprecated since version 5-27-10: not sure what this is at all. Please dont use.
-	 * @param strPruefungBezeichnung: name of the exam.
-	 * @throws Exception if connection to db is erroneous.
-	 **/
-	protected ResultSet StudentExamOptions(long lngSeminarID, String strPruefungBezeichnung) throws Exception{
-		return sqlQuery("SELECT " +
-			  "x.\"intFachID\", " +
-			  "x.\"lngSdSeminarID\", " +
-			  "p.\"lngSdSeminarID\", " +
-			  "p.\"lngPruefungID\", " +
-			  "p.\"strPruefungBezeichnung\", " +
-			  "p.\"strPruefungsordnung\", " +
-			  "p.\"strPruefungAbschluss\", " +
-			  "p.\"strPruefungBeschreibung\" " +
-			"FROM \"tblSdPruefung\" p, \"tblSdPruefungXFach\" x " +
-			"WHERE " +
-			  "(" +
-			   "(p.\"lngPruefungID\" = x.\"lngPruefungID\") AND " +
-			   "(p.\"lngSdSeminarID\" = x.\"lngSdSeminarID\") AND " +
-			   "(x.\"intFachID\"=" + this.getFachID(lngSeminarID) + ") AND " +
-			   "(x.\"lngSdSeminarID\"=" + this.getSeminarID() + ") AND " +
-			   "(p.\"lngSdSeminarID\"=" + this.getSeminarID() + ") AND " +
-			   "(p.\"strPruefungBezeichnung\"='" + getDBCleanString( strPruefungBezeichnung ) + "') AND " +
-			   "NOT EXISTS (" +
-				 "SELECT \"lngSdSeminarID\", \"lngSdPruefungsID\", \"strMatrikelnummer\" " +
-				 "FROM \"tblBdStudentXPruefung\" WHERE ((\"strMatrikelnummer\"='" + getDBCleanString( this.getMatrikelnummer() ) + "') AND (\"lngSdSeminarID\"=" + lngSeminarID + ") AND (\"lngSdPruefungsID\"=p.\"lngPruefungID\"))" +
-			   ")" +
-			  ")" +
-			  "ORDER BY p.\"lngPruefungID\" ASC;");
-	}
-	
-	/**
-	 * All credits (name, description, id) that this student lacks for the given exam (PruefungsID)
-	 * in this seminar (SeminarID). In order to be counted, credits must be 'passed.' It makes no difference if they are
-	 * 'validated' or not, however. Since applied-for credits are NOT validated, but do not count as 'missing' either.
-	 * @return ResultSet with all credits (name, description, id) that this student lacks for the given exam (PruefungsID)
-	 * in this seminar (SeminarID).
-	 * #hack: better not use this anymore. I dont remember how well it works with
-	 * modular exams, and in addition to that, the wrong flag 'bestanden' is checked here: the one in tblStudentXLeistung.
-	 * @deprecated since version 5-27-10. This method picks missing credits using Pr???fungen (instead of modules).
-	 * @param lngSeminarID: seminar whose exam to look up,
-	 * @param lngPruefungsID: exam to look up.
-	 * @throws Exception if connection to db is erroneous, or when this is a modular exam!
-	 **/
-	protected ResultSet StudentMissingCredits(long lngSeminarID, long lngPruefungsID) throws Exception{
-
-		PruefungData pd = new PruefungData(lngSeminarID, lngPruefungsID);
-		if(pd.isModular()) throw new Exception(String.valueOf(ERR_MISSING_CREDITS_ON_MOD_EXAM));
-
-		return sqlQuery("SELECT " +
-				  "l.* " +
-				"FROM \"tblSdPruefung\" p, \"tblSdPruefungXModul\" pxm, " +
-				"\"tblSdModulXLeistung\" mxl, \"tblSdLeistung\" l " +
-				"WHERE " +
-				 "(" +
-				  "(p.\"lngPruefungID\"   	= pxm.\"lngPruefungID\"	) AND " +
-				  "(p.\"lngSdSeminarID\" 	= pxm.\"lngSdSeminarID\"	) AND " +
-				  "(pxm.\"lngModulID\" 		= mxl.\"lngModulID\"	) AND " +
-				  "(pxm.\"lngSdSeminarID\"	= mxl.\"lngSdSeminarID\"	) AND " +
-				  "(mxl.\"lngLeistungID\" 	= l.\"lngLeistungID\"	) AND " +
-				  "(mxl.\"lngSdSeminarID\"	= l.\"lngSdSeminarID\"	) AND " +
-				  "(p.\"lngSdSeminarID\"	= " + lngSeminarID + ") AND " +
-						"NOT EXISTS (" +
-						  "SELECT \"lngSdSeminarID\", \"strMatrikelnummer\", \"lngLeistungsID\", " +
-						  	   "\"blnStudentLeistungBestanden\", \"blnStudentLeistungValidiert\" " +
-						  	   "FROM \"tblBdStudentXLeistung\" " +
-						  	   "WHERE (" +
-								   "(\"lngSdSeminarID\"=" + lngSeminarID + ") AND " +
-								   "(\"strMatrikelnummer\"='" + getDBCleanString( this.getMatrikelnummer() ) + "') AND " +
-								   "(\"lngLeistungsID\"=l.\"lngLeistungID\") AND " +
-								   "(\"blnStudentLeistungBestanden\"='t'::bool)) " +
-						") AND " +
-				  "(p.\"lngPruefungID\"	=" + lngPruefungsID + ")" +
-				 ") " +
-				"ORDER BY mxl.\"lngLeistungID\" ASC;");
-	}
-
-	/**
-	 * Resets this student's password to the Matrikelnummer and 
-	 * updates the record in the database.
-	 * @throws Exception if update fails.
-	 */
-	public void resetPassword() throws Exception {
-		setStudentPasswort( getMatrikelnummer() );
-		update();
-	}
-
 	/**
 	 * Sets this student's 'Ziel' to Bachelor (m_ZUV_ZIEL_BACHELOR1, to 
 	 * be precise). Be careful to use this, because exam-reporting may 
@@ -2019,7 +1755,7 @@ public class StudentData extends de.shj.UP.data.Student{
 		"(" +
 		  "\"lngSdSeminarID\"= " + this.getSeminarID() + " AND " +
 		  "\"lngSdPruefungsID\"= " + lngPruefungID + " AND " +
-		  "\"strMatrikelnummer\"='" + this.getMatrikelnummer() + "' AND " +
+		  "\"strMatrikelnummer\"='" + Long.parseLong(this.getMatrikelnummer()) + "' AND " +
 		  "\"intStudentPruefungCount\"= " + intPruefungCount + 
 		 ");" +
 		 "Delete from \"tblBdStudentXPruefung\" where " + 
@@ -2029,24 +1765,5 @@ public class StudentData extends de.shj.UP.data.Student{
 		  "\"strMatrikelnummer\"='" + this.getMatrikelnummer() + "' AND " +
 		  "\"intStudentPruefungCount\"= " + intPruefungCount + 
 		 ");")) throw new Exception (String.valueOf(ERR_EXAM_DELETION_FAILED));
-	}
-
-
-	/**
-	 * @param uRZPassword The uRZPassword to set.
-	 */
-	public void setURZPassword(String uRZPassword) {
-		m_strURZPassword = uRZPassword;
-	}
-
-
-	/**
-	 * @return Returns the uRZPassword.
-	 */
-	public String getURZPassword() {
-		return m_strURZPassword;
-	}
-
-
-	
+	}	
 }

@@ -402,26 +402,7 @@ public class PruefungRegel extends shjCore{
 		this.m_sCustom1=rst.getString("strCustom1");
 		this.m_sCustom2=rst.getString("strCustom2");
 		this.m_sCustom3=rst.getString("strCustom3");	
-	}	
-	
-	/**
-	 * Lade die Objekteigenschaften aus einer XML-Node.
-	 * param node XML-Node mit allen Eigenschaften als Tags.
-	 * @throws ParseException (Datum muss im ISO-Format yyyy-MM-dd übergeben werden).
-	 **/
-	private void initByNode(Node node) throws ParseException{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-		this.m_lSdSeminarID=Long.parseLong(shjNodeValue(node, "SdSeminarID"));
-		this.m_lPruefungID=Long.parseLong(shjNodeValue(node, "PruefungID"));
-		this.m_lRegelID=Long.parseLong(shjNodeValue(node, "RegelID"));
-		this.m_sPruefungRegelBezeichnung=(shjNodeValue(node, "PruefungRegelBezeichnung"));
-		this.m_sPruefungRegelBeschreibung=(shjNodeValue(node, "PruefungRegelBeschreibung"));
-		this.m_sCustom1=(shjNodeValue(node, "Custom1"));
-		this.m_sCustom2=(shjNodeValue(node, "Custom2"));
-		this.m_sCustom3=(shjNodeValue(node, "Custom3"));
-	}		
-	
+	}
 ////////////////////////////////////////////////////////////////
 // 6.   S Q L  U T I L I T I E S
 ////////////////////////////////////////////////////////////////
@@ -537,14 +518,4 @@ public class PruefungRegel extends shjCore{
 		this.initByRst(rst);
 		this.m_bIsDirty = false;
 	}
-
-	/**
-	 * Konstruktor per XML-Darstellung des Objekts.
-	 * @throws ParseException, if a date can't be read.
-	 **/
-	public PruefungRegel(Node node) throws ParseException{
-		this.initByNode(node);
-		this.m_bIsDirty = false;
-	}
-
   }//Klassenende

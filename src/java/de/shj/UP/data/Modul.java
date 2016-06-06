@@ -708,35 +708,7 @@ public class Modul extends shjCore{
 		this.m_sModulCustom3_en=rst.getString("strModulCustom3_en");
 		this.m_bModulWaehlbar=rst.getBoolean("blnModulWaehlbar");	
                 this.m_bModulVarLP=rst.getBoolean("blnModulVarLP");
-	}	
-	
-	/**
-	 * Lade die Objekteigenschaften aus einer XML-Node.
-	 * param node XML-Node mit allen Eigenschaften als Tags.
-	 * @throws ParseException (Datum muss im ISO-Format yyyy-MM-dd übergeben werden).
-	 **/
-	private void initByNode(Node node) throws ParseException{
-		this.m_lSdSeminarID=Long.parseLong(shjNodeValue(node, "SdSeminarID"));
-		this.m_lModulID=Long.parseLong(shjNodeValue(node, "ModulID"));
-		this.m_sModulBezeichnung=(shjNodeValue(node, "ModulBezeichnung"));
-		this.m_sModulBeschreibung=(shjNodeValue(node, "ModulBeschreibung"));
-		this.m_lModulNummer=Long.parseLong(shjNodeValue(node, "ModulNummer"));
-		this.m_sModulEinordnung=(shjNodeValue(node, "ModulEinordnung"));
-		this.m_iModulSemester=Integer.parseInt(shjNodeValue(node, "ModulSemester"));
-		this.m_iModulSemesterMin=Integer.parseInt(shjNodeValue(node, "ModulSemesterMin"));
-		this.m_iModulSemesterMax=Integer.parseInt(shjNodeValue(node, "ModulSemesterMax"));
-		this.m_sModulCustom1=(shjNodeValue(node, "ModulCustom1"));
-		this.m_sModulCustom2=(shjNodeValue(node, "ModulCustom2"));
-		this.m_sModulCustom3=(shjNodeValue(node, "ModulCustom3"));
-		this.m_sModulBezeichnung_en=(shjNodeValue(node, "ModulBezeichnung_en"));
-		this.m_sModulBeschreibung_en=(shjNodeValue(node, "ModulBeschreibung_en"));
-		this.m_sModulCustom1_en=(shjNodeValue(node, "ModulCustom1_en"));
-		this.m_sModulCustom2_en=(shjNodeValue(node, "ModulCustom2_en"));
-		this.m_sModulCustom3_en=(shjNodeValue(node, "ModulCustom3_en"));
-		this.m_bModulWaehlbar=Boolean.valueOf(shjNodeValue(node, "ModulWaehlbar")).booleanValue();
-                this.m_bModulVarLP=Boolean.valueOf(shjNodeValue(node, "ModulVarLP")).booleanValue();
-	}		
-	
+	}
 ////////////////////////////////////////////////////////////////
 // 6.   S Q L  U T I L I T I E S
 ////////////////////////////////////////////////////////////////
@@ -852,14 +824,4 @@ public class Modul extends shjCore{
 		this.initByRst(rst);
 		this.m_bIsDirty = false;
 	}
-
-	/**
-	 * Konstruktor per XML-Darstellung des Objekts.
-	 * @throws ParseException, if a date can't be read.
-	 **/
-	public Modul(Node node) throws ParseException{
-		this.initByNode(node);
-		this.m_bIsDirty = false;
-	}
-
   }//Klassenende

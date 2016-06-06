@@ -84,8 +84,8 @@ public class Nutzer extends shjCore{
 
 	private String m_sNutzerUniID;
         private String m_sNutzerTitel;
-	private String m_sNutzerVorname=g_STRING_UNINITIALIZED;
-	private String m_sNutzerNachname=g_STRING_UNINITIALIZED;
+	private String m_sNutzerVorname="#";
+	private String m_sNutzerNachname="#";
 	private String m_sNutzerEmail;
         private String m_sNutzerInstitut;
 	private String m_sNutzerTelefon;
@@ -106,10 +106,12 @@ public class Nutzer extends shjCore{
          * Nutzer nutzer=new Nutzer("ag321");
          * if(!nutzer.isKnown()) call_access_denied;
          * else System.out.println("Hello " + nutzer.getNutzerVorname());
+         * 
+         * @reprogrammed June 2016 (hj)
          * @return ist der Nutzer bekannt?
          */
         public boolean isKnown(){
-            return (m_sNutzerNachname!=g_STRING_UNINITIALIZED);
+            return (!m_sNutzerNachname.equals("#"));
         }
 	/**
  	 * Wahr, wenn sich das Objekt von der Datenbanktabellenzeile unterscheidet.
@@ -335,8 +337,8 @@ public class Nutzer extends shjCore{
 		this.m_sNutzerUniID=sNutzerUniID;
 
                 m_sNutzerTitel=null;
-                m_sNutzerVorname=g_STRING_UNINITIALIZED;
-                m_sNutzerNachname=g_STRING_UNINITIALIZED;
+                m_sNutzerVorname="#";
+                m_sNutzerNachname="#";
                 m_sNutzerEmail=null;
                 m_sNutzerInstitut=null;
                 m_sNutzerTelefon=null;
