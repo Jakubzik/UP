@@ -151,7 +151,6 @@
           <div class="nav-collapse"> 
             <ul class="nav"> 
               <li class="active"><a href="#"><i class="icon-home"></i> Home</a></li> 
-              <li><a href="hilfe-studierende.jsp"><i class="icon-question-sign"></i> Hilfe</a></li> 
             </ul> 
 <%--
     ############################################

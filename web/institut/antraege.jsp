@@ -101,7 +101,6 @@
           <div class="nav-collapse"> 
             <ul class="nav"> 
               <li class="active"><a href="#"><i class="icon-home icon-white"></i> Home</a></li> 
-              <li><a href="hilfe-studierende.jsp"><i class="icon-question-sign icon-white"></i> Hilfe</a></li> 
             </ul> <!--
             <form class="navbar-search pull-left" id="fFindStudents" action="#" name="fFindStudents">
   				<i class="icon-search icon-white"></i>&nbsp; <input type="text" id="txtSuche" class="search-query" placeholder="Studierende suchen..."></input>
@@ -205,7 +204,16 @@
     <script src="js/signup-faculty-common.js"></script>
     <script>
             $(document).ready(function() {
-                
+                // Das stellt die Ajax Wartemitteilung an.
+                $('body').on({
+                    ajaxStart: function() {
+                        $(this).addClass('loading');
+                    },
+                    ajaxStop: function() {
+                        $(this).removeClass('loading');
+                    }
+                });
+
               /**
                * Öffnet die Anmeldung im Browser
                * per Verweis auf .index.
@@ -224,16 +232,8 @@
                 
                 $('#cboAntragtyp').on('click', function(){
                     showAntraegeTabelle($('#cboAntragtyp').val());
-                })
-                // Das stellt die Ajax Wartemitteilung an.
-                $('body').on({
-                    ajaxStart: function() {
-                        $(this).addClass('loading');
-                    },
-                    ajaxStop: function() {
-                        $(this).removeClass('loading');
-                    }
                 });
+                
                 
                 function showAntraegeTabelle(iTyp_IN){
                     // Lade ggf. _alle_ offenen Anträge herunter,
