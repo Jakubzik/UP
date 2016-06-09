@@ -76,50 +76,6 @@ public class StudentBean extends StudentData {
 	}
 	
 	/**
-	 * This method can initialize a seminar-object that has a different 
-	 * SeminarID from this object. It does not change the StudentBean's SeminarID.
-	 * @return Cbo with Exams. SeminarID is handed over independant from current object's seminarID.
-	 * @throws Exception
-	 */
-	public String getSeminarPruefungCbo(long lngSeminarID) throws Exception{
-		if(m_seminar==null) m_seminar=new HtmlSeminar(lngSeminarID, m_locale);
-		if(m_seminar.getSeminarID()!=this.getSeminarID()) m_seminar=new HtmlSeminar(lngSeminarID, m_locale);
-		return m_seminar.getPruefungCbo();
-	}
-
-	/**
-	 * This method can initialize a seminar-object that has a different 
-	 * SeminarID from this object. It does not change the StudentBean's SeminarID.
-	 * @param lngPruefungID: Id of exam that is to be preselected.
-	 * @return Cbo with Exams. SeminarID is handed over independant from current object's seminarID.
-	 * @throws Exception
-	 */
-	public String getSeminarPruefungCbo(long lngSeminarID, long lngPruefungID) throws Exception{
-		if(m_seminar==null) m_seminar=new HtmlSeminar(lngSeminarID, m_locale);
-		if(m_seminar.getSeminarID()!=this.getSeminarID()) m_seminar=new HtmlSeminar(lngSeminarID, m_locale);
-		return m_seminar.getPruefungCbo(lngPruefungID);
-	}
-	
-	/**
-	 * @return Cbo with Exams. Mind that this is seminar-specific.
-	 * @throws Exception
-	 */
-	public String getPruefungCbo() throws Exception{
-		if(m_seminar==null) m_seminar=new HtmlSeminar(getSeminarID(), m_locale);
-		return m_seminar.getPruefungCbo();
-	}
-	
-	/**
-	 * @param lngPruefungID: Id of Pruefung that is to be preselected.
-	 * @return Cbo with Exams. Mind that this is seminar-specific.
-	 * @throws Exception
-	 */
-	public String getPruefungCbo(long lngPruefungID) throws Exception{
-		if(m_seminar==null) m_seminar=new HtmlSeminar(getSeminarID(), m_locale);
-		return m_seminar.getPruefungCbo(lngPruefungID);
-	}	
-	
-	/**
 	 * Initializes the underlying logic.Student object.<br>
 	 * Requested parameters are:<br>
 	 * #requestparam txtMatrikelnummer.<br>
