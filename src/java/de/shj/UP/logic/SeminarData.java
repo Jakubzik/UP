@@ -51,7 +51,8 @@ public class SeminarData extends Seminar {
 		if(m_dLastZUVUpdate==null) m_dLastZUVUpdate = new java.sql.Date(g_ISO_DATE_FORMAT.parse(m_sLastZUVUpdate).getTime());
 		return m_dLastZUVUpdate;
 	}
-	
+
+        
 	/**
 	 * Empty (Bean usage). 
 	 */

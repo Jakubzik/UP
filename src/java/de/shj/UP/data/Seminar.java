@@ -353,7 +353,6 @@ public class Seminar extends shjCore{
 	private String getSQLWhereClause(){
 		return 
 			"\"lngSeminarID\"=? AND " + 
-			"\"lngSeminarID\"=? AND " + 
 			"\"lngUniID\"=? AND " + 
 			"\"lngFakultaetID\"=? AND " + 
 			"\"lngSeminarID\"=?";
@@ -437,7 +436,7 @@ public class Seminar extends shjCore{
 	 * @throws NamingException 
 	 * @throws SQLException 
 	 **/
-	private void init(long lngUniID, long lngFakultaetID, long lngSeminarID) throws SQLException, NamingException{
+	public void init(long lngUniID, long lngFakultaetID, long lngSeminarID) throws SQLException, NamingException{
 
 		this.m_lUniID=lngUniID;
 

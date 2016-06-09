@@ -53,11 +53,11 @@ if(request.getParameter("txtMatrikelnummer")==null){
 }
 
 if(sd.getLocale()==null) sd.setLocale(request.getLocale());
-seminar.init( lSEMINAR_ID, sd.getLocale() );
+seminar.init( 0,0, lSEMINAR_ID );
 
 if(!sErr.equals("")){ Thread.sleep(1000);
 }else{
-        seminar.init(lSEMINAR_ID, Locale.GERMANY);
+        seminar.init(0,0,lSEMINAR_ID);
 }
 %>
 {"success":"<%=sErr.equals("") ? "true" : "false"%>","details":"<%=sErr.equals("") ? user.getDozentAccessLevel() : sErr%>"}
