@@ -6,7 +6,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%><jsp:useBean id="student" scope="session" class="de.shj.UP.logic.StudentData" /><jsp:useBean
-	id="seminar" scope="session" class="de.shj.UP.HTML.HtmlSeminar" />
+	id="seminar" scope="session" class="de.shj.UP.logic.SeminarData" />
 <%String s=(String)request.getRequestURL().toString();
 boolean bIsKurswahlLink=s.endsWith("kurswahl.jsp");
 

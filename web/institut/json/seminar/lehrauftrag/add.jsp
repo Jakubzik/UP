@@ -47,7 +47,7 @@
     
 --%><%@page import="java.sql.ResultSet"%>
 <%@page import="de.shj.UP.data.shjCore"%><%@page import="java.util.Date"%><%@page import="java.sql.PreparedStatement"%><%@page contentType="text/json" pageEncoding="UTF-8" session="true" isThreadSafe="false"  errorPage="../../error.jsp" %>
-<jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" /><jsp:useBean id="seminar" scope="session" class="de.shj.UP.HTML.HtmlSeminar" />
+<jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" /><jsp:useBean id="seminar" scope="session" class="de.shj.UP.logic.SeminarData" />
 <%@include file="../../../fragments/checkVersion.jsp" %>
 <%@include file="../../../fragments/checkAccess500.jsp" %>
 <%long lERR_BASE=218000 + 400;    // Lehrauftrag + Add

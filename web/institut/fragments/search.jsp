@@ -2,7 +2,7 @@
     pageEncoding="iso-8859-1"%><!DOCTYPE html> 
 <jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" />
 <jsp:useBean id="studenten" scope="page" class="de.shj.UP.beans.config.student.StudentSearchBean" />
-<jsp:useBean id="seminar" scope="session" class="de.shj.UP.HTML.HtmlSeminar" />
+<jsp:useBean id="seminar" scope="session" class="de.shj.UP.logic.SeminarData" />
 <%
 // Besteht eine gültige Sitzung?
 if(user.getDozentNachname()==null) return;

@@ -51,9 +51,9 @@
     
 --%><%@page import="java.util.Calendar"%>
 <%@page import="java.util.Date"%>
-<%@page import="de.shj.UP.HTML.HtmlSeminar"%>
+<%@page import="de.shj.UP.logic.SeminarData"%>
 <%@page contentType="text/json" pageEncoding="UTF-8" import="java.sql.ResultSet,java.text.SimpleDateFormat, de.shj.UP.data.Dozent,de.shj.UP.data.shjCore" session="true" isThreadSafe="false"  errorPage="../../error.jsp" %>
-<jsp:useBean id="seminar" scope="session" class="de.shj.UP.HTML.HtmlSeminar" />
+<jsp:useBean id="seminar" scope="session" class="de.shj.UP.logic.SeminarData" />
 <jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" />
 <%@include file="../../../fragments/checkVersion.jsp" %>
 <%@include file="../../../fragments/checkLogin.jsp" %> 

@@ -1,5 +1,5 @@
 <%@page contentType="text/json" pageEncoding="UTF-8" import="de.shj.UP.beans.algorithm.AnmeldungIterator, java.util.Date, de.shj.UP.logic.Kurs,java.sql.ResultSet,de.shj.UP.logic.AktuellesIterator,java.text.SimpleDateFormat, de.shj.UP.data.Dozent,de.shj.UP.data.shjCore" session="true" isThreadSafe="false"  errorPage="../../../error.jsp" %>
-<jsp:useBean id="seminar" scope="session" class="de.shj.UP.HTML.HtmlSeminar" />
+<jsp:useBean id="seminar" scope="session" class="de.shj.UP.logic.SeminarData" />
 <jsp:useBean id="student" scope="session" class="de.shj.UP.beans.config.student.StudentBean" /><%--   
         ==================== ==================== ==================== ==================== ====================
         SCHNITTSTELLE:
@@ -146,7 +146,7 @@
     
 --%>
 <%! 
-	long getCount(de.shj.UP.HTML.HtmlSeminar sem, long lKursID){
+	long getCount(de.shj.UP.logic.SeminarData sem, long lKursID){
 		return sem.dbCount("strMatrikelnummer", "tblBdAnmeldung", 
 				"\"lngSdSeminarID\"=" + sem.getSeminarID() + 
 				" and \"lngKursID\"=" + lKursID + " and \"blnAnmeldungZuschlag\"=true");
@@ -204,7 +204,7 @@
 	// dem ursprünglichen Kurstyp). Es soll vermieden werden,
 	// dass man durch Tausch zwei Kurse eines Kurstyps
 	// erhalten kann. [Das wird im not exists geregelt].
-	String getKurstypOptions(de.shj.UP.HTML.HtmlSeminar sem, String sMatrikelnummer, long lKurstypID, long lKurstypIDSwitched) throws Exception{
+	String getKurstypOptions(de.shj.UP.logic.SeminarData sem, String sMatrikelnummer, long lKurstypID, long lKurstypIDSwitched) throws Exception{
 		String sReturn="";
 		long lExclude = (lKurstypIDSwitched<0) ? lKurstypID : lKurstypIDSwitched;
 		long lTmp = -1;

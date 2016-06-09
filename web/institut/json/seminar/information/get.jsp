@@ -50,7 +50,7 @@
     
 --%><%@page import="java.sql.Timestamp"%>
 <%@page contentType="text/json" pageEncoding="UTF-8" import="java.sql.ResultSet,de.shj.UP.logic.AktuellesIterator,java.text.SimpleDateFormat, de.shj.UP.data.Dozent,de.shj.UP.data.shjCore" session="true" isThreadSafe="false"  errorPage="../../error.jsp" %>
-<jsp:useBean id="seminar" scope="session" class="de.shj.UP.HTML.HtmlSeminar" />
+<jsp:useBean id="seminar" scope="session" class="de.shj.UP.logic.SeminarData" />
 <%@include file="../../../fragments/checkVersion.jsp" %>
 {"informationen":[
 <%long lERR_BASE=214000 + 100;    // Information + Get

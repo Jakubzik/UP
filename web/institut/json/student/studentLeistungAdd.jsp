@@ -1,6 +1,6 @@
 <%@ page contentType="text/json" pageEncoding="UTF-8" import="de.shj.UP.data.KvvArchiv,java.util.Enumeration,java.text.SimpleDateFormat,de.shj.UP.data.Dozent,de.shj.UP.data.shjCore" session="true" isThreadSafe="false" errorPage="../error.jsp"%>
 <%@page import="java.util.Locale"%>
-<%@page import="de.shj.UP.data.StudentXLeistung"%><jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" /><jsp:useBean id="seminar" scope="session" class="de.shj.UP.HTML.HtmlSeminar" />
+<%@page import="de.shj.UP.data.StudentXLeistung"%><jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" /><jsp:useBean id="seminar" scope="session" class="de.shj.UP.logic.SeminarData" />
 <jsp:useBean id="student" scope="session" class="de.shj.UP.beans.config.student.StudentBean" />
 <jsp:useBean id="credits" scope="page" class="de.shj.UP.beans.config.student.StudentLeistungBean" />
 <%!String string2JSON(String s) {

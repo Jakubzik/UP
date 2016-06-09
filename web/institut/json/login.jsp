@@ -3,7 +3,7 @@
 	session="true" isThreadSafe="false" errorPage="error.jsp"%>
 <%@page import="java.util.Locale,java.sql.ResultSet"%><jsp:useBean id="user"
 	scope="session" class="de.shj.UP.data.Dozent" /><jsp:useBean
-	id="seminar" scope="session" class="de.shj.UP.HTML.HtmlSeminar" /><jsp:useBean
+	id="seminar" scope="session" class="de.shj.UP.logic.SeminarData" /><jsp:useBean
 	id="student" scope="session"
 	class="de.shj.UP.beans.config.student.StudentBean" /><jsp:useBean
 	id="sd" scope="session" class="de.shj.UP.util.SessionData" />

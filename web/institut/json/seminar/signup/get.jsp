@@ -86,12 +86,12 @@
         tn_alle_kurstypen:  # der TN in diesem Kurs (in allen Kurstypen)
 --%>
 <%@page import="java.util.Vector"%>
-<%@page import="de.shj.UP.HTML.HtmlSeminar"%>
+<%@page import="de.shj.UP.logic.SeminarData"%>
 <%@page import="java.sql.PreparedStatement"%>
 <%@page contentType="text/json" pageEncoding="UTF-8" import="java.sql.ResultSet,de.shj.UP.data.Dozent,de.shj.UP.data.shjCore" session="true" isThreadSafe="false"  errorPage="../../error.jsp" %>
 <jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" />
 <jsp:useBean id="sd" scope="session" class="de.shj.UP.util.SessionData" />
-<jsp:useBean id="seminar" scope="session" class="de.shj.UP.HTML.HtmlSeminar" />
+<jsp:useBean id="seminar" scope="session" class="de.shj.UP.logic.SeminarData" />
 <%@include file="../../../fragments/checkVersion.jsp" %>
 <%@include file="../../../fragments/checkLogin.jsp" %>    
 <%@include file="../../../fragments/checkAccess500.jsp" %>

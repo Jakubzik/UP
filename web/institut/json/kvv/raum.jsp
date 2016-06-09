@@ -3,7 +3,7 @@
 	session="true" isThreadSafe="false"%>
 <%@page import="java.util.Locale"%><jsp:useBean id="user"
 	scope="session" class="de.shj.UP.data.Dozent" /><jsp:useBean
-	id="seminar" scope="session" class="de.shj.UP.HTML.HtmlSeminar" /><jsp:useBean
+	id="seminar" scope="session" class="de.shj.UP.logic.SeminarData" /><jsp:useBean
 	id="sd" scope="session" class="de.shj.UP.util.SessionData" />
 <%!
 String string2JSON(String s){

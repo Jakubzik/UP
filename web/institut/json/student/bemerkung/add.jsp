@@ -39,7 +39,7 @@
     ============
     <jsp:include page="student/bemerkung/add.jsp?bemerkung=Hallo&matrikelnummer=1488258&signup-expected-backend-version=1-01-2.7726-1" />
     
---%> <%@ page contentType="text/json" pageEncoding="UTF-8" import="de.shj.UP.data.StudentBemerkung,de.shj.UP.data.shjCore" session="true" isThreadSafe="false" errorPage="../../error.jsp"%><jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" /><jsp:useBean id="student" scope="session" class="de.shj.UP.beans.config.student.StudentBean" /><jsp:useBean id="seminar" scope="session" class="de.shj.UP.HTML.HtmlSeminar" />
+--%> <%@ page contentType="text/json" pageEncoding="UTF-8" import="de.shj.UP.data.StudentBemerkung,de.shj.UP.data.shjCore" session="true" isThreadSafe="false" errorPage="../../error.jsp"%><jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" /><jsp:useBean id="student" scope="session" class="de.shj.UP.beans.config.student.StudentBean" /><jsp:useBean id="seminar" scope="session" class="de.shj.UP.logic.SeminarData" />
 <% long lERR_BASE=100000 + 400;    // Bemerkung + Add
 if(request.getParameter("bemerkung")==null || request.getParameter("bemerkung").trim().equals("")) throw new Exception("{\"error\":\"Die Bemerkung ist leer und konnte nicht gespeichert werden.\",\"errorDebug\":\"Der erforderliche Parameter >bemerkung< ist null oder leer.\",\"errorcode\":" + lERR_BASE + 3 + ",\"severity\":20}");%>
 <%@include file="../../../fragments/checkVersion.jsp" %>

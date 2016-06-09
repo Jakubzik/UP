@@ -1,5 +1,5 @@
 <%@ page contentType="text/json" pageEncoding="UTF-8" import="java.sql.ResultSet,java.util.Enumeration,java.text.SimpleDateFormat,de.shj.UP.data.shjCore" session="true" isThreadSafe="false" errorPage="../../error.jsp"%>
-<jsp:useBean id="seminar" scope="session" class="de.shj.UP.HTML.HtmlSeminar" />
+<jsp:useBean id="seminar" scope="session" class="de.shj.UP.logic.SeminarData" />
 <jsp:useBean id="student" scope="session" class="de.shj.UP.beans.config.student.StudentBean" />
 <%@include file="../../../fragments/checkVersion.jsp" %>
 <%@include file="../../../fragments/checkLoginStudent.jsp" %>
@@ -220,7 +220,7 @@ try{
 --%>           
 
 
-<%!boolean hasFailedG1(de.shj.UP.HTML.HtmlSeminar sem, de.shj.UP.logic.StudentData student) throws Exception{
+<%!boolean hasFailedG1(de.shj.UP.logic.SeminarData sem, de.shj.UP.logic.StudentData student) throws Exception{
 		int iLEISTUNGSID_GS1=5;
 		ResultSet rs = sem.sqlQuery("select n.\"intNoteID\" " + 
 				"FROM \"tblBdStudentXLeistung\" x, \"tblSdNote\" n " + 
@@ -236,7 +236,7 @@ try{
 		return bReturn;
 }
 
-boolean isSprachpraxisGrundstudiumOK(de.shj.UP.HTML.HtmlSeminar sem, de.shj.UP.logic.StudentData student) throws Exception{
+boolean isSprachpraxisGrundstudiumOK(de.shj.UP.logic.SeminarData sem, de.shj.UP.logic.StudentData student) throws Exception{
 	boolean bReturn=false;
 	
 	// Master raus:
@@ -304,7 +304,7 @@ boolean isSprachpraxisGrundstudiumOK(de.shj.UP.HTML.HtmlSeminar sem, de.shj.UP.l
 	return bReturn;
 }
 
-boolean isSprachpraxisComplete(de.shj.UP.HTML.HtmlSeminar sem, de.shj.UP.logic.StudentData student) throws Exception{
+boolean isSprachpraxisComplete(de.shj.UP.logic.SeminarData sem, de.shj.UP.logic.StudentData student) throws Exception{
 	boolean bReturn=false;
 	
 	if(";2607188;2687590;2557207;2796694;2517916;2774444;2715710;2911255;2459443;2945676;2452755;2607902;".contains(";" + student.getMatrikelnummer() + ";")) return true;
@@ -329,7 +329,7 @@ boolean isSprachpraxisComplete(de.shj.UP.HTML.HtmlSeminar sem, de.shj.UP.logic.S
 	return bReturn;
 }
 
-boolean isProseminarClean(long lKurstypID, de.shj.UP.HTML.HtmlSeminar sem, de.shj.UP.logic.StudentData student) throws Exception{
+boolean isProseminarClean(long lKurstypID, de.shj.UP.logic.SeminarData sem, de.shj.UP.logic.StudentData student) throws Exception{
 	
 	// BA 75% können PS II SW Periode, PS II LW/KW doppelt machen --
 	// sparen wir uns da also den Test.

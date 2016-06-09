@@ -2,7 +2,7 @@
 <%@page import="java.sql.PreparedStatement"%>
 <%@ page contentType="text/json" errorPage="../../error.jsp" session="true" import="java.util.Date, java.util.List,java.io.File,de.shj.UP.util.CommandRunner,java.util.Random,de.shj.UP.beans.student.ExamIterator,de.shj.UP.transcript.*,de.shj.UP.data.Pruefung,de.shj.UP.transcript.Fachnote,de.shj.UP.data.shjCore,de.shj.UP.HTML.HtmlDate,java.sql.ResultSet" %>
 <jsp:useBean id="student" scope="session" class="de.shj.UP.beans.config.student.StudentBean" />
-<jsp:useBean id="seminar" scope="session" class="de.shj.UP.HTML.HtmlSeminar" />
+<jsp:useBean id="seminar" scope="session" class="de.shj.UP.logic.SeminarData" />
 <%
     // Anglistik: Stichproben 5 GymPO, 3 BA 75, 3 BA 50 1.HF, 3 2.HF, 3*3 25%
     String[] sMatrikelnummer_as={"3239549","2888612","3230868","2893449","3077260","2897043","2605299","3131002","2895690","3068700","2773238","2857703","2911010","2907611","3040892","3049339","3208470","3068551","3039334","3149472","3133486","3033090","2909561","3040161","3080668"};

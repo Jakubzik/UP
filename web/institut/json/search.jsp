@@ -1,4 +1,4 @@
-<%@ page language="java" pageEncoding="UTF8" contentType="text/json" errorPage="error.jsp"%><jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" /><jsp:useBean id="studenten" scope="page" class="de.shj.UP.beans.config.student.StudentSearchBean" /><jsp:useBean id="seminar" scope="session" class="de.shj.UP.HTML.HtmlSeminar" /><%!
+<%@ page language="java" pageEncoding="UTF8" contentType="text/json" errorPage="error.jsp"%><jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" /><jsp:useBean id="studenten" scope="page" class="de.shj.UP.beans.config.student.StudentSearchBean" /><jsp:useBean id="seminar" scope="session" class="de.shj.UP.logic.SeminarData" /><%!
 String s2j(String s){
 	return s.replace('\n', ' ').replace('\r', ' ').replace('\t', ' ').replace('\"', '\''); 
 }

@@ -1,7 +1,7 @@
 <%@page import="java.sql.PreparedStatement"%>
 <%@ page contentType="text/json" errorPage="../../error.jsp" session="true" import="java.util.Date, java.util.List,java.io.File,de.shj.UP.util.CommandRunner,java.util.Random,de.shj.UP.beans.student.ExamIterator,de.shj.UP.transcript.*,de.shj.UP.data.Pruefung,de.shj.UP.transcript.Fachnote,de.shj.UP.data.shjCore,de.shj.UP.HTML.HtmlDate,java.sql.ResultSet" %>
 <jsp:useBean id="student" scope="session" class="de.shj.UP.beans.config.student.StudentBean" />
-<jsp:useBean id="seminar" scope="session" class="de.shj.UP.HTML.HtmlSeminar" />
+<jsp:useBean id="seminar" scope="session" class="de.shj.UP.logic.SeminarData" />
 <%@include file="../../../fragments/checkLoginStudent.jsp" %>
 <%! String nf(float f){
 	//String sReturn = String.valueOf(f).replaceAll("\\.0","");

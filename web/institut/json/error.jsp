@@ -1,6 +1,6 @@
 <%@page import="java.io.PrintWriter"%>
 <%@page import="java.io.StringWriter"%>
-<%@ page language="java" pageEncoding="UTF8" import="java.util.Enumeration"  contentType="text/json" isErrorPage="true" %><jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" /><jsp:useBean id="seminar" scope="session" class="de.shj.UP.HTML.HtmlSeminar" /><%!String gatherInfo(HttpServletRequest request){
+<%@ page language="java" pageEncoding="UTF8" import="java.util.Enumeration"  contentType="text/json" isErrorPage="true" %><jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" /><jsp:useBean id="seminar" scope="session" class="de.shj.UP.logic.SeminarData" /><%!String gatherInfo(HttpServletRequest request){
   String strReturn = "Cookies:\n========\n";
   
   Cookie[] cookies = request.getCookies();

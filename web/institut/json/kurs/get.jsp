@@ -85,10 +85,10 @@
 <%@page import="de.shj.UP.data.shjCore"%>
 <%@ page language="java" pageEncoding="UTF8" contentType="text/html" import="java.sql.ResultSet" errorPage="../error.jsp"%>
 <jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" />
-<jsp:useBean id="seminar" scope="session" class="de.shj.UP.HTML.HtmlSeminar" />
+<jsp:useBean id="seminar" scope="session" class="de.shj.UP.logic.SeminarData" />
 <jsp:useBean id="sd" scope="session" class="de.shj.UP.util.SessionData" />
 <%!
-de.shj.UP.HTML.HtmlSeminar sem;
+de.shj.UP.logic.SeminarData sem;
 
 // Gibt "Mi 11:15" o.ä. aus.
 // Fkt. nur beim Standard 1x wöchentlich, 
