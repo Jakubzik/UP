@@ -6,6 +6,8 @@
 package de.shj.UP.logic;
 import java.sql.ResultSet;
 import de.shj.UP.data.Seminar;
+import static de.shj.UP.data.shjCore.g_ISO_DATE_FORMAT;
+import java.sql.Date;
 
 /**
  * @author h. jakubzik
@@ -17,7 +19,38 @@ public class SeminarData extends Seminar {
 
 	private static final long serialVersionUID = -3209478629400704006L;
 	private static long m_lngKURSTYP_DEFAULT	= 0;
-	
+	private String m_sLastZUVUpdate = null;
+        private Date m_dLastZUVUpdate = null;
+        
+	/**
+         * Betrifft Schnittstelle zu anderen universitären 
+         * Datensystemen: wenn die Studierendendaten zentral 
+         * in einer anderen Datenbank verwaltet werden, muss es 
+         * einen Daten-Import zu U:P geben.
+         * 
+         * Die Importierten Daten werden dann mit dem Datum 
+         * des Imports markiert.
+         * 
+         * So kann man veraltete Daten erkennen (deren Import-
+         * Datum ist älter als das anderer Studierender).
+         * 
+         * Diese Methode liefert das letzte Importdatum, in dem 
+         * es das aktuellste Importdatum aller Datensätze 
+         * heraussucht.
+	 * @return Datum, zu dem Studierendendatensätze generell zuletzt 
+         * von der Zentralen Universitätsverwaltung ("ZUV") als 
+         * aktiv bestätigt wurden.
+	 * @throws Exception
+	 */
+	public Date getLastZUVUpdate() throws Exception{
+		if(m_sLastZUVUpdate == null) {
+                    ResultSet rTmp = sqlQuery("select max(\"dtmStudentZUVUpdate\") as \"datum\" from \"tblBdStudent\";");
+                    rTmp.next();
+		    m_sLastZUVUpdate = rTmp.getString("datum");
+		}
+		if(m_dLastZUVUpdate==null) m_dLastZUVUpdate = new java.sql.Date(g_ISO_DATE_FORMAT.parse(m_sLastZUVUpdate).getTime());
+		return m_dLastZUVUpdate;
+	}
 	
 	/**
 	 * Empty (Bean usage). 
