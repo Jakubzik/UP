@@ -202,8 +202,45 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <jsp:include page="fragments/libs.jsp"></jsp:include>
     <script src="js/signup-faculty-common.js"></script>
+    <script src="js/signup-faculty-student-dom-common.js"></script>
+    <script src="js/signup-faculty-student.js"></script>
     <script>
             $(document).ready(function() {
+                // @TODO: es gibt eine Kopie von 
+                // diesem Befehl innerhalb des Namespaces. 
+                // eine von beiden muss wech.
+                $.ajaxSetup({
+                    type: "POST",
+                    data:{"signup_expected_backend_version":'1-0-0-2'},
+                    timeout: 20000,
+                    contentType: "application/x-www-form-urlencoded;charset=utf8",
+                    dataType: 'json',
+                    cache: false,
+                    error: function(xhr,status,dings){
+                        // Achtung
+                        // 1. sollte die fehlerauslösende Seite (!)
+                        //    den contentType "text/json" haben
+                        //    (oder jedenfalls nicht HTML).
+                        // 2. sollte die fehlerauslösende Seite (!)
+                        //    keine Leerzeilen ausliefern (also 
+                        //    irrelevante Zeilenumbrüche für die 
+                        //    Lesbarkeit o.ä.
+                            //if(true==true) alert("Fehler: " + xhr.responseText);
+                            var msg=eval("(" + xhr.responseText.substring(xhr.responseText.indexOf('{')) + ")");
+                            if(msg.errorcode==1){
+                                    // alert("Hey, ein Fehler mit dem Code 1 ... seltsam");
+                            }else if (msg.errorcode==11){
+                                // Falls das Login Studierender abgelaufen ist,
+                                // wird auf die Login-Seite umgelenkt
+                                document.location="./index-studierende.jsp";
+                            }else{
+                                    alert("Sorry, ein unerwarteter Fehler ist aufgetreten. Der Server meldet: \n\n" + msg.error);
+                                    //if(true==true) alert("Debug Info: " + msg.errorDebug);
+                            }
+                    }    
+                });
+
+                
                 // Das stellt die Ajax Wartemitteilung an.
                 $('body').on({
                     ajaxStart: function() {
@@ -282,7 +319,20 @@
                     else if(parseInt(iTyp_IN)===$.signUpGlobal.iTYP_ANTRAG_GYMPO_MISSING_CREDITS) sDocPath='transcript_gpa_missing_credits.rtf';
                     
                     $('#divAntraege .printbutton').on('click', function(){
-                        window.location = 'print/' + sDocPath + '?matrikelnummer=' + $(this).parents('tr').data('shj_item').matrikelnummer;
+                        alert("Drucke...");
+                        
+                        // Mit Absicht global:
+                        // js-libs müssen überarbeitet 
+                        // werden!
+                        student = [];
+                        // Problem: printDocx möchte die Leistungen 
+                        // herunterladen, übergibt aber keine 
+                        // Matrikelnummer. Das hier (below) 
+                        // funktioniert dabei leider nicht!
+                        student.matrikelnummer = '2826714';
+                        $.signUpGlobal.info.TEMPLATE = 'template_exp.docx'
+                        $.signUpGlobal.printDocx(true);
+                        // window.location = 'print/' + sDocPath + '?matrikelnummer=' + $(this).parents('tr').data('shj_item').matrikelnummer;
                     });
                     
                     // Link vom Antragsteller zur Bilanz-Ansicht in der Studierendenakte

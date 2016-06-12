@@ -104,7 +104,7 @@
 <%@include file="../../../fragments/checkAccess1.jsp" %>
 <%}else{
     if(g_bFachForEveryone){
-        seminar.init(Long.parseLong(request.getParameter("seminar_id")), request.getLocale());
+        seminar.init(0,0,Long.parseLong(request.getParameter("seminar_id")));
     }else{
 %>
 <%@include file="../../../fragments/checkLoginStudent.jsp" %>

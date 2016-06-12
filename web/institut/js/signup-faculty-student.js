@@ -53,6 +53,7 @@ $(document).ready(function() {
     $.signUpGlobal.seminar_id = $('#logged-in-user-seminar').val();
     $.signUpGlobal.access_level = parseInt($('#logged-in-user-accesslevel').val());
     $.signUpGlobal.info = {};
+    $.signUpGlobal.printDocx = function(bIN){printDocx(bIN);};
     $.signUpGlobal.info.seminar = {};
     
     $('#modLeistungDetails').on('shown', function(){$('#leistung_name').focus();});

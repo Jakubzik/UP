@@ -321,25 +321,7 @@ public class Seminar extends shjCore{
 ////////////////////////////////////////////////////////////////
 // 3.   X M L  U T I L I T I E S
 ////////////////////////////////////////////////////////////////
-	
-	/**
-	 * @return Objekt als XML-String
-	 **/
-	public String toXMLString(){
-		return 	
 
-			"<UniID>" + m_lUniID + "</UniID>"  + 
-			"<FakultaetID>" + m_lFakultaetID + "</FakultaetID>"  + 
-			"<SeminarID>" + m_lSeminarID + "</SeminarID>"  + 
-			"<SeminarShort>" + m_sSeminarShort + "</SeminarShort>"  + 
-			"<SeminarUnivISID>" + m_sSeminarUnivISID + "</SeminarUnivISID>"  + 
-			"<SeminarName>" + m_sSeminarName + "</SeminarName>"  + 
-			"<SeminarLink>" + m_sSeminarLink + "</SeminarLink>"  + 
-			"<SeminarNoteCboLocal>" + m_bSeminarNoteCboLocal + "</SeminarNoteCboLocal>"  + 
-			"<SeminarCustom1>" + m_sSeminarCustom1 + "</SeminarCustom1>"  + 
-			"<SeminarCustom2>" + m_sSeminarCustom2 + "</SeminarCustom2>"  + 
-			"<SeminarCustom3>" + m_sSeminarCustom3 + "</SeminarCustom3>" ;
-	}
 
 ////////////////////////////////////////////////////////////////
 // 4.   S Q L  U T I L I T I E S
@@ -352,7 +334,6 @@ public class Seminar extends shjCore{
 	 **/
 	private String getSQLWhereClause(){
 		return 
-			"\"lngSeminarID\"=? AND " + 
 			"\"lngUniID\"=? AND " + 
 			"\"lngFakultaetID\"=? AND " + 
 			"\"lngSeminarID\"=?";

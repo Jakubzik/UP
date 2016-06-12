@@ -708,11 +708,9 @@ public class shjCore implements Serializable, HttpSessionBindingListener{
 
     @Override
     public void valueBound(HttpSessionBindingEvent event) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void valueUnbound(HttpSessionBindingEvent event) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
