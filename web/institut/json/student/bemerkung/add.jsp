@@ -5,7 +5,8 @@
     ===========================
     2012, Nov 16, shj           erzeugt. 
     2013, Dec 26, shj           leicht überarbeitet (SQL Injection)
-    
+    2016, Jun 13, shj           Importe gesäubert
+
     Üblicher Lifecycle: ADD
 
     Speichert die Bemerkung (aus Parameter 'bemerkung') 

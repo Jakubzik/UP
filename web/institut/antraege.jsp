@@ -9,7 +9,7 @@
   <head> 
     <meta charset="utf-8"> 
     <meta contentType="application/x-www-form-urlencoded"></meta>
-    <title>SignUp -- Lehrende</title> 
+    <title>U:P -- Admin/Anträge</title> 
     <meta name="description" content="Prüfungsverwaltung"> 
     <meta name="author" content="Heiko Jakubzik"> 
  
@@ -201,6 +201,9 @@
     <!-- Placed at the end of the document so the pages load faster --> 
     <!-- Placed at the end of the document so the pages load faster -->
     <jsp:include page="fragments/libs.jsp"></jsp:include>
+    <script src="js/jszip-utils.js"></script>
+    <script src="js/docxgen.min.js"></script>
+    <script src="js/FileSaver.js"></script>
     <script src="js/signup-faculty-common.js"></script>
     <script src="js/signup-faculty-student-dom-common.js"></script>
     <script src="js/signup-faculty-student.js"></script>
@@ -320,16 +323,28 @@
                     
                     $('#divAntraege .printbutton').on('click', function(){
                         alert("Drucke...");
+                        console.warn($(this).parents('tr').data('shj_item'));
+                        var oLil = $(this).parents('tr').data('shj_item');
                         
                         // Mit Absicht global:
                         // js-libs müssen überarbeitet 
                         // werden!
                         student = [];
+                        student.matrikelnummer = oLil.matrikelnummer;
+                        student.fach_id = oLil.fach_id;
+                        student.fachsemester = oLil.fachsemester;
+                        student.vorname = oLil.vorname;
+                        student.nachname= oLil.nachname;
+                        student.geburtstag = oLil.geburtstag;
+                        student.geburtsort = oLil.geburtsort;
+                        student.anrede = oLil.anrede;
+                        student.fach=$.signUpGlobal.info.seminar.faecher.get(student.fach_id);
+                        student.fachname=student.fach.name;
                         // Problem: printDocx möchte die Leistungen 
                         // herunterladen, übergibt aber keine 
                         // Matrikelnummer. Das hier (below) 
                         // funktioniert dabei leider nicht!
-                        student.matrikelnummer = '2826714';
+                        
                         $.signUpGlobal.info.TEMPLATE = 'template_exp.docx'
                         $.signUpGlobal.printDocx(true);
                         // window.location = 'print/' + sDocPath + '?matrikelnummer=' + $(this).parents('tr').data('shj_item').matrikelnummer;

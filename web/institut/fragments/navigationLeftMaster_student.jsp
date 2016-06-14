@@ -39,9 +39,9 @@ String sSeminar = "," + seminar.getSeminarID() + ",";
     <ul class="nav nav-list"> 
         <li class="nav-header">Aktionen</li>
         <li class="signUp-student-nav<%=(!bIsKurswahlLink ? " active" : "")%>"><a href="<%=(bIsKurswahlLink ? "./ls-index.jsp" : "#")  %>" id="navDaten"><i class="icon-edit"></i>Daten</a></li> 
-<%if(seminar.Data().isSignUpPeriod() || seminar.Data().isSignUpShowResults()){ %>
+<%-- if(seminar.isSignUpPeriod() || seminar.Data().isSignUpShowResults()){ %>
         <li class="signUp-student-nav<%=(bIsKurswahlLink ? " active" : "")%>"><a href="./kurswahl.jsp" id="navKurswahl"><i class="icon-calendar"></i>Kurswahl</a></li>
-<%}%>
+<%} --%>
         <li class="signUp-student-nav<%=(!bIsKurswahlLink ? " active" : "")%>"><a href="<%=(bIsKurswahlLink ? "./ls-index.jsp" : "#")  %>" id="navLeistungen"><i class="icon-th"></i>Leistungen</a></li>
         <li class="signUp-student-nav<%=(!bIsKurswahlLink ? " active" : "")%>"><a href="<%=(bIsKurswahlLink ? "./ls-index.jsp" : "#")  %>" id="navAnmeldungen"><i class="icon-list"></i>Anmeldungen</a></li>
         <li class="signUp-student-nav<%=(!bIsKurswahlLink ? " active" : "")%>"><a href="<%=(bIsKurswahlLink ? "./ls-index.jsp" : "#")  %>" id="navPruefungen"><i class="icon-asterisk"></i>Prüfungen</a></li>

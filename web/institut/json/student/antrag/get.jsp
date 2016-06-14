@@ -5,7 +5,9 @@
     ===========================
     2013, May 19, 2013      erzeugt. 
     2013, Dez 26, 2013      überarbeitet
-    
+    2016, Jun 12, 2016      fach_id eingefügt, vorbhaltlich Test aus 
+                            Studierenden-Login (LEFT OUTER JOIN Query).
+
     Üblicher Lifecycle: GET
     Liefert die Anträge der Studierenden 
     inklusive deren (alter und neuer) Stati 
@@ -104,6 +106,9 @@
             "a.\"strMatrikelnummer\", " +
             "st.\"strStudentVorname\", " +
             "st.\"strStudentNachname\", " +
+            "st.\"blnStudentFemale\", " +
+            "st.\"dtmStudentGeburtstag\", " +
+            "st.\"strStudentGeburtsort\", " +
             "a.\"lngStudentAntragID\", " + 
             "a.\"lngStudentAntragTypID\", " +
             "a.\"strStudentAntragBezeichnung\", " +
@@ -115,12 +120,21 @@
             "s.\"strStudentAntragStatusBezeichnung\", " +
             "s.\"strStudentAntragStatusBeschreibung\", " +
             "s.\"dtmStudentAntragStatusDatum\", " +
+            "x.\"intFachID\", " +   // Juni 2016
+            "CASE WHEN x.\"intFachID\"=st.\"intStudentFach1\" THEN st.\"intStudentFachsemester1\" " +     // Juni 2016
+            "WHEN x.\"intFachID\"=st.\"intStudentFach2\" THEN st.\"intStudentFachsemester2\" " +     // Juni 2016
+            "WHEN x.\"intFachID\"=st.\"intStudentFach3\" THEN st.\"intStudentFachsemester3\" " +     // Juni 2016
+            "WHEN x.\"intFachID\"=st.\"intStudentFach4\" THEN st.\"intStudentFachsemester4\" " +     // Juni 2016
+            "WHEN x.\"intFachID\"=st.\"intStudentFach5\" THEN st.\"intStudentFachsemester5\" " +     // Juni 2016
+            "WHEN x.\"intFachID\"=st.\"intStudentFach6\" THEN st.\"intStudentFachsemester6\" END as fs, " +     // Juni 2016
             "d.\"strDozentVorname\", " +
             "d.\"strDozentNachname\", " +
             "s.\"blnStudentAntragStatusAbschluss\" " +
           "FROM " +
             "\"tblBdStudentAntrag\" a, " +
-            "\"tblBdStudent\" st, " +
+            "\"tblBdStudent\" st " +
+            "LEFT OUTER JOIN \"tblSdSeminarXFach\" x ON (x.\"lngSeminarID\"=" + seminar.getSeminarID() +    // Juni 2016
+                  " AND x.\"intFachID\" IN (st.\"intStudentFach1\", st.\"intStudentFach2\",st.\"intStudentFach3\",st.\"intStudentFach4\",st.\"intStudentFach5\",st.\"intStudentFach6\")), " + // Juni 2016
             "\"tblBdStudentAntragStatus\" s left outer join \"tblSdDozent\" d on (d.\"lngSdSeminarID\"=1 and d.\"lngDozentID\"=s.\"lngDozentID\") " +
           "WHERE " +
             "a.\"lngSdSeminarID\" = s.\"lngSdSeminarID\" AND " +
@@ -133,20 +147,34 @@
             "where s2.\"lngSdSeminarID\"=a.\"lngSdSeminarID\" and s2.\"strMatrikelnummer\"=a.\"strMatrikelnummer\" and " + 
             "s2.\"lngStudentAntragID\"=a.\"lngStudentAntragID\" and s2.\"blnStudentAntragStatusAbschluss\"=true) ") 
             + " order by \"strMatrikelnummer\", \"lngStudentAntragID\", \"dtmStudentAntragDatum\" desc, \"lngStudentAntragStatusID\" ;");
+
     long lAntragID=-1;long lAntragIDOld=-2;String sStatusArray="";String sBezeichnung="";long lAntragTypID=-1;boolean bAbgeschlossen=false;
-    String sMatrikelnummer="";String sMatrikelnummerOld="#";String sAntragsteller="";
+    String sMatrikelnummer="";String sMatrikelnummerOld="#";String sAntragsteller="";int iFachID=-1;int iFachsemester=-1;
+    String sVorname="", sNachname="", sGeburtstag="", sGeburtsort="", sAnrede="";
     
     while(rAntraege.next()){
         sMatrikelnummer=rAntraege.getString("strMatrikelnummer");
+        iFachID = rAntraege.getInt("intFachID");
+        iFachsemester = rAntraege.getInt("fs");
+        sVorname = rAntraege.getString("strStudentVorname");
+        sNachname = rAntraege.getString("strStudentNachname");
+        sGeburtstag = shjCore.shjGetGermanDate(rAntraege.getDate("dtmStudentGeburtstag"));
+        sGeburtsort = rAntraege.getString("strStudentGeburtsort");
+        sAnrede = rAntraege.getBoolean("blnStudentFemale") ? "Frau" : "Herr";
         
         lAntragID=rAntraege.getLong("lngStudentAntragID");
         if(lAntragID!=lAntragIDOld || !sMatrikelnummer.equals(sMatrikelnummerOld)){        // ein Neuer Antrag
             if(!sStatusArray.equals("")){                                                  // es gilt noch, den alten Antrag auszugeben
                 sStatusArray=sStatusArray.substring(0,sStatusArray.length()-1) + "]";
                 out.write("{\"antrag\":{\"matrikelnummer\":\"" + sMatrikelnummerOld + 
-                    "\",\"antragsteller\":\"" + sAntragsteller + "\",\"id\":\"" +lAntragIDOld  + 
-                    "\",\"antrag\":\"" + sBezeichnung + 
-                    "\", \"typ_id\":\"" + lAntragTypID + "\",\"stati\":" + sStatusArray + ",\"abgeschlossen\":\"" + (bAbgeschlossen ? "true" : "false") + "\"}},");
+                                    "\",\"vorname\":\"" + sVorname + 
+                "\",\"nachname\":\"" + sNachname + 
+                "\",\"geburtstag\":\"" + sGeburtstag + 
+                "\", \"geburtsort\":\"" + sGeburtsort + 
+                "\", \"anrede\":\"" + sAnrede + 
+                "\",\"fach_id\":\"" + iFachID + "\", \"fachsemester\":\"" + iFachsemester + "\",\"antragsteller\":\"" + sAntragsteller + "\",\"id\":\"" +lAntragIDOld  + 
+                "\",\"antrag\":\"" + sBezeichnung + 
+                "\", \"typ_id\":\"" + lAntragTypID + "\",\"stati\":" + sStatusArray + ",\"abgeschlossen\":\"" + (bAbgeschlossen ? "true" : "false") + "\"}},");
             }
             lAntragIDOld=lAntragID;
             sMatrikelnummerOld=sMatrikelnummer;
@@ -174,7 +202,12 @@
     
     if(lAntragID>=0)
         out.write("{\"antrag\":{\"matrikelnummer\":\"" + sMatrikelnummer + 
-            "\",\"antragsteller\":\"" + sAntragsteller + "\",\"id\":\"" +lAntragIDOld  + 
+            "\",\"vorname\":\"" + sVorname + 
+                "\",\"nachname\":\"" + sNachname + 
+                "\",\"geburtstag\":\"" + sGeburtstag + 
+                "\", \"geburtsort\":\"" + sGeburtsort + 
+                "\", \"anrede\":\"" + sAnrede + 
+                "\",\"fach_id\":\"" + iFachID + "\",\"fachsemester\":\"" + iFachsemester + "\",\"antragsteller\":\"" + sAntragsteller + "\",\"id\":\"" +lAntragIDOld  + 
             "\",\"antrag\":\"" + sBezeichnung + 
             "\", \"typ_id\":\"" + lAntragTypID + "\",\"stati\":" + sStatusArray + ",\"abgeschlossen\":\"" + (bAbgeschlossen ? "true" : "false") + "\"}}");
 %>]}
