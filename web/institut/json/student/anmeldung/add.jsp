@@ -5,8 +5,8 @@
 
     SYNOPSIS (German)
     ===========================
-    2012, Nov 23, shj
-    Erzeugt. 
+    2012, Nov 23, shj    Erzeugt. 
+    2016, Jun 20, shj    Anpassung OS
     
     Üblicher Lifecycle: ADD
 
@@ -46,7 +46,8 @@
     ====================
 
     
---%><%@page import="de.shj.UP.data.Kurs"%>
+--%><%@page import="java.sql.ResultSet"%>
+<%@page import="de.shj.UP.data.Kurs"%>
 <%@ page contentType="text/json" pageEncoding="UTF-8" import="de.shj.UP.data.Dozent,de.shj.UP.data.shjCore" session="true" isThreadSafe="false" errorPage="../../error.jsp"%><jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" /><jsp:useBean id="seminar" scope="session" class="de.shj.UP.logic.SeminarData" /><jsp:useBean id="student" scope="session" class="de.shj.UP.beans.config.student.StudentBean" /><jsp:useBean
 	id="sd" scope="session" class="de.shj.UP.util.SessionData" /><% long lERR_BASE=102000 + 400;    // Anmeldung + Add%>
 <%@include file="../../../fragments/checkVersion.jsp" %>
@@ -99,13 +100,14 @@
     // Ausführung
     // ==============================================================
     long lCount=-1;
-    if(bArchiv){
-       lCount=user.getNextID("lngStudentLeistungCount", 
-                    "tblBdStudentXLeistung", 
-                    "\"lngSdSeminarID\"=" +  user.getSdSeminarID() + 
+    ResultSet rTmp = user.sqlQuery("select max(\"lngStudentLeistungCount\")+1 from \"tblBdStudentXLeistung\" where " + 
+            "\"lngSdSeminarID\"=" +  user.getSdSeminarID() + 
                     " and \"strMatrikelnummer\"='" + Long.parseLong(student.getMatrikelnummer()) + 
                     "' and \"lngLeistungsID\"=" + lLeistungID);
-       if(!user.sqlExe(getSaveAnmeldungSQLArchiv(student, 
+    if(!rTmp.next()) lCount=0;
+    else lCount = rTmp.getLong(1);
+    if(bArchiv){
+       if(1!=user.sqlExeCount(getSaveAnmeldungSQLArchiv(student, 
                 lLeistungID,
                 lKursID, 
                 lKurstypID, 
@@ -113,11 +115,6 @@
                 lCount, 
                 sModulID))) throw new Exception("{\"error\":\"Die Anmeldung konnte nicht gespeichert werden.\",\"errorDebug\":\"Die Datenbank bockt bei der Ausführung (Hinzufügen Anmeldung aus Archiv) -- Details in den Logfiles?.\",\"errorcode\":" + lERR_BASE + 1 + ",\"severity\":70}");
     }else{
-        lCount=user.getNextID("lngStudentLeistungCount", 
-                    "tblBdStudentXLeistung", 
-                    "\"lngSdSeminarID\"=" +  student.getSeminarID() + 
-                    " and \"strMatrikelnummer\"='" + Long.parseLong(student.getMatrikelnummer()) + 
-                    "' and \"lngLeistungsID\"=" + lLeistungID);
         if(1!=(user.sqlExeCount(getSaveAnmeldungSQLAktuellesSemester(student, 
                 lLeistungID,
                 lKursID, 

@@ -154,13 +154,6 @@
     
     while(rAntraege.next()){
         sMatrikelnummer=rAntraege.getString("strMatrikelnummer");
-        iFachID = rAntraege.getInt("intFachID");
-        iFachsemester = rAntraege.getInt("fs");
-        sVorname = rAntraege.getString("strStudentVorname");
-        sNachname = rAntraege.getString("strStudentNachname");
-        sGeburtstag = shjCore.shjGetGermanDate(rAntraege.getDate("dtmStudentGeburtstag"));
-        sGeburtsort = rAntraege.getString("strStudentGeburtsort");
-        sAnrede = rAntraege.getBoolean("blnStudentFemale") ? "Frau" : "Herr";
         
         lAntragID=rAntraege.getLong("lngStudentAntragID");
         if(lAntragID!=lAntragIDOld || !sMatrikelnummer.equals(sMatrikelnummerOld)){        // ein Neuer Antrag
@@ -196,6 +189,13 @@
                     + "\",\"abschluss\":\"" + rAntraege.getBoolean("blnStudentAntragStatusAbschluss")
                     + "\"},";
         }
+        iFachID = rAntraege.getInt("intFachID");
+        iFachsemester = rAntraege.getInt("fs");
+        sVorname = rAntraege.getString("strStudentVorname");
+        sNachname = rAntraege.getString("strStudentNachname");
+        sGeburtstag = shjCore.shjGetGermanDate(rAntraege.getDate("dtmStudentGeburtstag"));
+        sGeburtsort = rAntraege.getString("strStudentGeburtsort");
+        sAnrede = rAntraege.getBoolean("blnStudentFemale") ? "Frau" : "Herr";
         sAntragsteller=rAntraege.getString("strStudentVorname") + " " + rAntraege.getString("strStudentNachname");
     }
     if(!sStatusArray.equals("")) sStatusArray=sStatusArray.substring(0,sStatusArray.length()-1) + "]";

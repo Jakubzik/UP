@@ -5,6 +5,7 @@
     ===========================
     2013, May 20, shj       erzeugt. 
     2013, Dez 26, shj       überarbeitet (SQL Injection)
+    2016, Jun 15, shj       Reduziert für OS-Version
 
     Üblicher Lifecycle: ADD
 
@@ -59,8 +60,10 @@ if(request.getParameter("antrag")==null || request.getParameter("antrag").trim()
     if(rAntraege.next()){
         throw new Exception("{\"error\":\"Sorry, ein entsprechender Antrag liegt bereits vor.\",\"errorDebug\":\"Das Frontend hat den Antrag zwar durchgereicht, es liegt aber noch ein offener Antrag vor.\",\"errorcode\":" + lERR_BASE + 3 + ",\"severity\":20}");
     }
-    long lAntragID=student.getNextID("lngStudentAntragID", "tblBdStudentAntrag", "\"lngSdSeminarID\"=" + 
-            student.getSeminarID() + " and \"strMatrikelnummer\"='" + student.getMatrikelnummer() + "'");
+    ResultSet rID = seminar.sqlQuery("select max(\"lngStudentAntragID\")+1 from \"tblBdStudentAntrag\" where \"lngSdSeminarID\"=" + 
+            student.getSeminarID() + " and \"strMatrikelnummer\"='" + Long.parseLong(student.getMatrikelnummer()) + "'");
+    rID.next();
+    long lAntragID=rID.getLong(1);
     
     // Teste, ob es eine Leistung gibt, die neuer ist als der letzte 
     // gestellte Antrag diesen Typs:

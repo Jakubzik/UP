@@ -5,7 +5,7 @@
     ===========================
     2012, Nov 23, shj    erzeugt. 
     2013, Dez 28, shj    überarbeitet
-    
+    2016, Jun 17, shj    
     Üblicher Lifecycle: ADD
 
     Speichert die Leistung, ohne Angabe eines Kurses. AddGeneric.jsp 
@@ -70,7 +70,8 @@
           ["anerkannt":"t"]
         }
     
---%> <%@ page contentType="text/json" pageEncoding="UTF-8" import="de.shj.UP.data.StudentXLeistung,de.shj.UP.data.Dozent,de.shj.UP.data.shjCore" session="true" isThreadSafe="false" errorPage="../../error.jsp"%><jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" /><jsp:useBean id="seminar" scope="session" class="de.shj.UP.logic.SeminarData" /><jsp:useBean id="student" scope="session" class="de.shj.UP.beans.config.student.StudentBean" /><jsp:useBean
+--%> <%@page import="java.sql.ResultSet"%>
+<%@ page contentType="text/json" pageEncoding="UTF-8" import="de.shj.UP.data.StudentXLeistung,de.shj.UP.data.Dozent,de.shj.UP.data.shjCore" session="true" isThreadSafe="false" errorPage="../../error.jsp"%><jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" /><jsp:useBean id="seminar" scope="session" class="de.shj.UP.logic.SeminarData" /><jsp:useBean id="student" scope="session" class="de.shj.UP.beans.config.student.StudentBean" /><jsp:useBean
 	id="sd" scope="session" class="de.shj.UP.util.SessionData" />
 <%@include file="../../../fragments/checkVersion.jsp" %>
 <%@include file="../../../fragments/checkLogin.jsp" %>
@@ -98,11 +99,14 @@
     }
     long lLeistungCount=0;
     try{
-        lLeistungCount=user.getNextID("lngStudentLeistungCount", 
-                    "tblBdStudentXLeistung", 
-                    "\"lngSdSeminarID\"=" +  user.getSdSeminarID() + 
+        ResultSet rst = user.sqlQuery("select max(\"lngStudentLeistungCount\")+1 "
+                + "from \"tblBdStudentXLeistung\" "
+                + "where "
+                + "\"lngSdSeminarID\"=" +  user.getSdSeminarID() + 
                     " and \"strMatrikelnummer\"='" + Long.parseLong(student.getMatrikelnummer()) + 
-                    "' and \"lngLeistungsID\"=" + lLeistungID);
+                    "' and \"lngLeistungsID\"=" + lLeistungID + ";");
+        rst.next();
+        lLeistungCount=rst.getLong(1);
     }catch(Exception eNotNumeric2){
         // Ignore, das ist dann die erste Leistung diesen Typs
     }

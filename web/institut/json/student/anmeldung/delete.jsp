@@ -6,7 +6,8 @@
     ===========================
     2012, Dec 30, shj    erzeugt. 
     2013, Dez 28, shj    überarbeitet.
-    
+    2016, Jun 20, shj    anpassen auf OS
+
     Üblicher Lifecycle: DELETE
 
     Löscht die Anmeldung aus StudentXLeistung. Dazu ist eine 
@@ -46,7 +47,8 @@
     ============
     <jsp:include page="student/anmeldung/delete.jsp?id=7&matrikelnummer=1488258&count=10&signup-expected-backend-version=1-01-2.7726-1" />
     
---%><%@page import="java.util.Date"%>
+--%><%@page import="java.sql.ResultSet"%>
+<%@page import="java.util.Date"%>
 <%@ page contentType="text/json" pageEncoding="UTF-8" import="java.util.Enumeration,java.text.SimpleDateFormat, de.shj.UP.data.Dozent,de.shj.UP.data.shjCore" session="true" isThreadSafe="false" errorPage="../../error.jsp"%>
 <%@page import="de.shj.UP.data.StudentBemerkung"%><jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" /><jsp:useBean id="seminar" scope="session" class="de.shj.UP.logic.SeminarData" />
 <jsp:useBean id="student" scope="session" class="de.shj.UP.beans.config.student.StudentBean" />
@@ -80,12 +82,16 @@ if(!student.getMatrikelnummer().equals(request.getParameter("matrikelnummer")))
         // frist ihre Anmeldungen löschen
         Date fristende=null;
         try{
-            fristende = shjCore.g_ISO_DATE_FORMAT.parse(seminar.lookUp("dtmSLKursScheinanmeldungBis", "tblBdStudentXLeistung", 
-                	"\"lngSdSeminarID\"=" + seminar.getSeminarID() + " and " +
-			"\"strMatrikelnummer\"='" + Long.parseLong(student.getMatrikelnummer()) + "' and " +  
-			"\"lngLeistungsID\"=" + lLeistungID + " and " + 
-                        "\"blnStudentLeistungKlausuranmeldung\"=true and " + 
-                        "\"lngStudentLeistungCount\"=" + lLeistungCount));
+            ResultSet rTmp = student.sqlQuery("select \"dtmSLKursScheinanmeldungBis\" "
+                    + "from \"tblBdStudentXLeistung\" " + 
+                    "\"lngSdSeminarID\"=" + seminar.getSeminarID() + " and " +
+                    "\"strMatrikelnummer\"='" + Long.parseLong(student.getMatrikelnummer()) + "' and " +  
+                    "\"lngLeistungsID\"=" + lLeistungID + " and " + 
+                    "\"blnStudentLeistungKlausuranmeldung\"=true and " + 
+                    "\"lngStudentLeistungCount\"=" + lLeistungCount);
+            if(!rTmp.next()) throw new Exception("Kein Fristende, Leistung nicht gefunden.");
+            fristende = shjCore.g_ISO_DATE_FORMAT.parse(rTmp.getString(1));
+
         }catch(Exception eFristNichtLesbar){
             // Den Fehler, dass kein Fristende angegeben ist, ignorieren wir:
             // Falls die Anmeldung vom Config-Konto nachträglich 

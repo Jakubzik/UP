@@ -13,6 +13,7 @@
     ===========================
     2012, Nov 23, shj    erzeugt. 
     2013, Dez 28, shj    überarbeitet
+    2016, Jun 17, shj    OS Anpassung für "U:P"
 
     Üblicher Lifecycle: ADD
 
@@ -112,7 +113,8 @@
           "details":"HA",
         }
     
---%> <%@ page contentType="text/json" pageEncoding="UTF-8" import="de.shj.UP.data.StudentXLeistung,de.shj.UP.data.Dozent,de.shj.UP.data.shjCore" session="true" isThreadSafe="false" errorPage="../../error.jsp"%><jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" /><jsp:useBean id="seminar" scope="session" class="de.shj.UP.logic.SeminarData" /><jsp:useBean id="student" scope="session" class="de.shj.UP.beans.config.student.StudentBean" /><jsp:useBean
+--%> <%@page import="java.sql.ResultSet"%>
+<%@ page contentType="text/json" pageEncoding="UTF-8" import="de.shj.UP.data.StudentXLeistung,de.shj.UP.data.Dozent,de.shj.UP.data.shjCore" session="true" isThreadSafe="false" errorPage="../../error.jsp"%><jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" /><jsp:useBean id="seminar" scope="session" class="de.shj.UP.logic.SeminarData" /><jsp:useBean id="student" scope="session" class="de.shj.UP.beans.config.student.StudentBean" /><jsp:useBean
 	id="sd" scope="session" class="de.shj.UP.util.SessionData" />
 <%@include file="../../../fragments/checkVersion.jsp" %>
 <%@include file="../../../fragments/checkLogin.jsp" %>
@@ -168,9 +170,13 @@
     // Kurs vorliegt. Erzeuge ggf. eine Anmeldung
     long lLeistungCount=-1;
     try{
-        lLeistungCount=Long.parseLong(user.lookUp("lngStudentLeistungCount", "tblBdStudentXLeistung", 
-            "\"strMatrikelnummer\"='" + student.getMatrikelnummer() + 
-            "' and \"lngSdSeminarID\"=" + student.getSeminarID() + " and \"lngKlausuranmeldungKursID\"=" + lKursID + " and \"blnStudentLeistungKlausuranmeldung\"=true"));
+        ResultSet rst = user.sqlQuery("select \"lngStudentLeistungCount\" from \"tblBdStudentXLeistung\" "
+                + "where \"strMatrikelnummer\"='" + Long.parseLong(student.getMatrikelnummer()) + 
+                "' and \"lngSdSeminarID\"=" + student.getSeminarID() + 
+                " and \"lngKlausuranmeldungKursID\"=" + lKursID + 
+                " and \"blnStudentLeistungKlausuranmeldung\"=true");
+        if(rst.next()){lLeistungCount = rst.getLong(1);rst.close();}
+        else{rst.close();throw new Exception("[Exc. unkritisch]: es liegt keine Anmeldung vor.");}
     }catch(Exception eNotNumeric){
             // Es wird zuerst eine Anmeldung erzeugt
             // (ruhig über die dafür zuständige JSP
@@ -183,9 +189,13 @@
                 // Sehe nach, ob die Anmeldung erfolgreich 
                 // hinzugefügt wurde:
                 try{
-                    lLeistungCount=Long.parseLong(user.lookUp("lngStudentLeistungCount", "tblBdStudentXLeistung", 
-                        "\"strMatrikelnummer\"='" + student.getMatrikelnummer() + 
-                        "' and \"lngSdSeminarID\"=" + student.getSeminarID() + " and \"lngKlausuranmeldungKursID\"=" + lKursID + " and \"blnStudentLeistungKlausuranmeldung\"=true"));
+                    ResultSet rst = user.sqlQuery("select \"lngStudentLeistungCount\" from \"tblBdStudentXLeistung\" "
+                            + "where \"strMatrikelnummer\"='" + Long.parseLong(student.getMatrikelnummer()) + 
+                            "' and \"lngSdSeminarID\"=" + student.getSeminarID() + 
+                            " and \"lngKlausuranmeldungKursID\"=" + lKursID + 
+                            " and \"blnStudentLeistungKlausuranmeldung\"=true");
+                    if(rst.next()){lLeistungCount = rst.getLong(1);rst.close();}
+                    else{throw new Exception("[Exc. kritisch]: es liegt immer noch keine Anmeldung vor.");}
                 }catch(Exception eNotNumeric2){
                     throw new Exception("{\"error\":\"Die Leistung kann leider so nicht gespeichert werden.\",\"errorDebug\":\"Es sollte eine Leistung hinzugefügt werden, zu der erst eine Anmeldung zu erzeugen war; das Erzeugen der Anmeldung ist allerdings leider schiefgegangen.\",\"errorcode\":" + lERR_BASE + 4 + ",\"severity\":50}");
             }

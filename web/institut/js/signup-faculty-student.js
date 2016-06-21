@@ -18,7 +18,7 @@ var student = new Array();
 $(document).ready(function() {
 
     // Ansichten der Register
-    $.signUpGlobal = {
+    $.signUpGlobal = $.signUpGlobal || {
         'iVIEW_SEARCH': 0,
         'iVIEW_SEARCH_RESULT': 1,
         'iVIEW_STUDENT_DETAIL': 2,
@@ -148,6 +148,13 @@ $(document).ready(function() {
         
         console.log('[DEBUG]: ... Rekodiere die >' + student.transkript.modul.length + '< Module in Array für Template.');
         
+        function isFail(sNote){
+            if(sNote.indexOf('5') === 0) return true;
+            if(sNote.indexOf('6') === 0) return true;
+            if(sNote.indexOf('7') === 0) return true;
+            return false;
+        }
+        
         for (var ii = 0; ii < student.transkript.modul.length; ii++) {
             console.log('[DEBUG]: ... --- Modul ' + student.transkript.modul[ii].modul.name);
             var oMod = {};
@@ -201,7 +208,7 @@ $(document).ready(function() {
                 // Nur wenn die Leistung auch absolviert 
                 // wurde, der Auflistung für den Druck 
                 // hinzufügen.
-                if(!isNaN(oL.lp)){
+                if(!isNaN(oL.lp) && !isFail(oL.note)){
                     oMod.leistungen.push(oL);
                     dLPErreicht += parseFloat(oL.lp);
                 }

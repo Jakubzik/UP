@@ -139,8 +139,6 @@
                             <option value="" selected="selected">bitte wählen</option>
                             <option value="1">Druck: Transkript Deutsch</option>
                             <option value="2">Druck: Transkript Englisch</option>
-                            <option value="3">Druck: unmodulares Transkript</option>
-                            <option value="4">Druck: Bescheinigung fürs GPA über fehlende Leistungen GymPO</option>
                         </select>
                     </div>
                 </div>
@@ -190,7 +188,7 @@
       <hr> 
  
       <footer> 
-        <p>&copy; shj-online 2012</p> 
+        <p>&copy; shj-online 2016</p> 
         <input type="hidden" id="d_id" value="<%=user.getDozentID() %> " />
       </footer> 
     <div class="signUp_waitmsg-modal"><!-- Place at bottom of page --></div>
@@ -311,21 +309,28 @@
                         'HTML_template': '#template_antrag',
                         'HTML_table_container': '#divAntraege',
                         'HTML_template_class_prefix': 'antrag_'};
+                    
                     shj.signUp.toolbox.render(oAntraegeTyp);
                     
+                    $('#divAntraege').data('shj_typ', iTyp_IN);
                     // Erstelle einen Link zum Druckerzeugnis
                     // (der hängt vom Antragstyp iTyp_IN ab)
-                    var sDocPath='';
-                    if(parseInt(iTyp_IN)===$.signUpGlobal.iTYP_ANTRAG_TRANSKRIPT_DE) sDocPath='transcript.rtf';
-                    else if(parseInt(iTyp_IN)===$.signUpGlobal.iTYP_ANTRAG_TRANSKRIPT_EN) sDocPath='transcript_e.rtf';
-                    else if(parseInt(iTyp_IN)===$.signUpGlobal.iTYP_ANTRAG_TRANSKRIPT_UNMODULAR) sDocPath='transcript_unmodular.rtf';
-                    else if(parseInt(iTyp_IN)===$.signUpGlobal.iTYP_ANTRAG_GYMPO_MISSING_CREDITS) sDocPath='transcript_gpa_missing_credits.rtf';
                     
                     $('#divAntraege .printbutton').on('click', function(){
-                        alert("Drucke...");
-                        console.warn($(this).parents('tr').data('shj_item'));
                         var oLil = $(this).parents('tr').data('shj_item');
                         
+                        var sTemplate = '';
+                        if(parseInt($('#divAntraege').data('shj_typ')) === $.signUpGlobal.iTYP_ANTRAG_TRANSKRIPT_DE) sTemplate = 'template_exp.docx';
+                        if(parseInt($('#divAntraege').data('shj_typ')) === $.signUpGlobal.iTYP_ANTRAG_TRANSKRIPT_EN) sTemplate = 'template_exp_en.docx';
+                        if(parseInt($('#divAntraege').data('shj_typ')) === $.signUpGlobal.iTYP_ANTRAG_TRANSKRIPT_UNMODULAR){
+                            window.location = 'print/transcript_unmodular.rtf?matrikelnummer=' + $(this).parents('tr').data('shj_item').matrikelnummer;
+                            return;
+                        }
+                        if(parseInt($('#divAntraege').data('shj_typ')) === $.signUpGlobal.iTYP_ANTRAG_GYMPO_MISSING_CREDITS){
+                            window.location = 'print/transcript_gpa_missing_credits.rtf?matrikelnummer=' + $(this).parents('tr').data('shj_item').matrikelnummer;
+                            return;
+                        }
+ 
                         // Mit Absicht global:
                         // js-libs müssen überarbeitet 
                         // werden!
@@ -345,7 +350,7 @@
                         // Matrikelnummer. Das hier (below) 
                         // funktioniert dabei leider nicht!
                         
-                        $.signUpGlobal.info.TEMPLATE = 'template_exp.docx'
+                        $.signUpGlobal.info.TEMPLATE = sTemplate;
                         $.signUpGlobal.printDocx(true);
                         // window.location = 'print/' + sDocPath + '?matrikelnummer=' + $(this).parents('tr').data('shj_item').matrikelnummer;
                     });
