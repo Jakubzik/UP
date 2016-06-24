@@ -7,6 +7,7 @@
     2013, Nov 30, shj
     2014, Jan 10, shj:  leere Terminliste lieferte kein
                         korrektes JSON.
+    2016, Mai 13, shj:  Umstellen JSON, Integration in test
     
     Auflistung der zukünftigen Termine und 
     Terminbuchungen des angemeldeten Dozenten 
@@ -81,7 +82,7 @@
 <%@include file="../../../../fragments/checkVersion.jsp" %>
 <%@include file="../../../../fragments/checkLogin.jsp" %>
 <%@include file="../../../../fragments/checkAccess1.jsp" %>
-[<%long lERR_BASE=208000 + 400;    // Termin + Add
+{"dozentTermine":[<%long lERR_BASE=208000 + 400;    // Termin + Add
 
 // Nur zukünftige Termine auswählen:
 boolean bShowOnlyFutureDates=true;
@@ -108,7 +109,7 @@ while(rTermine.next()){
         //else out.write(",");
         bStart=false;
         bStartIntervall=true;
-        out.write("{\"datum\":\"" + shjCore.g_GERMAN_DATE_FORMAT.format(dTmp) + "\",\"intervalle\":[");
+        out.write("{\"dozentTermin\":{\"datum\":\"" + shjCore.g_GERMAN_DATE_FORMAT.format(dTmp) + "\",\"intervalle\":[");
         dTmpAlt=dTmp;
     }
     if(bStartIntervall) bStartIntervall=false;
@@ -131,7 +132,7 @@ while(rTermine.next()){
             + "}}");
     }
 
-%>]<%if(!bStart) out.write("}]");%>
+%>]}<%if(!bStart) out.write("}]}");%>
 <%!
 String string2JSON(String s){
     return (s==null) ? "" : s.replace('\n', ' ').replace('\r', ' ').replace('\t', ' ').replace('\"', '\''); 

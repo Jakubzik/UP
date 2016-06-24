@@ -1293,10 +1293,32 @@ $(document).ready(function() {
         };
         Dozenten.prototype=new shj.signUp.ShjCoreCollection();
 
-//        var dozentTermin =function(seminar_id)
+        var DozentTermin = function(seminar_id, termin){
+            if(arguments.length===0) return;
+            console.warn(termin);
+            this.seminar_id_orig=seminar_id;
+            this.lifecycle_base_url="dozent/termin";
+            if (typeof termin !== 'undefined'){
+                $.extend(this,termin);
+            }
+            this.equals=function(obj){return this.id===obj.id;};
+            shj.signUp.ShjCoreObject.call(this, "DozentTermin", seminar_id, {"namespace":"seminar"}, "dozent/termin");
+        };
+        DozentTermin.prototype = new shj.signUp.ShjCoreObject();
 
-//        var dozentTermine = function(seminar_id, dozent_id, fSuccess, fErr){
-//        }
+        var DozentTermine = function(seminar_id, fSuccess){
+            this.seminar_id=seminar_id;
+            this.lifecycle_base_url="dozent/termin";
+
+            shj.signUp.ShjCoreCollection.call(this, seminar_id, "dozentTermine", 
+                    {"lifecycle_base_url":"dozent/termin",
+                        "_name":"dozentTermin",
+                        "identifier":"id",
+                        "constructor_name":'DozentTermin',
+                        "namespace":'seminar'
+                    }, fSuccess);
+        };
+        DozentTermine.prototype=new shj.signUp.ShjCoreCollection();
         
 
         // ##############################################################
@@ -1695,6 +1717,8 @@ $(document).ready(function() {
             Module:Module,
             Dozent:Dozent, 
             Dozenten:Dozenten,
+            DozentTermin:DozentTermin,
+            DozentTermine:DozentTermine,
             Fach:Fach, 
             Faecher:Faecher, 
             Information:Information,
