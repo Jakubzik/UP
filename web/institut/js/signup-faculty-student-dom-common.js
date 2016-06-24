@@ -367,7 +367,9 @@ window.getAbsolvierte=function(modul_in, leistung_in,debugA,debugB) {
         // Wenn es sich um eine Leistung des 
         // angefragten Typs im angefragten Modul
         // handelt, wird sie ins Array aufgenommen.
-        if (student.leistungen.leistungen[ii].id == leistung_in.id && student.leistungen.leistungen[ii].modul == modul_in.id) {
+        if (student.leistungen.leistungen[ii].id == leistung_in.id && 
+                student.leistungen.leistungen[ii].modul == modul_in.id &&
+            student.leistungen.leistungen[ii].bestanden==='t')  {
             array.push(student.leistungen.leistungen[ii]);
         }
     }

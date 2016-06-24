@@ -5,6 +5,7 @@
     ===========================
     2012, Dec 31, shj    erzeugt. 
     2013, Dez 27, shj    überarbeitet
+    2016. Jun 21, shj    an OS angepasst
 
     Üblicher Lifecycle: UPDATE
 
@@ -192,7 +193,6 @@
 			sl.setStudentLeistungKlausuranmeldung(false);
 			sl.setStudentLeistungGesiegelt(true);
 			sl.setStudentLeistungValidiert(true);
-			sl.tellStudentAboutNewCredit();
 		}
 		if(!sl.update()) throw new Exception("{\"error\":\"Die Leistung konnte nicht geändert werden -- sorry.\"" + 
                     ",\"errorDebug\":\"Die Datenbank hat sich verweigert.\",\"errorcode\":" + lERR_BASE + 1 + ",\"severity\":50}");            
