@@ -32,7 +32,7 @@
     Object:
     {"success":"true", "antrag_id":'id'}
 --%> <%@page import="java.sql.PreparedStatement"%>
-<%@ page contentType="text/json" pageEncoding="UTF-8" import="java.sql.ResultSet" session="true" isThreadSafe="false" errorPage="../../error.jsp"%><jsp:useBean id="seminar" scope="session" class="de.shj.UP.logic.SeminarData" /><jsp:useBean id="student" scope="session" class="de.shj.UP.beans.config.student.StudentBean" /><% long lERR_BASE=106000 + 400;    // Antrag + Add
+<%@ page contentType="text/json" pageEncoding="UTF-8" import="java.sql.ResultSet" session="true" isThreadSafe="false" errorPage="../../error.jsp"%><jsp:useBean id="seminar" scope="session" class="de.shj.UP.logic.SeminarData" /><jsp:useBean id="student" scope="session" class="de.shj.UP.logic.StudentData" /><% long lERR_BASE=106000 + 400;    // Antrag + Add
 if(request.getParameter("antrag")==null || request.getParameter("antrag").trim().equals("")) throw new Exception("{\"error\":\"Die Antrag ist leer und konnte nicht gespeichert werden.\",\"errorDebug\":\"Der erforderliche Parameter >antrag< ist null oder leer.\",\"errorcode\":" + lERR_BASE + 3 + ",\"severity\":20}");%>
 <%if(request.getParameter("typ_id")==null || request.getParameter("typ_id").trim().equals("")) throw new Exception("{\"error\":\"Die Antrag ist nicht typisiert und konnte nicht gespeichert werden.\",\"errorDebug\":\"Der erforderliche Parameter >typ_id< ist null oder leer.\",\"errorcode\":" + lERR_BASE + 3 + ",\"severity\":20}");%>
 <%@include file="../../../fragments/checkVersion.jsp" %>

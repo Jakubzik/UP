@@ -5,7 +5,7 @@
 	scope="session" class="de.shj.UP.data.Dozent" /><jsp:useBean
 	id="seminar" scope="session" class="de.shj.UP.logic.SeminarData" /><jsp:useBean
 	id="student" scope="session"
-	class="de.shj.UP.beans.config.student.StudentBean" /><jsp:useBean
+	class="de.shj.UP.logic.StudentData" /><jsp:useBean
 	id="sd" scope="session" class="de.shj.UP.util.SessionData" />
 <%@include file="../fragments/conf_login.jsp" %>
 
@@ -39,12 +39,11 @@ if(request.getParameter("txtMatrikelnummer")==null){
         sd.setSessionType("student");
         student.setSeminarID( lSEMINAR_ID );
 
-
-        //if(!(student.loginURZ(request.getParameter("txtMatrikelnummer"),student.getDBCleanString(request.getParameter("txtStudentName")),request.getParameter("txtPwd"),lSEMINAR_ID))){
         if(!student.login(request.getParameter("txtMatrikelnummer"), request.getParameter("txtStudentName"), request.getParameter("txtPwd"), lSEMINAR_ID)){
           student.close();
           student=null;
-          session.removeAttribute("student");	  
+          session.removeAttribute("student");	 
+          sErr="Login Failed";
         }else{
                 sErr="";
                 sd.setSessionType("student");

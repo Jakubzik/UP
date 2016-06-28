@@ -49,10 +49,11 @@
     
 --%>
 
+<%@page import="de.shj.UP.data.Fach"%>
 <%@page import="java.sql.PreparedStatement"%>
 <%@page import="de.shj.UP.util.ResultSetSHJ"%>
 <%@page contentType="text/json" pageEncoding="UTF-8" import="java.sql.ResultSet,java.text.SimpleDateFormat, de.shj.UP.data.Dozent,de.shj.UP.data.shjCore" session="true" isThreadSafe="false"  errorPage="../error.jsp" %>
-<jsp:useBean id="student" scope="session" class="de.shj.UP.beans.config.student.StudentBean" /><jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" /><jsp:useBean id="seminar" scope="session" class="de.shj.UP.logic.SeminarData" />
+<jsp:useBean id="student" scope="session" class="de.shj.UP.logic.StudentData" /><jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" /><jsp:useBean id="seminar" scope="session" class="de.shj.UP.logic.SeminarData" />
 <%@include file="../../fragments/checkVersion.jsp" %>
 <%@include file="../../fragments/conf_general.jsp" %>
 <%!String getZUVZielInfo(int lZUVZiel){
@@ -181,7 +182,7 @@ if(request.getParameter("txtSuchen")!=null){
         "semester":"<%=student.getStudentSemester() %>",
         "email":"<%=student.getStudentEmail() %>",
         "telefon":"<%=student.getStudentTelefon() %>",
-        "fach":"<%=student.Fach().getFachBezeichnung() %>",
+        "fach":"<%=new Fach(student.getFachID(seminar.getSeminarID())).getFachBezeichnung() %>",
         "fach_id":"<%=student.getFachID(seminar.getSeminarID()) %>",
         "fachsemester":"<%=student.getFachsemester(student.getFachID(seminar.getSeminarID())) %> ",
         "pid":"<%=student.getStudentPID() %>",

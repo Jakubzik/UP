@@ -47,6 +47,6 @@ String sSeminar = "," + seminar.getSeminarID() + ",";
         <li class="signUp-student-nav<%=(!bIsKurswahlLink ? " active" : "")%>"><a href="<%=(bIsKurswahlLink ? "./ls-index.jsp" : "#")  %>" id="navPruefungen"><i class="icon-asterisk"></i>Prüfungen</a></li>
         <li class="signUp-student-nav<%=(!bIsKurswahlLink ? " active" : "")%>"><a href="<%=(bIsKurswahlLink ? "./ls-index.jsp" : "#")  %>" id="navStudienbilanz"><i class="icon-check"></i>Studienbilanz</a></li> 
         <%if(sSeminareMitAntrag.contains(sSeminar)){%>        <li class="signUp-student-nav<%=(!bIsKurswahlLink ? " active" : "")%>"><a href="<%=(bIsKurswahlLink ? "./ls-index.jsp" : "#")  %>" id="navAntrag"><i class="icon-envelope"></i>Antrag</a></li> <%}%>
-        <%if(sSeminareMitTranskriptdruck.contains(sSeminar)){%>        <li class="signUp-student-nav<%=(!bIsKurswahlLink ? " active" : "")%>"><a href="<%=(bIsKurswahlLink ? "./ls-index.jsp" : "#")  %>" id="navTranskriptdruck"><i class="icon-print"></i>Transkriptdruck</a></li> <%}%>
+<%--        <%if(sSeminareMitTranskriptdruck.contains(sSeminar)){%>        <li class="signUp-student-nav<%=(!bIsKurswahlLink ? " active" : "")%>"><a href="<%=(bIsKurswahlLink ? "./ls-index.jsp" : "#")  %>" id="navTranskriptdruck"><i class="icon-print"></i>Transkriptdruck</a></li> <%}%> --%>
     </ul> 
 </div><!--/.well -->

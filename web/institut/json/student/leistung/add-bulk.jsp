@@ -169,7 +169,7 @@ sl.setStudentLeistungValidiert( true );
 if(!bNoteBestanden) sl.setStudentLeistungCreditPts(0);
 
 if(sl.update()){
-        sl.tellStudentAboutNewCredit();
+//        sl.tellStudentAboutNewCredit();
         out.write("{\"success\":\"true\"}");
 }else{
     throw new Exception("{\"error\":\"Datenbank konnte die Leistung nicht speichern\"," 

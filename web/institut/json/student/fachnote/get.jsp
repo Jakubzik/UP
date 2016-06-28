@@ -34,7 +34,7 @@
 --%>
 <%@page contentType="text/json" pageEncoding="UTF-8" import="de.shj.UP.transcript.Fachnote" session="true" isThreadSafe="false"  errorPage="../../error.jsp" %>
 <jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" /><jsp:useBean id="seminar" scope="session" class="de.shj.UP.logic.SeminarData" />
-<jsp:useBean id="student" scope="session" class="de.shj.UP.beans.config.student.StudentBean" />
+<jsp:useBean id="student" scope="session" class="de.shj.UP.logic.StudentData" />
 <%@include file="../../../fragments/checkVersion.jsp" %>
 <%@include file="../../../fragments/checkLogin.jsp" %>
 <%@include file="../../../fragments/checkInitStudent.jsp" %>
@@ -42,17 +42,17 @@
 <%@include file="../../../fragments/conf_llpa.jsp" %>
 {"fachnoten":[<%
     long lERR_BASE=209000 + 100;    // Fachnote + Get
-    Fachnote note=new Fachnote(student.getMatrikelnummer(), user.getSdSeminarID(), student.Fach().getFachID());
+    Fachnote note=new Fachnote(student.getMatrikelnummer(), user.getSdSeminarID(), student.getFachID(user.getSdSeminarID()));
     String sFachnote = "";
     
     if(note.isComplete()){
-        if(g_sFaecherMitZweiNachstellenFachnote.indexOf(";" + student.Fach().getFachID() + ";")>=0){
+        if(g_sFaecherMitZweiNachstellenFachnote.indexOf(";" + student.getFachID(user.getSdSeminarID()) + ";")>=0){
             sFachnote=String.valueOf(note.getGradeUnrounded()).substring(0, String.valueOf(note.getGradeUnrounded()).indexOf('.')+3).replace(".", ",");
         }else{
             sFachnote=note.getGrade().replace('.',',');
         }
     }else{
-        if(g_sFaecherMitZweiNachstellenFachnote.indexOf(";" + student.Fach().getFachID() + ";")>=0){
+        if(g_sFaecherMitZweiNachstellenFachnote.indexOf(";" + student.getFachID(user.getSdSeminarID()) + ";")>=0){
             try{
                 sFachnote=String.valueOf(note.getPreliminaryGradeUnrounded()).substring(0, String.valueOf(note.getPreliminaryGradeUnrounded()).indexOf('.')+3).replace(".", ",");
             }catch(Exception e){sFachnote="--";}

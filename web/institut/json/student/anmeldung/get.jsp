@@ -89,7 +89,7 @@
 --%>
 <%@page contentType="text/json" pageEncoding="UTF-8" import="java.sql.ResultSet,de.shj.UP.data.Dozent,de.shj.UP.data.shjCore" session="true" isThreadSafe="false"  errorPage="../../error.jsp" %>
 <jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" /><jsp:useBean id="seminar" scope="session" class="de.shj.UP.logic.SeminarData" />
-<jsp:useBean id="student" scope="session" class="de.shj.UP.beans.config.student.StudentBean" />
+<jsp:useBean id="student" scope="session" class="de.shj.UP.logic.StudentData" />
 <jsp:useBean id="sd" scope="session" class="de.shj.UP.util.SessionData" />
 <%@include file="../../../fragments/checkVersion.jsp" %>
 <%long lERR_BASE=102000 + 100;    // Leistung + Get
@@ -104,7 +104,7 @@ if(!student.getMatrikelnummer().equals(request.getParameter("matrikelnummer")))
 <%@include file="../../../fragments/checkInitStudent.jsp" %>
 <%}%>
 <%!
-ResultSet getAnmeldungen(de.shj.UP.beans.config.student.StudentBean student, de.shj.UP.data.Dozent d, HttpServletRequest r, long lERR_BASE) throws Exception{
+ResultSet getAnmeldungen(de.shj.UP.logic.StudentData student, de.shj.UP.data.Dozent d, HttpServletRequest r, long lERR_BASE) throws Exception{
         String sItem="";
         if(r.getParameter("leistung_id")!=null){
             try{

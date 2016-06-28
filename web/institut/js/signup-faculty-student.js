@@ -2502,7 +2502,6 @@ function showDetails(sMatrikelnummer, studi, fSuccess) {
     $.signUpGlobal.matrikelnummer = sMatrikelnummer;
     if($.signUpGlobal.access_level>=500){
         showBemerkungen();
-        $('a.zuv_heidelberg_ext').attr('href','http://adb.zuv.uni-heidelberg.de:8888/sach/INFO_FDB$.startup?MODUL=STUD&M1=2&M2=10&M3=0&PRO=&MODUS=SUCHERGEBNISS&TEXT=' + sMatrikelnummer);
     }
     
     setView($.signUpGlobal.iVIEW_STUDENT_DETAIL);

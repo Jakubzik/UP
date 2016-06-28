@@ -188,8 +188,8 @@ public class Student extends shjCore{
  		boolean blnReturn=false;
  		ResultSet rst=null;
  
- 		String strSQL =
- 			"SELECT " +
+                try{
+                    PreparedStatement pstm=prepareStatement( "SELECT " +
  			   "b.*, " +
  				"x.\"lngSeminarID\", " +
  				"x.\"intFachID\" " +
@@ -197,10 +197,9 @@ public class Student extends shjCore{
  			"FROM \"tblBdStudent\" b, \"tblSdSeminarXFach\" x " +
  			"WHERE " +
  			 "(" +
- 			   "b.\"strMatrikelnummer\"='" + strMatrikel + "' AND " +
- 			   "b.\"strStudentNachname\"='" + strName + "' AND " +
- 			   "b.\"strStudentPasswort\"='" + strPwd + "' AND " +
- 			   "x.\"lngSeminarID\"=" + lngSeminarID + " AND " +
+ 			   "b.\"strMatrikelnummer\"=? AND " +
+ 			   "b.\"strStudentNachname\"=? AND " +
+ 			   "x.\"lngSeminarID\"=? AND " +
  			   "(" +
  				 "b.\"intStudentFach1\"=x.\"intFachID\" OR " +
  				 "b.\"intStudentFach2\"=x.\"intFachID\" OR " +
@@ -209,35 +208,36 @@ public class Student extends shjCore{
  				 "b.\"intStudentFach5\"=x.\"intFachID\" OR " +
  				 "b.\"intStudentFach6\"=x.\"intFachID\" " +
  			   ")" +
- 			 ");";
- 
- 		try{
- 			rst=sqlQuery(strSQL);
- 			if(rst.next()){
- 
- 				initByRst(rst);
- 				//rst.close();
- 
- 				// update SessionID 'lngRandom' in 'tblBdStudent' in database:
- 				// long lngSessionID=Math.round((Math.random()*2147483647));
- 				strSQL = "UPDATE \"tblBdStudent\" ";
- 				strSQL+= "SET \"dtmStudentLastLogin\" = CURRENT_TIMESTAMP ";
- 				// strSQL+= "\"lngStudentRandom\" = " + lngSessionID +" ";
- 				strSQL+= "WHERE (\"lngStudentPID\"=" + this.getStudentPID() + ");";
- 				sqlExe(strSQL);
- 				// this.setStudentRandom(lngSessionID);
- 
- 
- 				blnReturn=true;
- 				}
- 			rst.close();
- 			}catch(Exception eLogin){
- 				m_bLoginStateInternalErr=true;
- 				blnReturn=false;
- 		}
- 		// new: March 1, 2010
- 		try{this.disconnect();}catch(Exception e){}
- 		return blnReturn;
+ 			 ");");
+                    pstm.setString(1, strMatrikel);
+                    pstm.setString(2, strName);
+                    pstm.setLong(3, lngSeminarID);
+                    
+                    String sPwd;
+		    rst=pstm.executeQuery();
+			while(rst.next()){
+
+                           sPwd=rst.getString("strStudentPasswort");
+                           if(PasswordHash.validatePassword(strPwd, sPwd)){
+				initByRst(rst);
+				rst.close();
+				blnReturn=true;
+                                break;
+                            }
+                        }
+                    }catch(NoSuchAlgorithmException eLogin){
+			blnReturn=false;
+                    } catch (InvalidKeySpecException eLogin) {
+                        blnReturn=false;
+                    } catch (SQLException eLogin) {
+                        blnReturn=false;
+                    } catch (NamingException eLogin) {
+                        blnReturn=false;
+                    }
+                
+		// new March 1 2010:
+		try{this.disconnect();}catch(Exception e){}
+		return blnReturn;
  	}
 	
 	/**

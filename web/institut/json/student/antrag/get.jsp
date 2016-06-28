@@ -85,7 +85,7 @@
 --%>
 <%@page contentType="text/json" pageEncoding="UTF-8" import="java.sql.ResultSet,de.shj.UP.data.shjCore" session="true" isThreadSafe="false"  errorPage="../../error.jsp" %>
 <jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" /><jsp:useBean id="seminar" scope="session" class="de.shj.UP.logic.SeminarData" />
-<jsp:useBean id="student" scope="session" class="de.shj.UP.beans.config.student.StudentBean" /><jsp:useBean id="sd" scope="session" class="de.shj.UP.util.SessionData" />
+<jsp:useBean id="student" scope="session" class="de.shj.UP.logic.StudentData" /><jsp:useBean id="sd" scope="session" class="de.shj.UP.util.SessionData" />
 <%@include file="../../../fragments/checkVersion.jsp" %>{"antraege":[
 <%boolean bStudentRequest=false;if(sd.getSessionType().equals("student") && request.getParameter("matrikelnummer")!=null && request.getParameter("matrikelnummer").equals(student.getMatrikelnummer())){bStudentRequest=true; %>
     <%@include file="../../../fragments/checkInitStudent.jsp" %>

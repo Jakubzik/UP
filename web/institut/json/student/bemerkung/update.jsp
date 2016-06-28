@@ -34,7 +34,7 @@
     {"success":"true"}
     
 --%><%@ page contentType="text/json" pageEncoding="UTF-8" import="java.util.Enumeration,java.text.SimpleDateFormat, de.shj.UP.data.Dozent,de.shj.UP.data.shjCore" session="true" isThreadSafe="false" errorPage="../error.jsp"%>
-<%@page import="de.shj.UP.data.StudentBemerkung"%><jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" /><jsp:useBean id="student" scope="session" class="de.shj.UP.beans.config.student.StudentBean" />
+<%@page import="de.shj.UP.data.StudentBemerkung"%><jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" /><jsp:useBean id="student" scope="session" class="de.shj.UP.logic.StudentData" />
 <%@include file="../../../fragments/checkVersion.jsp" %>
 <%@include file="../../../fragments/checkLogin.jsp" %>
 <%@include file="../../../fragments/checkAccess1.jsp" %>

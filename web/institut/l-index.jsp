@@ -298,7 +298,6 @@
                     <h2 class="muted">Person</h2>
                     <%if(user.getDozentAccessLevel()>=500){%>                    
                     <p><button class="btn btn-success btn-small" accesskey="l" onclick="login()" class="template_studentDetails_cmdLogIn"><i class="icon-ok"></i> <u>L</u>og in</button></p><hr>
-                    <p><a target="_blank" class="btn btn-inverse btn-mini zuv_heidelberg_ext" href="#">ZUV</a></p>
                     <%}%>
                     <hr>
                     <dl>

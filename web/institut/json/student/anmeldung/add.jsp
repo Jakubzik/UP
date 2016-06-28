@@ -48,7 +48,7 @@
     
 --%><%@page import="java.sql.ResultSet"%>
 <%@page import="de.shj.UP.data.Kurs"%>
-<%@ page contentType="text/json" pageEncoding="UTF-8" import="de.shj.UP.data.Dozent,de.shj.UP.data.shjCore" session="true" isThreadSafe="false" errorPage="../../error.jsp"%><jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" /><jsp:useBean id="seminar" scope="session" class="de.shj.UP.logic.SeminarData" /><jsp:useBean id="student" scope="session" class="de.shj.UP.beans.config.student.StudentBean" /><jsp:useBean
+<%@ page contentType="text/json" pageEncoding="UTF-8" import="de.shj.UP.data.Dozent,de.shj.UP.data.shjCore" session="true" isThreadSafe="false" errorPage="../../error.jsp"%><jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" /><jsp:useBean id="seminar" scope="session" class="de.shj.UP.logic.SeminarData" /><jsp:useBean id="student" scope="session" class="de.shj.UP.logic.StudentData" /><jsp:useBean
 	id="sd" scope="session" class="de.shj.UP.util.SessionData" /><% long lERR_BASE=102000 + 400;    // Anmeldung + Add%>
 <%@include file="../../../fragments/checkVersion.jsp" %>
 <%@include file="../../../fragments/checkInitStudent.jsp" %>
@@ -129,7 +129,7 @@
     //      wenn der Parameter lDozentID<1 ist.
     //      Das stört aber, wenn über das Objekt studentXLeistung ein 
     //      .update ausgeführt wird.
-    String getSaveAnmeldungSQLArchiv(de.shj.UP.beans.config.student.StudentBean student, long leistung_id, long kurs_id, long kurstyp_id, long dozent_id, long leistung_count, String modul_id){
+    String getSaveAnmeldungSQLArchiv(de.shj.UP.logic.StudentData student, long leistung_id, long kurs_id, long kurstyp_id, long dozent_id, long leistung_count, String modul_id){
         return "INSERT INTO \"tblBdStudentXLeistung\"(" + 
             "\"lngSdSeminarID\", \"strMatrikelnummer\", \"lngLeistungsID\", \"lngStudentLeistungCount\", " + 
             "\"lngDozentID\", \"intNoteID\", \"lngKlausuranmeldungKurstypID\", \"lngKlausuranmeldungKursID\", " + 
@@ -166,7 +166,7 @@
     }
 
     // ModulID: "" übergeben, falls "null" gesetzt werden soll!
-    String getSaveAnmeldungSQLAktuellesSemester(de.shj.UP.beans.config.student.StudentBean student, 
+    String getSaveAnmeldungSQLAktuellesSemester(de.shj.UP.logic.StudentData student, 
             long leistung_id, long kurs_id, long kurstyp_id, 
             long leistung_count, String modul_id, boolean bCheckCommitmentPeriod){
         String sStrict = "k.\"dtmKursScheinanmeldungVon\"<=CURRENT_DATE and k.\"dtmKursScheinanmeldungBis\">=CURRENT_DATE and ";

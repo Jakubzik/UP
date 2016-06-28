@@ -9,9 +9,17 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>UP Running</title>
     </head>
-    <body>
-        <h1>Hello World!</h1>
+    <body align="center" width="600">
+        <h1>U:P läuft (Version 6-2016)</h1>
+        <p>
+            Über die <a href="institut" target="_blank">Startseite</a> stehen Ihnen alle Anmeldemöglichkeiten 
+            offen.
+        </p>
+        <p>
+            Melden Sie sich z.B. als Administrator "Normalverbraucher" mit Passwort "seminar" 
+            an und verwalten Sie die Studierende "de Tal".
+        </p>
     </body>
 </html>

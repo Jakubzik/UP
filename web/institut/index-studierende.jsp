@@ -76,9 +76,9 @@
                             </div> 
                         </div>          		     
                         <div class="control-group"> 
-                            <label class="control-label" for="txtPwd">Passwort d. UniID</label> 
+                            <label class="control-label" for="txtPwd">Passwort</label> 
                             <div class="controls"> 
-                                <input class="input-xlarge required" id="txtPwd" name="txtPwd" type="password" placeholder="Passwort zur UniID"> 
+                                <input class="input-xlarge required" id="txtPwd" name="txtPwd" type="password" placeholder="Passwort"> 
                             </div> 
                             <div id="help-link" class='controls' style="display:none">Login klappt nicht? <a href='./hilfe/studierende/login.jsp'>Hier gibt's Hilfestellungen</a>.</div>
                         </div>

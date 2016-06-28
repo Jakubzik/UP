@@ -47,13 +47,13 @@
 --%>
 <%@page contentType="text/json" pageEncoding="UTF-8" import="java.sql.ResultSet,java.text.SimpleDateFormat, de.shj.UP.data.Dozent,de.shj.UP.data.shjCore" session="true" isThreadSafe="false"  errorPage="../../error.jsp" %>
 <jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" /><jsp:useBean id="seminar" scope="session" class="de.shj.UP.logic.SeminarData" />
-<jsp:useBean id="student" scope="session" class="de.shj.UP.beans.config.student.StudentBean" />
+<jsp:useBean id="student" scope="session" class="de.shj.UP.logic.StudentData" />
 <%@include file="../../../fragments/checkVersion.jsp" %>
 <%@include file="../../../fragments/checkLogin.jsp" %>
 <%@include file="../../../fragments/checkAccess500.jsp" %>
 <%@include file="../../../fragments/checkInitStudent.jsp" %>
 <%!
-ResultSet getBemerkungen(de.shj.UP.beans.config.student.StudentBean student, HttpServletRequest r, long lERR_BASE) throws Exception{
+ResultSet getBemerkungen(de.shj.UP.logic.StudentData student, HttpServletRequest r, long lERR_BASE) throws Exception{
         String sItem="";
         if(r.getParameter("bemerkung_id")!=null){
             try{
