@@ -66,11 +66,5 @@ public class ExamIterator extends StudentXPruefung{
 				"p.\"lngPruefungID\"=x.\"lngSdPruefungsID\" and " +
 				"p.\"lngSdSeminarID\"=x.\"lngSdSeminarID\" and " +
 				"x.\"strMatrikelnummer\"='" + this.getMatrikelnummer() + "' order by \"lngSdPruefungsID\" asc;");
-                System.out.println("select x.*, p.* from \"tblBdStudentXPruefung\" x, \"tblSdPruefung\" p " +
-				"where x.\"lngSdSeminarID\"=" + this.getSdSeminarID() + " and " +
-				"p.\"lngPruefungID\"=x.\"lngSdPruefungsID\" and " +
-				"p.\"lngSdSeminarID\"=x.\"lngSdSeminarID\" and " +
-				"x.\"strMatrikelnummer\"='" + this.getMatrikelnummer() + "' order by \"lngSdPruefungsID\" asc;");
-		
 	}	
 }

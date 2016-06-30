@@ -84,7 +84,7 @@
 			    </div>
 			    <div class="span4">
 			    <h3>Wie bekomme ich das?</h3>
-			    <p>Schauen Sie auf GitHub ;-)</p>
+                            <p>Schauen Sie auf <a href="https://github.com/Jakubzik/UP" target="_blank">GitHub</a>.</p>
 			    </div>
 			  </div><!-- /row -->  
 			  <hr>
