@@ -4,3 +4,11 @@ U:P ist eine schlanke Software zur Administrierung der Lehrdaten eines Universit
 
 ![alt tag](http://www.as.uni-heidelberg.de/images/Studierendenakte.png)
 
+# UP testen 
+1. Laden Sie `docker-up.zip` herunter und entpacken Sie es.
+2. Installieren Sie `docker` und `docker-compose`.
+3. Starten Sie UP mit `docker-compose up`.
+4. Rufen Sie im Browser `localhost/UP` auf.
+
+
+
