@@ -68,7 +68,7 @@
 <%@ page contentType="text/json" pageEncoding="UTF-8" 
          import="de.shj.UP.data.shjCore" session="true" isThreadSafe="false" errorPage="../../error.jsp"%>
 <jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" />
-<jsp:useBean id="student" scope="session" class="de.shj.UP.beans.config.student.StudentBean" />
+<jsp:useBean id="student" scope="session" class="de.shj.UP.logic.StudentData" />
 <%@include file="../../../fragments/checkVersion.jsp" %>
 <%@include file="../../../fragments/checkLogin.jsp" %>
 <%@include file="../../../fragments/checkAccess1.jsp" %>
