@@ -21,6 +21,37 @@
             <li>als Studierende "de Tal" mit Passwort "seminar"</li></ul>
         </p>
 
+        <h2>Vorkonfiguration</h2>
+        <p>In dieser Testversion sind folgende Daten vorkonfiguriert:
+        <ul>
+            <li>Lehrende/AdministratorInnen mit maximaler Berechtigung<ul>
+                    <li>Otto Normalverbraucher
+                    <li>Fred Bloggs
+                    <li>Theresa Test
+                    <li>Joan Doe
+                    <li>Bobbie Smith
+                    <li>Piet Pompies
+                    <li>Josefa Lazar
+                </ul>
+            <li>Lehrende mit geringerer Berechtigung<ul>
+                    <li>Murat Mustermann
+                    <li>Kalle Svensson
+                    <li>Maija Meikäläinen
+                </ul>
+            <li>Studierende<ul>
+                    <li>Jane Doe
+                    <li>Fulana De Tal
+                    <li>Heiko Jakubzik
+                </ul>
+        </ul>
+        Die Passworte fürs Login lauten alle "seminar".<br />
+        Einen Überblick über die voreingestellten Studiengänge 
+        bekommen Sie auf der <a href="institut/degree-pr-kit.jsp" target="_blank">Konfigurationsseite für Studiengänge</a>.<br />
+        (Wählen Sie einen Studiengang, dann unter "Alle Module..." die Option "eintragen").<br />
+        Sie können dann Module und Leistungen per <i>Drag & Drop</i> eintragen.
+        </p>
+        
+        <h2></h2>
         </div>
     </body>
 </html>

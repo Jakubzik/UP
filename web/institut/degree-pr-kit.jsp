@@ -4,7 +4,7 @@
     <head> 
         <meta charset="utf-8"> 
         <meta contentType="application/x-www-form-urlencoded"></meta>
-        <title>SignUp -- Studiengang-Baukasten</title> 
+        <title>U:P -- Studiengang-Baukasten</title> 
         <meta name="description" content="Prüfungsverwaltung"> 
         <meta name="author" content="Heiko Jakubzik"> 
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -90,7 +90,7 @@
 
         <nav class="navbar navbar-fixed-top navbar-inverse">
             <div class="navbar-header">
-                <a class="navbar-brand" href="#">SignUp</a>
+                <a class="navbar-brand" href="#">U:P</a>
                  <a class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse"> 
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>

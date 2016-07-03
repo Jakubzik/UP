@@ -45,7 +45,7 @@
 <%@page import="java.net.URLConnection"%>
 <%@page import="java.net.URL"%>
 <jsp:useBean id="user" scope="session" class="de.shj.UP.data.Dozent" />
-<jsp:useBean id="student" scope="session" class="de.shj.UP.beans.config.student.StudentBean" />
+<jsp:useBean id="student" scope="session" class="de.shj.UP.logic.StudentData" />
 <%@ page language="java" session="true" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%><%@include file="../../../fragments/checkVersion.jsp" %>
 <%@include file="../../../fragments/checkLogin.jsp" %>
@@ -60,13 +60,8 @@
     if(sServerPort.equals("443")) sServerPort="80";
     String sURL = request.getServerName() + ":" + sServerPort + "/" + request.getRequestURI();
     
-    boolean b_gpa_json=false;
-    if(request.getParameter("gpa_json")==null)  {
-        sURL="http://" + sURL.substring(0,sURL.lastIndexOf("json/")) + "/print/transcript" + sLang + ".rtf";
-    }else{
-        b_gpa_json= true;
-        sURL="http://" + sURL.substring(0,sURL.lastIndexOf("json/")) + "../../gpa/signUpJSON.jsp?matrikelnummer=" + student.getMatrikelnummer();
-    }
+    sURL="http://" + sURL.substring(0,sURL.lastIndexOf("json/")) + "../../gpa/signUpJSON.jsp?matrikelnummer=" + student.getMatrikelnummer();
+
     URL url = new URL(sURL);
     
     URLConnection urlConnection = url.openConnection();

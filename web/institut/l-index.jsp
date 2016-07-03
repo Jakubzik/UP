@@ -444,8 +444,8 @@
 				  <li id="studentTranskript" class="dropdown" class="signUp_Student_Register">
 				  	<a href="#" class="dropdown-toggle" data-toggle="dropdown">Transkript <b class="caret"></b></a>
 				    <ul class="dropdown-menu">
-                                        <li><a href="#" id="cmdPrintDocxGen" data-template="template_exp.docx"><i class="icon-print"></i> ...Experimentell</a></li>
-                                        <li><a href="#" id="cmdPrintDocxGen_en" data-template="template_exp_en.docx"><i class="icon-print"></i> ...Experimentell (engl.)</a></li>
+                                        <li><a href="#" id="cmdPrintDocxGen" data-template="template_exp.docx"><i class="icon-print"></i> ...Deutsch</a></li>
+                                        <li><a href="#" id="cmdPrintDocxGen_en" data-template="template_exp_en.docx"><i class="icon-print"></i> ...Englisch</a></li>
                                         <li><a href="#" id="cmdShowFinalTranscripts"><i class="icon-file"></i> ...permanente Transkripte</a></li>
 				    	<li><a href="#" onclick="showTranscript()"><i class="icon-edit"></i> Bearbeiten</a></li>
 				    </ul>				  
