@@ -35,6 +35,8 @@
     http://localhost:8084/SignUpXP/as/Faculty/json/seminar/dozent/bemerkung/update.jsp?signup_expected_backend_version=1-0-0-2&dozent_id=26&text=Testbemerkung%20hinzugef%C3%BCgt%20und%20korrigiert&tag=Test&wiedervorlagedatum=1.5.2016&bemerkung_id=8
     
 --%>
+<%@page import="de.shj.UP.util.RqDescription"%>
+<%@page import="de.shj.UP.util.RqInterface"%>
 <%@page import="java.sql.PreparedStatement"%>
 <%@page import="java.util.Date"%>
 <%@page contentType="text/json" pageEncoding="UTF-8" import="java.sql.ResultSet,de.shj.UP.data.Dozent,de.shj.UP.data.shjCore" session="true" isThreadSafe="false"  errorPage="../../../error.jsp" %>
@@ -46,38 +48,22 @@
 
     // =========================================================================
     // Schnittstelle
-    long lDozentID=-1;
-    try{
-        lDozentID=Long.parseLong(request.getParameter("dozent_id").trim());
-    }catch(Exception eNotNumeric){
-        throw new Exception("{\"error\":\"Bemerkung kann nicht verändert werden. Es wurde keine Id für die Lehrperson übergeben.\"" + 
-                    ",\"errorDebug\":\"Der Parameter >id< (für die DozentID) hat den nicht-numerischen Wert >" + request.getParameter("dozent_id") + "<.\",\"errorcode\":" + lERR_BASE + 3 + ",\"severity\":10}");               
-    }
+    // =========================================================================
+    RqInterface oD = new RqInterface();
+    oD.setErrBase ( lERR_BASE );
+    oD.setActionFailedDescription( "Die Bemerkung zur Lehrperson konnte nicht geändert werden." );
+    oD.setRequest(request);
     
-    // Gibt es die Id der zu ändernden Bemerkung?
-    long lBemerkungID=-1;
-    try{
-        lBemerkungID=Long.parseLong(request.getParameter("bemerkung_id").trim());
-    }catch(Exception eNotNumeric){
-        throw new Exception("{\"error\":\"Bemerkung kann nicht verändert werden. Es wurde keine Id für die Bemerkung übergeben.\"" + 
-                    ",\"errorDebug\":\"Der Parameter >bemerkung_id< hat den nicht-numerischen Wert >" + request.getParameter("bemerkung_id") + "<.\",\"errorcode\":" + lERR_BASE + 3 + ",\"severity\":10}");               
-    }
+    oD.add(new RqDescription("dozent_id", RqDescription.RQ_LONG, "Id der Lehrperson"));
+    oD.add(new RqDescription("bemerkung_id", RqDescription.RQ_LONG, "Id der Bemerkung"));
+    oD.add(new RqDescription("text", RqDescription.RQ_LONG, 2, "Inhalt der Bemerkung"));
+    oD.add(new RqDescription("text", RqDescription.RQ_DATE_DE, "Datum der Wiedervorlage", true));
+    oD.checkRequestAgainstDescriptions();
     
-    // Wurde eine Bemerkungstext übergeben?
-    String sText = shjCore.normalize(request.getParameter("text"));
-    if(sText.length()<=2) throw new Exception("{\"error\":\"Bemerkung kann nicht verändert werden. Es wurde kein Inhalt für eine Bemerkung übergeben.\"" + 
-                    ",\"errorDebug\":\"Der Parameter >text< (für den inhalt der Bemerkung) hat den Wert >" + request.getParameter("text") + "<.\",\"errorcode\":" + lERR_BASE + 3 + ",\"severity\":10}");               
-    
-    // Ist ein Wiedervorlagedatum angegeben? (Optional)
-    Date dWV = null;
-    try{
-        dWV = shjCore.g_GERMAN_DATE_FORMAT.parse(request.getParameter("wiedervorlagedatum"));
-    }catch(Exception e){
-        // Ignore, will not update, then
-    }
-    
-    // Tag ist optional
-    String sTag = shjCore.normalize(request.getParameter("tag"));
+    // =========================================================================
+    // Initialisierung
+    // =========================================================================
+    Date dWV = shjCore.g_GERMAN_DATE_FORMAT.parse(request.getParameter("wiedervorlagedatum"));
     
     // =========================================================================
     // A K T U A L I S I E R E  den Datensatz in der Datenbank
@@ -87,12 +73,12 @@
         "WHERE \"lngSdSeminarID\"=? and \"lngDozentBemerkungID\"=? and \"lngDozentID\"=?;");
     
     int ii=1;
-    pstm.setString(ii++, sTag);
-    pstm.setString(ii++, sText);
+    pstm.setString(ii++, shjCore.normalize(request.getParameter("tag")));
+    pstm.setString(ii++, request.getParameter("text").trim());
     if(dWV != null) pstm.setDate(ii++, new java.sql.Date(dWV.getTime()));
     pstm.setLong(ii++, seminar.getSeminarID());
-    pstm.setLong(ii++, lBemerkungID);
-    pstm.setLong(ii++, lDozentID);
+    pstm.setLong(ii++, Long.parseLong(request.getParameter("bemerkung_id").trim()));
+    pstm.setLong(ii++, Long.parseLong(request.getParameter("dozent_id").trim()));
     
     pstm.execute();
     boolean bSuccess = (pstm.getUpdateCount() == 1);
@@ -101,4 +87,4 @@
         throw new Exception("{\"error\":\"Bemerkung kann nicht geändert werden. Die Datenbank streikt.\"" + 
                     ",\"errorDebug\":\"Siehe Datenbank Logs.\",\"errorcode\":" + lERR_BASE + 3 + ",\"severity\":10}");
     
-%>{"success":"true","bemerkung_id":"<%=lBemerkungID%>"}
+%>{"success":"true","bemerkung_id":"<%=request.getParameter("bemerkung_id")%>"}
